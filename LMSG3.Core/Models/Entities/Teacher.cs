@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.Entities
 {
-    public class Teacher : ApplicationUser
+    public class Teacher
     {
-       public ICollection<Module> Modules { get; set; }
+        public ICollection<Module> Modules { get; set; }
     }
 }

@@ -347,30 +347,6 @@ namespace LMSG3.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ModuleTeacher",
-                columns: table => new
-                {
-                    ModulesId = table.Column<int>(type: "int", nullable: false),
-                    TeacherId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModuleTeacher", x => new { x.ModulesId, x.TeacherId });
-                    table.ForeignKey(
-                        name: "FK_ModuleTeacher_AspNetUsers_TeacherId",
-                        column: x => x.TeacherId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ModuleTeacher_Module_ModulesId",
-                        column: x => x.ModulesId,
-                        principalTable: "Module",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LiteratureLiteratureAuthor",
                 columns: table => new
                 {
@@ -547,11 +523,6 @@ namespace LMSG3.Data.Migrations
                 name: "IX_Module_CourseId",
                 table: "Module",
                 column: "CourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ModuleTeacher_TeacherId",
-                table: "ModuleTeacher",
-                column: "TeacherId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -578,13 +549,13 @@ namespace LMSG3.Data.Migrations
                 name: "LiteratureLiteratureAuthor");
 
             migrationBuilder.DropTable(
-                name: "ModuleTeacher");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Activity");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "DocumentType");
@@ -594,9 +565,6 @@ namespace LMSG3.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "LiteratureAuthor");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ActivityType");

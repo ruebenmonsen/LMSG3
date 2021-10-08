@@ -508,21 +508,6 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ModuleTeacher", b =>
-                {
-                    b.Property<int>("ModulesId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TeacherId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ModulesId", "TeacherId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("ModuleTeacher");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Student", b =>
                 {
                     b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
@@ -533,13 +518,6 @@ namespace LMSG3.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasDiscriminator().HasValue("Student");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
-                {
-                    b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
-
-                    b.HasDiscriminator().HasValue("Teacher");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>
@@ -696,21 +674,6 @@ namespace LMSG3.Data.Migrations
                     b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ModuleTeacher", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.Module", null)
-                        .WithMany()
-                        .HasForeignKey("ModulesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMSG3.Core.Models.Entities.Teacher", null)
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
