@@ -1,4 +1,6 @@
-﻿namespace LMSG3.Core.Models.Entities
+﻿using System.Collections.Generic;
+
+namespace LMSG3.Core.Models.Entities
 {
     public class Subject
     {

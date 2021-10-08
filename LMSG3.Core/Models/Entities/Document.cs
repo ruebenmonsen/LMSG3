@@ -18,7 +18,7 @@ namespace LMSG3.Core.Models.Entities
 
         // NAV
         public DocumentType DocumentType { get; set; }
-        public User User { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public Course Course { get; set; }
         public Module Module { get; set; }
         public Activity Activity { get; set; }

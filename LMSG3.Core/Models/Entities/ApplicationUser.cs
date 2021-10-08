@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.Entities
 {
-    public class User : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         
         public string FName { get; set; }

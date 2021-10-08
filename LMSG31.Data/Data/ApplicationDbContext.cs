@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LMSG3.Web.Data
+namespace LMSG3.Data.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
