@@ -11,9 +11,16 @@ namespace LMSG3.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
-        public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser");
+            modelBuilder.Entity<Student>().ToTable("Student");
+            modelBuilder.Entity<Teacher>().ToTable("Teacher");
         }
 
         public DbSet<LMSG3.Core.Models.Entities.Course> Course { get; set; }
