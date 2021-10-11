@@ -12,9 +12,8 @@ namespace LMSG3.Core.Repositories
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<TEntity> GetAsync(int? id);
         Task<TEntity> FindAsync(int? id);
-        Task<bool> AnyAsync(int id);
         void Update(TEntity entity);
-        void Remove(TEntity entity);
-        bool Exists(int id);
+        void Remove(int id);
+        void Remove(TEntity entity);    
     }
 }
