@@ -4,14 +4,16 @@ using LMSG3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LMSG3.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211011063940_init3")]
+    partial class init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +138,7 @@ namespace LMSG3.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("ApplicationUser");
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Course", b =>
@@ -354,18 +356,16 @@ namespace LMSG3.Data.Migrations
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.TeacherModule", b =>
                 {
-                    b.Property<int>("TeacherId")
+                    b.Property<int>("ModuleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ModuleId")
+                    b.Property<int>("TeacherId")
                         .HasColumnType("int");
 
                     b.Property<string>("TeacherId1")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("TeacherId", "ModuleId");
-
-                    b.HasIndex("ModuleId");
+                    b.HasKey("ModuleId", "TeacherId");
 
                     b.HasIndex("TeacherId1");
 

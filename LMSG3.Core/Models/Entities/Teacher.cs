@@ -8,6 +8,8 @@ namespace LMSG3.Core.Models.Entities
 {
     public class Teacher : ApplicationUser
     {
-       public ICollection<Module> Modules { get; set; }
+        //public ICollection<Module> Modules { get; set; }
+
+        public ICollection<TeacherModule> TeacherModules { get; set; }
     }
 }

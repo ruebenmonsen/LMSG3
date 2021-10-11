@@ -18,10 +18,26 @@ namespace LMSG3.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser");
             modelBuilder.Entity<Student>().ToTable("Student");
             modelBuilder.Entity<Teacher>().ToTable("Teacher");
+
+            modelBuilder.Entity<TeacherModule>()
+                .HasKey(e => new { e.TeacherId, e.ModuleId });
+
+            modelBuilder.Entity<TeacherModule>()
+                .HasOne(e => e.Teacher)
+                .WithMany(e => e.TeacherModules)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TeacherModule>()
+                .HasOne(e => e.Module)
+                .WithMany(e => e.ModuleTeachers)
+                .OnDelete(DeleteBehavior.NoAction);
         }
+
 
         public DbSet<LMSG3.Core.Models.Entities.Course> Course { get; set; }
         public DbSet<LMSG3.Core.Models.Entities.Literature> Literature { get; set; }

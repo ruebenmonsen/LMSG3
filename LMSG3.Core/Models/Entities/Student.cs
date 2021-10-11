@@ -8,6 +8,7 @@ namespace LMSG3.Core.Models.Entities
 {
     public class Student : ApplicationUser
     {
+        public string Id { get; set; }
         // FK
         public int CourseId { get; set; }
 

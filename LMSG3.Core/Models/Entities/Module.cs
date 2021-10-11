@@ -16,7 +16,8 @@ namespace LMSG3.Core.Models.Entities
 
         // NAV
         public Course Course { get; set; }
-        public ICollection<Teacher> Teacher { get; set; }
+        //public ICollection<Teacher> Teacher { get; set; }
+        public ICollection<TeacherModule> ModuleTeachers { get; set; }
         public ICollection<Document> Documents { get; set; }
         public ICollection<Activity> Activities { get; set; }
 
