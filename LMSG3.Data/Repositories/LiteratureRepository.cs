@@ -8,11 +8,11 @@ using LMSG3.Core.Repositories;
 
 namespace LMSG3.Data.Repositories
 {
-    public class LitertureRepository : ILiteratureRepository
+    public class LiteratureRepository : ILiteratureRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public LitertureRepository(ApplicationDbContext context, ILogger logger)
+        public LiteratureRepository(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
         }
