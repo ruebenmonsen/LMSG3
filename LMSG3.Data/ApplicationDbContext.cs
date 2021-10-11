@@ -20,19 +20,19 @@ namespace LMSG3.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser");
+            //modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser");
             modelBuilder.Entity<Student>().ToTable("Student");
             modelBuilder.Entity<Teacher>().ToTable("Teacher");
 
-            modelBuilder.Entity<TeacherModule>()
-                .HasKey(e => new { e.TeacherId, e.ModuleId });
+            modelBuilder.Entity<ModuleTeacher>()
+                .HasKey(e => new { e.ModuleId, e.TeacherId });
 
-            modelBuilder.Entity<TeacherModule>()
+            modelBuilder.Entity<ModuleTeacher>()
                 .HasOne(e => e.Teacher)
                 .WithMany(e => e.TeacherModules)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<TeacherModule>()
+            modelBuilder.Entity<ModuleTeacher>()
                 .HasOne(e => e.Module)
                 .WithMany(e => e.ModuleTeachers)
                 .OnDelete(DeleteBehavior.NoAction);

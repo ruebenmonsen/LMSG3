@@ -10,6 +10,6 @@ namespace LMSG3.Core.Models.Entities
     {
         //public ICollection<Module> Modules { get; set; }
 
-        public ICollection<TeacherModule> TeacherModules { get; set; }
+        public ICollection<ModuleTeacher> TeacherModules { get; set; }
     }
 }

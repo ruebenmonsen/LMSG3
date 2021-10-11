@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMSG3.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211008142718_init2")]
-    partial class init2
+    [Migration("20211011065605_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -339,6 +339,21 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("Module");
                 });
 
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.ModuleTeacher", b =>
+                {
+                    b.Property<int?>("ModuleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TeacherId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ModuleId", "TeacherId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("ModuleTeacher");
+                });
+
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -504,21 +519,6 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ModuleTeacher", b =>
-                {
-                    b.Property<int>("ModulesId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TeacherId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ModulesId", "TeacherId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("ModuleTeacher");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Student", b =>
                 {
                     b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
@@ -630,6 +630,25 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.ModuleTeacher", b =>
+                {
+                    b.HasOne("LMSG3.Core.Models.Entities.Module", "Module")
+                        .WithMany("ModuleTeachers")
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LMSG3.Core.Models.Entities.Teacher", "Teacher")
+                        .WithMany("TeacherModules")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("LiteratureLiteratureAuthor", b =>
                 {
                     b.HasOne("LMSG3.Core.Models.Entities.LiteratureAuthor", null)
@@ -692,21 +711,6 @@ namespace LMSG3.Data.Migrations
                     b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ModuleTeacher", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.Module", null)
-                        .WithMany()
-                        .HasForeignKey("ModulesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMSG3.Core.Models.Entities.Teacher", null)
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -781,11 +785,18 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("Documents");
+
+                    b.Navigation("ModuleTeachers");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Subject", b =>
                 {
                     b.Navigation("Literatures");
+                });
+
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
+                {
+                    b.Navigation("TeacherModules");
                 });
 #pragma warning restore 612, 618
         }

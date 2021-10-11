@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.Entities
 {
-    public class TeacherModule
+    public class ModuleTeacher
     {
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; }
 
-        public int ModuleId { get; set; }
+        public int? ModuleId { get; set; }
 
         public Teacher Teacher { get; set; }
 
