@@ -1,5 +1,6 @@
 using LMSG3.Core.Configuration;
 using LMSG3.Data;
+using LMSG3.Data;
 using LMSG3.Data.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +44,10 @@ namespace LMSG3.Api
             services.AddDbContext<ApplicationDbContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(MapperProfile));
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

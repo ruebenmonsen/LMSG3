@@ -14,6 +14,10 @@ namespace LMSG3.Data
         public MapperProfile()
         {
             CreateMap<Literature, LiteratureDto>().ReverseMap();
+            CreateMap<LiteratureAuthor, LiteratureAuthorDto>().ReverseMap();
+            CreateMap<LiteratureLevel, LiteratureLevelDto>().ReverseMap();
+            CreateMap<LiteratureType, LiteratureTypeDto>().ReverseMap();
+            CreateMap<Subject, SubjectDto>().ReverseMap();
         }
         
     }
