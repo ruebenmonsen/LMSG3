@@ -4,14 +4,16 @@ using LMSG3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LMSG3.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211008150009_studenttable")]
+    partial class studenttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,9 +121,6 @@ namespace LMSG3.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -138,8 +137,6 @@ namespace LMSG3.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -519,13 +516,6 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("Student");
                 });
 
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
-                {
-                    b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
-
-                    b.ToTable("Teacher");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>
                 {
                     b.HasOne("LMSG3.Core.Models.Entities.ActivityType", "ActivityType")
@@ -543,15 +533,6 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("ActivityType");
 
                     b.Navigation("Module");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Document", b =>
@@ -708,15 +689,6 @@ namespace LMSG3.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("LMSG3.Core.Models.Entities.Teacher", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>

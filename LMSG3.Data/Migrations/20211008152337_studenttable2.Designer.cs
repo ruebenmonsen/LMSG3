@@ -4,14 +4,16 @@ using LMSG3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LMSG3.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211008152337_studenttable2")]
+    partial class studenttable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,9 +121,6 @@ namespace LMSG3.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -138,8 +137,6 @@ namespace LMSG3.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -342,6 +339,26 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("Module");
                 });
 
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.Student", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Student");
+                });
+
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -507,25 +524,6 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Student", b =>
-                {
-                    b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Student");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
-                {
-                    b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
-
-                    b.ToTable("Teacher");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>
                 {
                     b.HasOne("LMSG3.Core.Models.Entities.ActivityType", "ActivityType")
@@ -543,15 +541,6 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("ActivityType");
 
                     b.Navigation("Module");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Document", b =>
@@ -627,6 +616,23 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.Student", b =>
+                {
+                    b.HasOne("LMSG3.Core.Models.Entities.Course", "Course")
+                        .WithMany("Students")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LiteratureLiteratureAuthor", b =>
                 {
                     b.HasOne("LMSG3.Core.Models.Entities.LiteratureAuthor", null)
@@ -690,32 +696,6 @@ namespace LMSG3.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Student", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.Course", "Course")
-                        .WithMany("Students")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("LMSG3.Core.Models.Entities.Student", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("LMSG3.Core.Models.Entities.Teacher", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 

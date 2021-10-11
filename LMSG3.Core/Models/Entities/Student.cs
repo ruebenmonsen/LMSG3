@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.Entities
 {
-    public class Student
+    public class Student : ApplicationUser
     {
         // FK
         public int CourseId { get; set; }

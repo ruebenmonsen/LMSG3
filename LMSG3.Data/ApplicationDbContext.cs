@@ -18,11 +18,14 @@ namespace LMSG3.Data
 
         public DbSet<Course> Courses { get; set; }
         public DbSet<Literature> Literatures { get; set; }
+        public DbSet<Student> Students {  get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser");
-            //modelBuilder.Entity<Student>().ToTable("Student");
-            //modelBuilder.Entity<Teacher>().ToTable("Teacher");
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Student>().ToTable("Student");
+
+            modelBuilder.Entity<Teacher>().ToTable("Teacher");
         }
     }
 }
