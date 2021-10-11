@@ -1,7 +1,10 @@
+using LMSG3.Api.Configuration;
+using LMSG3.Api.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,11 +30,18 @@ namespace LMSG3.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            //services.AddControllers();
+            services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); 
+                                      // .AddXmlDataContractSerializerFormatters();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMSG3.Api", Version = "v1" });
             });
+
+            services.AddDbContext<DBContext>(options =>
+                   options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

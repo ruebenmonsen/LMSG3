@@ -24,5 +24,6 @@ namespace LMSG3.Core.Models.Entities
         public LiteratureType LiteratureType { get; set; }
         public ICollection<LiteratureAuthor> Authors { get; set; }
 
+
     }
 }
