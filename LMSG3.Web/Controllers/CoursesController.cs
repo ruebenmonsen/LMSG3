@@ -7,22 +7,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data;
+using LMSG3.Core.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMSG3.Web.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork uow;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context, IUnitOfWork uow)
         {
             _context = context;
+            this.uow = uow;
         }
 
         // GET: Courses
+        [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            var model = await uow.CourseRepository.GetAllCourses();
+            return View(model);
+
         }
 
         // GET: Courses/Details/5

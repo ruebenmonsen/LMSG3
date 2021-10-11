@@ -18,12 +18,15 @@ namespace LMSG3.Data.Configuration
 
         public ILiteratureRepository LiteratureRepository { get; private set; }
 
+        public ICourseRepository CourseRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("logs");
 
             LiteratureRepository = new LitertureRepository(context, _logger);
+            CourseRepository = new CourseRepository(_context);
         }
 
         public async Task CompleteAsync()

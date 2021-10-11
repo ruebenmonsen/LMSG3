@@ -13,7 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LMSG3.Data;
-
+using LMSG3.Core.Configuration;
+using LMSG3.Data.Configuration;
 
 namespace LMSG3.Web
 {
@@ -41,6 +42,7 @@ namespace LMSG3.Web
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
