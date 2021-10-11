@@ -1,5 +1,6 @@
 ﻿using LMSG3.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace LMSG3.Data.Repositories
         internal ApplicationDbContext context;
         internal DbSet<TEntity> dbSet;
 
-        public GenericRepository(ApplicationDbContext context)
+        public GenericRepository(ApplicationDbContext context, ILogger logger)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.dbSet = context.Set<TEntity>();

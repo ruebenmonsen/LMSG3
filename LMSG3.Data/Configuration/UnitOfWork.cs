@@ -18,21 +18,21 @@ namespace LMSG3.Data.Configuration
         private IGenericRepository<Course> courseRepository;
         private IGenericRepository<Module> moduleRepository;
         private IGenericRepository<Activity> activityRepository;
-        private ILiteratureRepository literatureRepository;
+        private IGenericRepository<Literature> literatureRepository;
 
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             this.context = context;
             this.logger = loggerFactory.CreateLogger("logs");
         }
-        public ILiteratureRepository LiteratureRepository
+        public LiteratureRepository LiteratureRepository
         {
             get
             {
                 if (this.LiteratureRepository == null)
                     this.literatureRepository = new LiteratureRepository(context, logger);
 
-                return literatureRepository;
+                return literatureRepository as LiteratureRepository;
             }
         }
 
@@ -41,7 +41,7 @@ namespace LMSG3.Data.Configuration
             get
             {
                 if (this.CourseRepository == null)
-                    this.courseRepository = new GenericRepository<Course>(context);
+                    this.courseRepository = new GenericRepository<Course>(context, logger);
 
                 return courseRepository as GenericRepository<Course>;
             }
@@ -51,7 +51,7 @@ namespace LMSG3.Data.Configuration
             get
             {
                 if (this.ModuleRepository == null)
-                    this.moduleRepository = new GenericRepository<Module>(context);
+                    this.moduleRepository = new GenericRepository<Module>(context, logger);
 
                 return moduleRepository as GenericRepository<Module>;
             }
@@ -61,7 +61,7 @@ namespace LMSG3.Data.Configuration
             get
             {
                 if (this.ActivityRepository == null)
-                    this.activityRepository = new GenericRepository<Activity>(context);
+                    this.activityRepository = new GenericRepository<Activity>(context, logger);
 
                 return activityRepository as GenericRepository<Activity>;
             }
