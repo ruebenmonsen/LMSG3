@@ -21,9 +21,14 @@ namespace LMSG3.Api
             {
                 var services = scope.ServiceProvider;
 
+                var context = services.GetRequiredService<ApplicationDbContext>();
+
+                var config = services.GetRequiredService<IConfiguration>();
+                var adminPW = config["AdminPW"];
+
                 try
                 {
-                    SeedData.InitAsync(services).Wait();
+                    SeedData.InitAsync(context, services, adminPW).Wait();
                 }
                 catch (Exception e)
                 {

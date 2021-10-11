@@ -14,7 +14,7 @@ namespace LMSG3.Data
 
         private static Faker fake;
 
-        public static async Task InitAsync(IServiceProvider services)
+        public static async Task InitAsync(ApplicationDbContext context, IServiceProvider services, string adminPW)
         {
             using (var db = services.GetRequiredService<ApplicationDbContext>())
             {

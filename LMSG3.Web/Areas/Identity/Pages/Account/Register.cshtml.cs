@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LMSG3.Web.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "Teacher")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -31,6 +31,7 @@ namespace LMSG3.Web.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -46,6 +47,13 @@ namespace LMSG3.Web.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [Required]
+            [Display(Name = "First Name")]
+            public string FName { get; set; }
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LName { get; set; }
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -75,9 +83,11 @@ namespace LMSG3.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                var user = new ApplicationUser { FName = Input.FName, LName = Input.LName , UserName = Input.Email, Email = Input.Email };
+                var result = await _userManager.CreateAsync(user, "BytMig123!");
+                var addToRoleResult = await _userManager.AddToRoleAsync(user, "Student");
+
+                if (result.Succeeded && addToRoleResult.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 

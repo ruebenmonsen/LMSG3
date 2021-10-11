@@ -1,5 +1,8 @@
+using LMSG3.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,7 +16,29 @@ namespace LMSG3.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                //context.Database.EnsureDeleted();
+                //context.Database.Migrate();
+                var config = services.GetRequiredService<IConfiguration>();
+                var adminPW = config["AdminPW"];
+
+                try
+                {
+                    SeedData.InitAsync(context, services, adminPW).Wait();
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
+            }
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
