@@ -7,16 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LMSG3.Api.Data
+namespace LMSG3.Data
 {
     public class SeedData
     {
 
         private static Faker fake;
 
-        internal static async Task InitAsync(IServiceProvider services)
+        public static async Task InitAsync(IServiceProvider services)
         {
-            using (var db = services.GetRequiredService<DBContext>())
+            using (var db = services.GetRequiredService<ApplicationDbContext>())
             {
                 if (await db.Literatures.AnyAsync()) return;
 

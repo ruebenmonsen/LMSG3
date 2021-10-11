@@ -1,20 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LMSG3.Api.Data;
 using LMSG3.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using LMSG3.Api.Repositories;
+using LMSG3.Core.Repositories;
 
-namespace LMSG3.Api.Repositories
+namespace LMSG3.Data.Repositories
 {
     public class LitertureRepository : ILiteratureRepository
     {
-        private readonly DBContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public LitertureRepository(DBContext context, ILogger logger)
+        public LitertureRepository(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
         }

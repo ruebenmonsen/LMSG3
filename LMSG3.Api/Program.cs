@@ -1,4 +1,4 @@
-using LMSG3.Api.Data;
+using LMSG3.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LMSG3.Api.Data;
 using LMSG3.Core.Models.Entities;
-using LMSG3.Api.Configuration;
+using LMSG3.Data.Configuration;
+using LMSG3.Data;
+using LMSG3.Core.Configuration;
 
 namespace LMSG3.Api.Controllers
 {
@@ -15,10 +16,10 @@ namespace LMSG3.Api.Controllers
     [ApiController]
     public class LiteraturesController : ControllerBase
     {
-        private readonly DBContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork uow;
 
-        public LiteraturesController(DBContext context, IUnitOfWork unitOfWork)
+        public LiteraturesController(ApplicationDbContext context, IUnitOfWork unitOfWork)
         {
             _context = context;
             uow = unitOfWork;

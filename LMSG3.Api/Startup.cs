@@ -1,5 +1,6 @@
-using LMSG3.Api.Configuration;
-using LMSG3.Api.Data;
+using LMSG3.Core.Configuration;
+using LMSG3.Data;
+using LMSG3.Data.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,7 +40,7 @@ namespace LMSG3.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMSG3.Api", Version = "v1" });
             });
 
-            services.AddDbContext<DBContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

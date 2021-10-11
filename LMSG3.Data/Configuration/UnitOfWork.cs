@@ -1,24 +1,24 @@
 ﻿using Microsoft.Extensions.Logging;
-using LMSG3.Api.Data;
-using RepositoryDemo.services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LMSG3.Api.Repositories;
+using LMSG3.Core.Configuration;
+using LMSG3.Core.Repositories;
+using LMSG3.Data.Repositories;
 
-namespace LMSG3.Api.Configuration
+namespace LMSG3.Data.Configuration
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly DBContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
 
         
 
         public ILiteratureRepository LiteratureRepository { get; private set; }
 
-        public UnitOfWork(DBContext context, ILoggerFactory loggerFactory)
+        public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("logs");

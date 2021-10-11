@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LMSG3.Api.Repositories
+namespace LMSG3.Core.Repositories
 {
     public interface ILiteratureRepository 
     {
