@@ -75,7 +75,7 @@ namespace LMSG3.Data
 
 
                 // MVC : Users
-                var teachers = await GetTeachersAsync(defaultPassword, 2);
+                var teachers = (await GetTeachersAsync(defaultPassword, 2)).ToList();
 
                 var defaultTeacher = new Teacher 
                 { 
@@ -90,6 +90,7 @@ namespace LMSG3.Data
                     throw new Exception(String.Join("\n", iResult.Errors));
                 }
                 teachers.Append(defaultTeacher);
+                teachers.Add(defaultTeacher);
 
                 foreach (var teacher in teachers)
                 {
