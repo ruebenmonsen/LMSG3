@@ -72,13 +72,6 @@ namespace LMSG3.Data.Repositories
         }
 
         
-
-       
-
-
-
-       
-
         public void Remove(Literature literature)
         {
             throw new NotImplementedException();

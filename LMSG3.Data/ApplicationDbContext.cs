@@ -18,6 +18,7 @@ namespace LMSG3.Data
 
         public DbSet<Course> Courses { get; set; }
         public DbSet<Literature> Literatures { get; set; }
+        public DbSet<LiteratureAuthor> LiteratureAuthors { get; set; }
         public DbSet<Student> Students {  get; set; }
         public DbSet<Module> Modules {  get; set; }
         public DbSet<Activity> Activities {  get; set; }

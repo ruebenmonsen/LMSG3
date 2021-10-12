@@ -9,6 +9,8 @@ using LMSG3.Core.Models.Entities;
 using LMSG3.Data.Configuration;
 using LMSG3.Data;
 using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Dtos;
+using AutoMapper;
 
 namespace LMSG3.Api.Controllers
 {
@@ -18,11 +20,13 @@ namespace LMSG3.Api.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
 
-        public LiteraturesController(ApplicationDbContext context, IUnitOfWork unitOfWork)
+        public LiteraturesController(ApplicationDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _context = context;
             uow = unitOfWork;
+            this.mapper = mapper;
         }
 
         // GET: api/Literatures
@@ -30,8 +34,8 @@ namespace LMSG3.Api.Controllers
         public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures(bool includeAllInfo) //bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
         {
             var literatures = await uow.LiteratureRepository.GetAsync(includeAllInfo);
-         
-            return Ok(literatures);//await _context.Literatures.ToListAsync();
+
+            return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literatures)); //await _context.Literatures.ToListAsync();
         }
 
         // GET: api/Literatures/5
@@ -46,7 +50,7 @@ namespace LMSG3.Api.Controllers
                 return NotFound();
             }
 
-            return literature;
+            return Ok(mapper.Map<LiteratureDto>(literature));
         }
 
         //[HttpGet("{title}")]
