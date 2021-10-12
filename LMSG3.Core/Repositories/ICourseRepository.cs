@@ -11,6 +11,7 @@ namespace LMSG3.Core.Repositories
     {
         Task<IEnumerable<Course>> GetAllCourses();
         Task<IEnumerable<Course>> GetAllCourses(bool includemodules);
+        Task<Course> GetCourse(int? id, bool includemodules);
         void Add(Course course);
         bool Any(int id);
         void Remove(Course course);
