@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Data.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public abstract class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         internal ApplicationDbContext context;
         internal DbSet<TEntity> dbSet;
@@ -27,6 +27,11 @@ namespace LMSG3.Data.Repositories
         public async Task<TEntity> FindAsync(int? id)
         {
             return await dbSet.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter)
+        {
+            return await dbSet.AsQueryable().Where(filter).ToListAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
@@ -50,7 +55,7 @@ namespace LMSG3.Data.Repositories
                 return await query.ToListAsync();
         }
         
-        public async Task<TEntity> GetAsync(int? id)
+        public async virtual Task<TEntity> GetAsync(int? id)
         {
             return await dbSet.FindAsync(id);
         }

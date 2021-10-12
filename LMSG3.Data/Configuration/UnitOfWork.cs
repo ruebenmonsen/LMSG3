@@ -15,55 +15,54 @@ namespace LMSG3.Data.Configuration
         private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
-        private IGenericRepository<Course> courseRepository;
-        private IGenericRepository<Module> moduleRepository;
-        private IGenericRepository<Activity> activityRepository;
-        private IGenericRepository<Literature> literatureRepository;
+        private ILiteratureRepository literatureRepository;
+        private IRepository<Course> courseRepository;
+        private IRepository<Module> moduleRepository;
+        private IRepository<Activity> activityRepository;
 
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             this.context = context;
             this.logger = loggerFactory.CreateLogger("logs");
         }
-        public LiteratureRepository LiteratureRepository
+        public ILiteratureRepository LiteratureRepository
         {
             get
             {
                 if (this.LiteratureRepository == null)
                     this.literatureRepository = new LiteratureRepository(context, logger);
 
-                return literatureRepository as LiteratureRepository;
+                return literatureRepository;
             }
         }
-
-        public GenericRepository<Course> CourseRepository
+        public IRepository<Course> CourseRepository
         {
             get
             {
                 if (this.CourseRepository == null)
-                    this.courseRepository = new GenericRepository<Course>(context, logger);
+                    this.courseRepository = new CourseRepository(context, logger);
 
-                return courseRepository as GenericRepository<Course>;
+                return courseRepository;
             }
         }
-        public GenericRepository<Module> ModuleRepository
+        public IRepository<Module> ModuleRepository
         {
             get
             {
                 if (this.ModuleRepository == null)
-                    this.moduleRepository = new GenericRepository<Module>(context, logger);
+                    this.moduleRepository = new ModuleRepository(context, logger);
 
-                return moduleRepository as GenericRepository<Module>;
+                return moduleRepository;
             }
         }
-        public GenericRepository<Activity> ActivityRepository
+        public IRepository<Activity> ActivityRepository
         {
             get
             {
                 if (this.ActivityRepository == null)
-                    this.activityRepository = new GenericRepository<Activity>(context, logger);
+                    this.activityRepository = new ActivityRepository(context, logger);
 
-                return activityRepository as GenericRepository<Activity>;
+                return activityRepository;
             }
         }
 

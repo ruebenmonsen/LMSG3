@@ -8,7 +8,7 @@ using LMSG3.Core.Repositories;
 
 namespace LMSG3.Data.Repositories
 {
-    public class LiteratureRepository : GenericRepository<Literature>
+    public class LiteratureRepository : GenericRepository<Literature>, ILiteratureRepository
     {
         public LiteratureRepository(ApplicationDbContext context, ILogger logger) : base(context, logger)
         {

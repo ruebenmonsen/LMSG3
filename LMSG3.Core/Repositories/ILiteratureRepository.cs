@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Repositories
 {
-    public interface ILiteratureRepository 
+    public interface ILiteratureRepository
     {
         Task<IEnumerable<Literature>> GetAsync(bool includeAllInfo); // bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
         Task<Literature> FindAsync(string searchStr);
         Task<Literature> GetAsync(int id, bool includeAllInfo);
-        Task<bool> AnyAsync(int id);
-       
     }
 }
