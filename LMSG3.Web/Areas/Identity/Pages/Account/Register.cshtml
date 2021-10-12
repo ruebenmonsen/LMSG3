@@ -48,10 +48,8 @@
 
             <div class="form-group">
                 <label>User Role</label>
-                @Html.DropDownList("drpCources", new List<SelectListItem>{
-                                                                           new SelectListItem{ Text="Teacher", Value = "Teacher" },
-                                                                           new SelectListItem{ Text="Student", Value = "Student" } },
-                                                                           "Select User Role", new { @class = "form-control", @onchange = "FillCourse()" })
+                @Html.DropDownList("drpCourses", new List<SelectListItem>{ViewBag.Courses})
+
                 <span asp-validation-for="@Html.ValidationMessageFor(m => m.User, "", new { @class = "text-danger" })" class="text-danger"></span>
             </div>
 
