@@ -33,11 +33,10 @@ namespace LMSG3.Data
 
                 // API
                 var letertures = GetLeterature();
-                //await db.AddRangeAsync(letertures);
+                await db.AddRangeAsync(letertures);
 
 
                 // MVC
-
                 var defaultPassword = "Abc123!";
                 var teacherRole = "Teacher";
                 var studentRole = "Student";
@@ -76,11 +75,28 @@ namespace LMSG3.Data
 
 
                 // MVC : Users
-                var teachers = await GetTeachersAsync(defaultPassword, 2);
+                var teachers = (await GetTeachersAsync(defaultPassword, 2)).ToList();
+
+                var defaultTeacher = new Teacher 
+                { 
+                    FName = "David",
+                    LName = "Nokto",
+                    Email = "d@lexi.com",
+                    UserName = "d@lexi.com"
+                };
+                var iResult = await userManager.CreateAsync(defaultTeacher, defaultPassword);
+                if (!iResult.Succeeded)
+                {
+                    throw new Exception(String.Join("\n", iResult.Errors));
+                }
+                teachers.Append(defaultTeacher);
+                teachers.Add(defaultTeacher);
+
                 foreach (var teacher in teachers)
                 {
                     await userManager.AddToRoleAsync(teacher, teacherRole);
                 }
+
 
                 var students = await GetStudentsAsync(courses, defaultPassword, 12);
                 foreach (var student in students)
@@ -217,7 +233,6 @@ namespace LMSG3.Data
 
             foreach (var student in students)
             {
-                //student.Course = courses.ElementAt(fake.Random.Int(0, courses.Count() - 1));  // TODO: remove
                 student.Course = fake.PickRandom(courses);
                 var iResult = await userManager.CreateAsync(student, password);
                 Console.WriteLine("ping");
@@ -231,34 +246,6 @@ namespace LMSG3.Data
 
             return students;
         }
-
-        // TODO: remove
-        //private static async Task<IEnumerable<Student>> GetStudentsAsync(string password, int amount)
-        //{
-        //    var students = new List<Student>();
-
-        //    for (int i = 0; i < amount; i++)
-        //    {
-        //        var e = new Student
-        //        {
-        //            FName = fake.Person.FirstName,
-        //            LName = fake.Person.LastName,
-        //            Email = fake.Person.Email,
-        //            UserName = fake.Person.Email
-        //        };
-
-        //        var iResult = await userManager.CreateAsync(e, password);
-        //        if (!iResult.Succeeded)
-        //        {
-        //            throw new Exception(String.Join("\n", iResult.Errors));
-        //        }
-
-        //        students.Add(e);
-        //    }
-        //    Console.WriteLine("ping");
-
-        //    return students;
-        //}
 
         private static IEnumerable<Course> GetCourses(int amount)
         {
@@ -328,8 +315,7 @@ namespace LMSG3.Data
                         StartDate = startDate,
                         EndDate = endDate,
                         Module = module,
-                        ActivityType = fake.PickRandom(types)
-                        //ActivityType = types.ElementAtOrDefault(fake.Random.Int(0, types.Count() - 1)) // TODO: remove                      
+                        ActivityType = fake.PickRandom(types)                  
                     };
                     activities.Add(e);
                     startDate = endDate;
