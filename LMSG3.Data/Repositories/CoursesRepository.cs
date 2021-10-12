@@ -30,6 +30,14 @@ namespace LMSG3.Data.Repositories
             return includemodules ?
                 await db.Courses.Include(c => c.Modules).ToListAsync() : await db.Courses.ToListAsync();
         }
+        public async Task<Course> GetCourse(int? id, bool includemodules)
+        {
+            var query = db.Courses.AsQueryable();
+            if (includemodules)
+                query = query.Include(c => c.Modules);
+
+            return await query.FirstOrDefaultAsync(c => c.Id == id);
+        }
 
 
         public void Add(Course course)

@@ -46,8 +46,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await uow.CourseRepository.GetCourse(id, true);
             if (course == null)
             {
                 return NotFound();
