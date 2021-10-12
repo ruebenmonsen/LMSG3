@@ -1,4 +1,6 @@
 ﻿@page
+@inject LMSG3.Web.Services.ICourseSelectListService CourseListservice
+@inject LMSG3.Web.Services.IUserRoleSelectListService RoleListservice
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -38,19 +40,21 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>User Role</label>
-                @Html.DropDownList("drpUserRole", new List<SelectListItem>{
-                                                                           new SelectListItem{ Text="Teacher", Value = "Teacher" },
-                                                                           new SelectListItem{ Text="Student", Value = "Student" } },
-                                                                           "Select User Role", new { @class = "form-control", @onchange = "FillCourse()" })
-                <span asp-validation-for="@Html.ValidationMessageFor(m => m.User, "", new { @class = "text-danger" })" class="text-danger"></span>
+                <label asp-for="Input.UserRole"></label>
+                <select asp-for="Input.UserRole" asp-items="@RoleListservice.GetUserRole()" class="form-control" id="RoleList">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+                <span asp-validation-for="Input.UserRole" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label>User Role</label>
-                @Html.DropDownList("drpCourses", new List<SelectListItem>{ViewBag.Courses})
+          
+            <div class="form-group" id="Student"  style="display: none">
+                <label asp-for="Input.CourseId"></label>
+                <select asp-for="Input.CourseId" asp-items="@await CourseListservice.GetCourseAsync()" class="form-control">
+                    <option selected="selected" value="">Please select</option>
+                </select>
 
-                <span asp-validation-for="@Html.ValidationMessageFor(m => m.User, "", new { @class = "text-danger" })" class="text-danger"></span>
+                @*<span asp-validation-for="Input.CourseId" class="text-danger"></span>*@
             </div>
 
             <button type="submit" class="btn btn-primary">Register</button>
@@ -61,9 +65,14 @@
 @section Scripts {
 
     <script>
-        function FillCourse() {
-
-                              }
+        $(function () {
+            $('#RoleList').change(function () {
+                if ($('#RoleList').find(":selected").text()=="Student")
+                  $('#Student').show();
+                else
+                  $('#Student').hide();
+            });
+        });
     </script>
     <partial name="_ValidationScriptsPartial" />
 

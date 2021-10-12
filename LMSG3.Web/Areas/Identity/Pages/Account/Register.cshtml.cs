@@ -19,14 +19,14 @@ using LMSG3.Data;
 
 namespace LMSG3.Web.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles = "Teacher")]
+    //  [Authorize(Roles = "Teacher")]
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -63,6 +63,14 @@ namespace LMSG3.Web.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+         
+            [Display(Name = "Course")]
+            public int? CourseId { get; set; }
+
+            [Required]
+            [Display(Name = "User Role")]
+            public string UserRole { get; set; }
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -87,20 +95,39 @@ namespace LMSG3.Web.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser 
-                { 
-                    FName = Input.FName, 
-                    LName = Input.LName , 
-                    UserName = Input.Email, 
-                    Email = Input.Email 
-                };
+            { 
+                var Role = Input.UserRole;
+                var user= new ApplicationUser();
+                if (Role == "Teacher")
+                {
+                    user = new ApplicationUser
+                    {
+                        FName = Input.FName,
+                        LName = Input.LName,
+                        UserName = Input.Email,
+                        Email = Input.Email
 
-                var result = await _userManager.CreateAsync(user, "BytMig123!");
-                var addToRoleResult = await _userManager.AddToRoleAsync(user, "Student");
+                    };
+                }
+                else if(Role == "Student")
+                {
+                    user = new Student
+                    {
+                        FName = Input.FName,
+                        LName = Input.LName,
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                        CourseId= (int)Input.CourseId
+                    };
+                }
+       
+                var result = await _userManager.CreateAsync(user, Input.Password);
+                var addToRoleResult = await _userManager.AddToRoleAsync(user, Role);
+
 
                 if (result.Succeeded && addToRoleResult.Succeeded)
                 {
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

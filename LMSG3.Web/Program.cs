@@ -22,9 +22,18 @@ namespace LMSG3.Web
             {
                 var services = scope.ServiceProvider;
 
+                var context = services.GetRequiredService<ApplicationDbContext>();
+
+                //context.Database.EnsureDeleted();
+                //context.Database.Migrate();
+
+                //dotnet user-secrets set "AdminPW" "BytMig123!"
+                var config = services.GetRequiredService<IConfiguration>();
+                var adminPW = config["AdminPW"];
+
                 try
                 {
-                    SeedData.InitAsync(services).Wait();
+                    SeedData.InitAsync(context, services, adminPW).Wait();
                 }
                 catch (Exception e)
                 {
