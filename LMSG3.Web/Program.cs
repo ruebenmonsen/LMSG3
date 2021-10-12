@@ -21,21 +21,17 @@ namespace LMSG3.Web
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                //context.Database.EnsureDeleted();
-                //context.Database.Migrate();
-                var config = services.GetRequiredService<IConfiguration>();
-                var adminPW = config["AdminPW"];
 
                 try
                 {
-                    SeedData.InitAsync(context, services, adminPW).Wait();
+                    SeedData.InitAsync(services).Wait();
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-
-                    throw;
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(e.Message, "Seed Fail");
                 }
+
             }
 
             host.Run();
