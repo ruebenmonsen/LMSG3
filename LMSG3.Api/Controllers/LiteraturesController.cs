@@ -55,16 +55,16 @@ namespace LMSG3.Api.Controllers
 
         //[HttpGet("{title}")]
         [HttpGet("GetByTitle")]
-        public async Task<ActionResult<IEnumerable<Literature>>> GetLiterature(string searchStr)
+        public async Task<ActionResult<IEnumerable<Literature>>> GetLiterature(string searchStr, bool includeAllInfo)
         {
-            var literature = await uow.LiteratureRepository.FindAsync(searchStr);
+            var literature = await uow.LiteratureRepository.FindAsync(searchStr, includeAllInfo);
 
             if (literature == null)
             {
                 return NotFound();
             }
 
-            return literature.ToList();
+            return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literature));
         }
 
         // PUT: api/Literatures/5

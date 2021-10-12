@@ -44,11 +44,15 @@ namespace LMSG3.Data.Repositories
 
         }
 
-        public async Task<IEnumerable<LiteratureAuthor>> FindAsync(string searchStr)
+        public async Task<IEnumerable<LiteratureAuthor>> FindAsync(string searchStr, bool includeAllInfo)
         {
             var author = await _context.LiteratureAuthors.AsQueryable().ToListAsync();
-           
-            return author.Where(a => a.FirstName.ToLower().Contains(searchStr)).ToList();
+            if (includeAllInfo)
+            {
+                //author = author.Include(a => a.Literatures);
+            }
+
+            return  author.Where(a => a.FullName.ToLower().Contains(searchStr));
         }
         public void Add(LiteratureAuthor literatureAuthor)
         {
