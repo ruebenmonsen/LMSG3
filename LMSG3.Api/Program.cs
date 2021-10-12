@@ -23,7 +23,7 @@ namespace LMSG3.Api
 
                 try
                 {
-                    SeedData.InitAsync(services).Wait();
+                   // SeedData.InitAsync(services).Wait();
                 }
                 catch (Exception e)
                 {

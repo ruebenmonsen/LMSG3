@@ -55,7 +55,7 @@ namespace LMSG3.Api.Controllers
 
         //[HttpGet("{title}")]
         [HttpGet("GetByTitle")]
-        public async Task<ActionResult<Literature>> SearchLiterature(string searchStr)
+        public async Task<ActionResult<IEnumerable<Literature>>> GetLiterature(string searchStr)
         {
             var literature = await uow.LiteratureRepository.FindAsync(searchStr);
 
@@ -64,7 +64,7 @@ namespace LMSG3.Api.Controllers
                 return NotFound();
             }
 
-            return literature;
+            return literature.ToList();
         }
 
         // PUT: api/Literatures/5

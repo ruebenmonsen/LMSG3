@@ -275,7 +275,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LiteratureAuthor");
+                    b.ToTable("LiteratureAuthors");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureLevel", b =>
