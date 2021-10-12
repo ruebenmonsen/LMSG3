@@ -37,7 +37,6 @@ namespace LMSG3.Data
 
 
                 // MVC
-
                 var defaultPassword = "Abc123!";
                 var teacherRole = "Teacher";
                 var studentRole = "Student";
@@ -77,10 +76,26 @@ namespace LMSG3.Data
 
                 // MVC : Users
                 var teachers = await GetTeachersAsync(defaultPassword, 2);
+
+                var defaultTeacher = new Teacher 
+                { 
+                    FName = "David",
+                    LName = "Nokto",
+                    Email = "d@lexi.com",
+                    UserName = "d@lexi.com"
+                };
+                var iResult = await userManager.CreateAsync(defaultTeacher, defaultPassword);
+                if (!iResult.Succeeded)
+                {
+                    throw new Exception(String.Join("\n", iResult.Errors));
+                }
+                teachers.Append(defaultTeacher);
+
                 foreach (var teacher in teachers)
                 {
                     await userManager.AddToRoleAsync(teacher, teacherRole);
                 }
+
 
                 var students = await GetStudentsAsync(courses, defaultPassword, 12);
                 foreach (var student in students)
