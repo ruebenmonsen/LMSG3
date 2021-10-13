@@ -9,6 +9,7 @@ namespace LMSG3.Core.Models.Dtos
         public string LastName { get; set; }
         public string FullName => $"{FirstName} {LastName}";
         public DateTime DateOfBirth { get; set; }
+
         public int AuthorAge => DateTime.Now.Year - DateOfBirth.Year;
 
         // NAV
