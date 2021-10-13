@@ -53,16 +53,16 @@ namespace LMSG3.Api.Controllers
         }
 
         [HttpGet("GetByName")]
-        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthor(string searchStr)
+        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthor(string searchStr, bool includeAllInfo)
         {
-            var author = await uow.LiteratureAuthorRepository.FindAsync(searchStr.ToLower());
+            var author = await uow.LiteratureAuthorRepository.FindAsync(searchStr.ToLower(), includeAllInfo);
 
             if (author == null)
             {
                 return NotFound();
             }
 
-            return author.ToList();
+            return Ok(mapper.Map<IEnumerable<LiteratureAuthorDto>>(author));
         }
 
         // PUT: api/LiteratureAuthors/5

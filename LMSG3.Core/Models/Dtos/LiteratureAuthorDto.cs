@@ -10,6 +10,8 @@ namespace LMSG3.Core.Models.Dtos
         public string FullName => $"{FirstName} {LastName}";
         public DateTime DateOfBirth { get; set; }
 
+        public int AuthorAge => DateTime.Now.Year - DateOfBirth.Year;
+
         // NAV
         public ICollection<LiteratureDto> Literatures { get; set; }
     }

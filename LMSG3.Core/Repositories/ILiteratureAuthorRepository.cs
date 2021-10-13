@@ -11,7 +11,7 @@ namespace LMSG3.Core.Repositories
     {
         void Add(LiteratureAuthor literatureAuthor);
         Task<IEnumerable<LiteratureAuthor>> GetAsync(bool includeAllInfo); // bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
-        Task<IEnumerable<LiteratureAuthor>> FindAsync(string searchStr);
+        Task<IEnumerable<LiteratureAuthor>> FindAsync(string searchStr, bool includeAllInfo);
         Task<LiteratureAuthor> GetAsync(int id, bool includeAllInfo);
         void Update(LiteratureAuthor literature);
         void Remove(LiteratureAuthor literature);
