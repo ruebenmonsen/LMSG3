@@ -21,7 +21,8 @@ namespace LMSG3.Data.Repositories
 
         public async Task<IEnumerable<Course>> GetAllCourses()
         {
-            return await db.Courses.ToListAsync();
+            var course= await db.Courses.ToListAsync();
+            return course;
         }
 
 

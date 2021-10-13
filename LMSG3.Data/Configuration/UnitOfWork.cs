@@ -30,7 +30,10 @@ namespace LMSG3.Data.Configuration
             _logger = loggerFactory.CreateLogger("logs");
 
             LiteratureRepository = new LitertureRepository(context, _logger);
-        }
+            CourseRepository = new CourseRepository(context);
+
+
+    }
 
         public async Task CompleteAsync()
         {
