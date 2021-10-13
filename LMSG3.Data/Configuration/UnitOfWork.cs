@@ -18,6 +18,8 @@ namespace LMSG3.Data.Configuration
 
         public ILiteratureRepository LiteratureRepository { get; private set; }
 
+        public ICourseRepository CourseRepository { get; }
+
         public ILiteratureAuthorRepository LiteratureAuthorRepository { get; private set; }
 
         
@@ -28,7 +30,6 @@ namespace LMSG3.Data.Configuration
             _logger = loggerFactory.CreateLogger("logs");
 
             LiteratureRepository = new LitertureRepository(context, _logger);
-            LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger);
         }
 
         public async Task CompleteAsync()

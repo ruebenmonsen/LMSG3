@@ -6,6 +6,7 @@ namespace LMSG3.Core.Configuration
     public interface IUnitOfWork
     {
         ILiteratureRepository LiteratureRepository { get; }
+        ICourseRepository CourseRepository { get; }
         ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
         Task CompleteAsync();
         void Dispose();
