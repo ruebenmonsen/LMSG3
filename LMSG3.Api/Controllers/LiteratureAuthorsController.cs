@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data;
-using LMSG3.Core.Configuration;
 using AutoMapper;
 using LMSG3.Core.Models.Dtos;
+using LMSG3.Api.Configuration;
 
 namespace LMSG3.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/literatureAuthors")]
     public class LiteratureAuthorsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

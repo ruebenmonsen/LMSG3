@@ -1,13 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LMSG3.Api.Repositories;
+using LMSG3.Api.Services;
+using LMSG3.Api.Services.Repositories;
+using LMSG3.Data;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LMSG3.Core.Configuration;
-using LMSG3.Core.Repositories;
 
 
-namespace LMSG3.Data.Configuration
+namespace LMSG3.Api.Configuration
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
@@ -16,9 +18,9 @@ namespace LMSG3.Data.Configuration
 
         
 
-        //public ILiteratureRepository LiteratureRepository { get; private set; }
+        public Services.Repositories.ILiteratureRepository LiteratureRepository { get; private set; }
 
-        //public ILiteratureAuthorRepository LiteratureAuthorRepository { get; private set; }
+        public ILiteratureAuthorRepository LiteratureAuthorRepository { get; private set; }
 
         
 
@@ -27,8 +29,8 @@ namespace LMSG3.Data.Configuration
             _context = context;
             _logger = loggerFactory.CreateLogger("logs");
 
-           // LiteratureRepository = new LitertureRepository(context, _logger);
-            //LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger);
+            LiteratureRepository = new LitertureRepository(context, _logger);
+            LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger);
         }
 
         public async Task CompleteAsync()

@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LMSG3.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LMSG3.Core.Repositories;
 using System.Linq;
+using LMSG3.Data;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Api.ResourceParameters;
 
-namespace LMSG3.Data.Repositories
+namespace LMSG3.Api.Services.Repositories
 {
     public class LitertureRepository : ILiteratureRepository
     {
@@ -50,21 +51,38 @@ namespace LMSG3.Data.Repositories
         }
 
 
-        public async Task<IEnumerable<Literature>> FindAsync(string searchStr, bool includeAllInfo)
+        public async Task<IEnumerable<Literature>> FindAsync(LiteraturesResourceParameters literaturesResourceParameters)
         {
+            if (literaturesResourceParameters == null)
+            {
+                return await _context.Literatures.AsQueryable().ToListAsync();
+            }
+
+            if (string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
+            {
+                return await _context.Literatures.AsQueryable().ToListAsync();
+            }
+
             var literature =  _context.Literatures.AsQueryable();
-            if (includeAllInfo)
+            if (literaturesResourceParameters.includeAllInfo)
             {
                 literature = literature.Include(e => e.Authors)
                  .Include(e => e.Subject)
                  .Include(e => e.LiteratureType)
                  .Include(e => e.LiteratureLevel);
             }
-            return await  literature.Where(l => l.Title.ToLower().Contains(searchStr.ToLower())).ToListAsync();
+            return await  literature.Where(l => l.Title.ToLower().Contains(literaturesResourceParameters.titleStr.ToLower())).ToListAsync();
 
 
         }
+
+        private IEnumerable<Literature> GetAuthors()
+        {
+            throw new NotImplementedException();
+        }
+
         
+
         public Task<bool> AnyAsync(int id)
         {
             throw new NotImplementedException();
@@ -88,5 +106,7 @@ namespace LMSG3.Data.Repositories
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

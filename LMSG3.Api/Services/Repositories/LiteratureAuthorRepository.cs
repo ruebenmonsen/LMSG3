@@ -1,5 +1,6 @@
 ﻿using LMSG3.Core.Models.Entities;
-using LMSG3.Core.Repositories;
+using LMSG3.Api.Services;
+using LMSG3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,8 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace LMSG3.Data.Repositories
+using LMSG3.Api.Services.Repositories;
+namespace LMSG3.Api.Repositories
 {
     public class LiteratureAuthorRepository : ILiteratureAuthorRepository
     {
