@@ -42,7 +42,7 @@ namespace LMSG3.Web.Controllers
                 StartDate=s.Course.StartDate
             }).FirstOrDefaultAsync();
 
-            var model = new StudentÍndexViewModel {
+            var model = new StudentIndexViewModel {
                 CourseInfo = courseInfo
             };
             return View(model);

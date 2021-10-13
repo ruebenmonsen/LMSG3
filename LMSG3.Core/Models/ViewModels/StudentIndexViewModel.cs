@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.ViewModels
 {
-    public class StudentÍndexViewModel
+    public class StudentIndexViewModel
     {
         public CourseInfoViewModel CourseInfo { get; set; }
     }
