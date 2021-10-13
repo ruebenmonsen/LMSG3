@@ -12,7 +12,6 @@ namespace LMSG3.Core.Models.Entities
         
         public string FName { get; set; }
         public string LName { get; set; }
-
         public ICollection<Document> Documents  { get; set; }
     }
 }

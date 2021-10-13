@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using LMSG3.Core.Configuration;
+using LMSG3.Data.Configuration;
 
 namespace LMSG3.Web
 {
@@ -47,6 +49,7 @@ namespace LMSG3.Web
 
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddControllersWithViews(opt => 
             //{
             //    var policy = new AuthorizationPolicyBuilder()
@@ -57,9 +60,9 @@ namespace LMSG3.Web
             //    opt.Filters.Add(new AuthorizeFilter(policy));
 
             //});
-            services.AddMvc().AddRazorPagesOptions(options => {
-                options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.AddMvc().AddRazorPagesOptions(options => {
+            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
+            //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,7 +91,7 @@ namespace LMSG3.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Courses}/{action=Index}/{id?}");
+                    pattern: "{controller=Users}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

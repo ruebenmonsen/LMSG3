@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using LMSG3.Core.Configuration;
 using LMSG3.Core.Repositories;
 using LMSG3.Data.Repositories;
+using Microsoft.AspNet.Identity;
+using LMSG3.Core.Models.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSG3.Data.Configuration
 {
@@ -25,7 +28,7 @@ namespace LMSG3.Data.Configuration
             _logger = loggerFactory.CreateLogger("logs");
 
             LiteratureRepository = new LitertureRepository(context, _logger);
-            UserRepository =new UserRepository(context);
+            UserRepository =new UserRepository( context);
         }
 
         public async Task CompleteAsync()

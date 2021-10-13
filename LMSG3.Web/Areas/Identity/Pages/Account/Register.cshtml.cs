@@ -19,7 +19,7 @@ using LMSG3.Data;
 
 namespace LMSG3.Web.Areas.Identity.Pages.Account
 {
-    //  [Authorize(Roles = "Teacher")]
+    // [Authorize(Roles = "Teacher")]
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
@@ -148,7 +148,8 @@ namespace LMSG3.Web.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                     //   return LocalRedirect(returnUrl);
+                        return RedirectToAction(nameof(Index),"Users");
                     }
                 }
                 foreach (var error in result.Errors)

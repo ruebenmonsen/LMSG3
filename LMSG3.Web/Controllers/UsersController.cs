@@ -1,5 +1,7 @@
 ﻿using LMSG3.Core.Configuration;
 using LMSG3.Core.Models.Entities;
+using LMSG3.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +16,20 @@ namespace LMSG3.Web.Controllers
     {
         
         private readonly IUnitOfWork uow;
+        private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> userManager;
-
-        public UsersController(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
+        public UsersController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IUnitOfWork unitOfWork)
         {
-    
+            db = context;
             uow = unitOfWork;
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
+      //  [Authorize(Roles = "Teacher")]
         // GET: UsersController
         public async Task<ActionResult> Index()
         {
             
-            return View(await uow.UserRepository.GetUsersAsync());
+            return View(await uow.UserRepository.GetUsersAsync( userManager));
            
         }
 
