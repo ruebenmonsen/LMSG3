@@ -20,27 +20,28 @@ namespace LMSG3.Data.Repositories
             this.db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-        public async Task<UserDto> GetUsersAsync(UserManager<ApplicationUser> userManager)
+        public async Task<IEnumerable<UserDto>> GetUsersAsync(UserManager<ApplicationUser> userManager)
         {
-
+            var usersDto = new List<UserDto>();
             var users = userManager.Users.OrderBy(u=>u.FName);
-            var roles = new List<string>();
-            foreach (var user in users)
+
+            foreach (var user in users )
             {
                 string str = "";
                 var role = await userManager.GetRolesAsync(user);
                 
                     str = (str == "") ? role[0].ToString() : str + " - " + role[0].ToString();
-                
-                roles.Add(str);
-            }
-            var model = new UserDto()
-            {
-                users = users.ToList(),
-                roles = roles.ToList()
-            };
 
-            return model;
+                var userDto = new UserDto()
+                {
+                    FullName = user.FName + " " + user.LName,
+                    Email = user.Email,
+                    Role = str
+                };
+                usersDto.Add(userDto);
+            }
+        
+            return usersDto;
 
         }
     }

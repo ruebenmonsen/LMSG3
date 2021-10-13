@@ -11,6 +11,6 @@ namespace LMSG3.Core.Repositories
 {
     public interface IUserRepository
     {
-        Task<UserDto> GetUsersAsync(UserManager<ApplicationUser> userManager);
+        Task<IEnumerable<UserDto>> GetUsersAsync(UserManager<ApplicationUser> userManager);
     }
 }

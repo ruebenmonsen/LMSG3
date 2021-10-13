@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.Dtos
 {
-    public class UserDto
+    public class UserDto : IdentityUser
     {
-            public IList<ApplicationUser> users { get; set; }
-            public IList<string> roles { get; set; }
+        public string FName { get; set; }
+        public string LName { get; set; }
+        public string FullName { get; set; }
+        public ICollection<Entities.Document> Documents { get; set; }
+        public string Role { get; set; }
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@model LMSG3.Core.Models.Dtos.UserDto
+﻿@model IEnumerable<LMSG3.Core.Models.Dtos.UserDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,20 +25,17 @@
         </tr>
     </thead>
     <tbody>
-        @{
-            int i = 0;
-        }
-        @foreach (var item in Model.users)
+        @foreach (var item in Model)
         { 
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FName) &nbsp; @Html.DisplayFor(modelItem => item.LName)
+                    @Html.DisplayFor(modelItem => item.FullName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.roles[i])
+                    @Html.DisplayFor(modelItem => item.Role)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -46,7 +43,6 @@
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
-            i++;
         }
     </tbody>
 </table>
