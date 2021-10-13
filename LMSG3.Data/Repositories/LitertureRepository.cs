@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LMSG3.Core.Repositories;
+using System.Linq;
 
 namespace LMSG3.Data.Repositories
 {
@@ -49,11 +50,11 @@ namespace LMSG3.Data.Repositories
         }
 
 
-        public async Task<Literature> FindAsync(string searchStr)
+        public async Task<IEnumerable<Literature>> FindAsync(string searchStr)
         {
-            var literature =  _context.Literatures.AsQueryable();
+            var literature = await _context.Literatures.AsQueryable().ToListAsync();
             
-            return await _context.Literatures.FirstOrDefaultAsync(e => e.Title.Contains(searchStr));
+            return  literature.Where(l => l.Title.ToLower().Contains(searchStr.ToLower()));
 
 
         }

@@ -6,24 +6,37 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
+
 using LMSG3.Data;
+using LMSG3.Core.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSG3.Web.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork uow;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context, IUnitOfWork uow)
         {
             _context = context;
+            this.uow = uow;
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         // GET: Courses
+        [Authorize(Roles ="Teacher")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            var model = await uow.CourseRepository.GetAllCourses();
+            return View(model);
+
         }
+
+       
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -33,8 +46,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await uow.CourseRepository.GetCourse(id, true);
             if (course == null)
             {
                 return NotFound();
