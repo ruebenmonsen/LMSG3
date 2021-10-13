@@ -7,7 +7,8 @@ namespace LMSG3.Core.Configuration
     public interface IUnitOfWork
     {
         ILiteratureRepository LiteratureRepository { get; }
-        IRepository<Course> CourseRepository { get; }
+        ICourseRepository CourseRepository { get; }
+        ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
         IRepository<Module> ModuleRepository { get; }
         IRepository<Activity> ActivityRepository {  get; }
         Task CompleteAsync();
