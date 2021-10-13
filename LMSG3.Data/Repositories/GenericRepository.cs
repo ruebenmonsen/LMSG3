@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Data.Repositories
 {
-    public abstract class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         internal ApplicationDbContext context;
         internal DbSet<TEntity> dbSet;
@@ -19,27 +19,27 @@ namespace LMSG3.Data.Repositories
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.dbSet = context.Set<TEntity>();
         }
-        public void Add(TEntity entity)
+        public virtual void Add(TEntity entity)
         {
             dbSet.Add(entity);
         }
 
-        public async Task<TEntity> FindAsync(int? id)
+        public virtual async Task<TEntity> FindAsync(int? id)
         {
             return await dbSet.FindAsync(id);
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter)
+        public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter)
         {
             return await dbSet.AsQueryable().Where(filter).ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await dbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter,
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter,
                                                             Func<IQueryable<TEntity>,
                                                             IOrderedQueryable<TEntity>> orderBy = null)
         {
@@ -55,12 +55,12 @@ namespace LMSG3.Data.Repositories
                 return await query.ToListAsync();
         }
         
-        public async virtual Task<TEntity> GetAsync(int? id)
+        public virtual async Task<TEntity> GetAsync(int? id)
         {
             return await dbSet.FindAsync(id);
         }
 
-        public void Remove(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
             if (context.Entry(entity).State == EntityState.Detached)
                 dbSet.Attach(entity);
@@ -68,13 +68,13 @@ namespace LMSG3.Data.Repositories
                 dbSet.Remove(entity);
         }
 
-        public void Remove(int id)
+        public virtual void Remove(int id)
         {
             TEntity entity = dbSet.Find(id);
             dbSet.Remove(entity);
         }
 
-        public void Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             dbSet.Update(entity);
         }
