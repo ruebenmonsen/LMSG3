@@ -11,7 +11,7 @@ namespace LMSG3.Api.ResourceParameters
         public string titleStr { get; set; }
         public string subjectStr { get; set; }
         public string discriptionStr { get; set; }
-        public bool includeAllInfo { get; internal set; }
+        public bool includeAllInfo { get; set; }
         public bool includeAuthor { get; set; }
         public bool includeSubject { get; set; }
         public bool includeLevel { get; set; }

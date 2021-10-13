@@ -53,35 +53,37 @@ namespace LMSG3.Api.Services.Repositories
 
         public async Task<IEnumerable<Literature>> FindAsync(LiteraturesResourceParameters literaturesResourceParameters)
         {
+            var literature = _context.Literatures.AsQueryable();
             if (literaturesResourceParameters == null)
             {
-                return await _context.Literatures.AsQueryable().ToListAsync();
+                return await literature.ToListAsync();
             }
 
-            if (string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
+            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
             {
-                return await _context.Literatures.AsQueryable().ToListAsync();
+                //return await _context.Literatures.AsQueryable().ToListAsync();
+                // var literature = GetLiteratures(literaturesResourceParameters);
+                literature = literature.Where(l => l.Title.ToLower().Contains(literaturesResourceParameters.titleStr.ToLower()));
             }
 
-            var literature =  _context.Literatures.AsQueryable();
             if (literaturesResourceParameters.includeAllInfo)
             {
                 literature = literature.Include(e => e.Authors)
-                 .Include(e => e.Subject)
-                 .Include(e => e.LiteratureType)
-                 .Include(e => e.LiteratureLevel);
+                                .Include(e => e.Subject)
+                                .Include(e => e.LiteratureType)
+                                .Include(e => e.LiteratureLevel);
             }
-            return await  literature.Where(l => l.Title.ToLower().Contains(literaturesResourceParameters.titleStr.ToLower())).ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.subjectStr))
+            {
+                literature = literature.Where(l => l.Subject.Name.Contains(literaturesResourceParameters.subjectStr.ToLower())).Include(e => e.Subject);
+            }
+
+            return await literature.ToListAsync();
 
 
         }
 
-        private IEnumerable<Literature> GetAuthors()
-        {
-            throw new NotImplementedException();
-        }
-
-        
 
         public Task<bool> AnyAsync(int id)
         {

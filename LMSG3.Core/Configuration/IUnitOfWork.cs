@@ -1,5 +1,4 @@
-﻿using LMSG3.Core.Repositories;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace LMSG3.Core.Configuration
 {
