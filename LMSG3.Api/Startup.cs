@@ -1,6 +1,5 @@
 using LMSG3.Core.Configuration;
 using LMSG3.Data;
-using LMSG3.Data;
 using LMSG3.Data.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

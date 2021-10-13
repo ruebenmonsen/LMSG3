@@ -16,9 +16,10 @@ namespace LMSG3.Data.Configuration
         private readonly ILogger logger;
 
         private ILiteratureRepository literatureRepository;
-        private IRepository<Course> courseRepository;
+        private ICourseRepository courseRepository;
         private IRepository<Module> moduleRepository;
         private IRepository<Activity> activityRepository;
+        private ILiteratureAuthorRepository literatureAuthorRepository;
 
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
@@ -35,7 +36,17 @@ namespace LMSG3.Data.Configuration
                 return literatureRepository;
             }
         }
-        public IRepository<Course> CourseRepository
+        public ILiteratureAuthorRepository LiteratureAuthorRepository
+        {
+            get
+            {
+                if (this.LiteratureAuthorRepository == null)
+                    this.literatureAuthorRepository = new LiteratureAuthorRepository(context, logger);
+
+                return literatureAuthorRepository;
+            }
+        }
+        public ICourseRepository CourseRepository
         {
             get
             {

@@ -48,17 +48,10 @@ namespace LMSG3.Data.Repositories
 
         public async Task<IEnumerable<Literature>> FindAsync(string searchStr)
         {
-            var literature = await _context.Literatures.AsQueryable().ToListAsync();
-            
-            return  literature.Where(l => l.Title.ToLower().Contains(searchStr.ToLower()));
+            var literature = await context.Literatures.AsQueryable().ToListAsync();
 
+            return literature.Where(l => l.Title.ToLower().Contains(searchStr.ToLower()));
 
-        }
-        
-        public Task<bool> AnyAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         }
     }
