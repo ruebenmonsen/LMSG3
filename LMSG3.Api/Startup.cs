@@ -45,7 +45,7 @@ namespace LMSG3.Api
                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddAutoMapper(typeof(Startup));
-            services.AddAutoMapper(typeof(MapperProfile));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//typeof(MapperProfile)
 
 
         }

@@ -1,4 +1,5 @@
-﻿using LMSG3.Core.Models.Entities;
+﻿using LMSG3.Api.ResourceParameters;
+using LMSG3.Core.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace LMSG3.Api.Services.Repositories
     {
         void Add(LiteratureAuthor literatureAuthor);
         Task<IEnumerable<LiteratureAuthor>> GetAsync(bool includeAllInfo); // bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
-        Task<IEnumerable<LiteratureAuthor>> FindAsync(string searchStr, bool includeAllInfo);
+        Task<IEnumerable<LiteratureAuthor>> FindAsync(AuthorResourceParameters authorResourceParameters);
         Task<LiteratureAuthor> GetAsync(int id, bool includeAllInfo);
         void Update(LiteratureAuthor literature);
         void Remove(LiteratureAuthor literature);

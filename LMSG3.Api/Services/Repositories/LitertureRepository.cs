@@ -69,9 +69,9 @@ namespace LMSG3.Api.Services.Repositories
             if (literaturesResourceParameters.includeAllInfo)
             {
                 literature = literature.Include(e => e.Authors)
-                                .Include(e => e.Subject)
-                                .Include(e => e.LiteratureType)
-                                .Include(e => e.LiteratureLevel);
+                            .Include(e => e.Subject)
+                            .Include(e => e.LiteratureType)
+                            .Include(e => e.LiteratureLevel);
             }
 
             if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.subjectStr))
@@ -95,11 +95,13 @@ namespace LMSG3.Api.Services.Repositories
 
         public void Add(Literature literature)
         {
-            throw new NotImplementedException();
+            _context.Literatures.Add(literature);
+           
+            
         }
 
-        
-        public void Remove(Literature literature)
+
+        public bool Remove()
         {
             throw new NotImplementedException();
         }
@@ -109,6 +111,14 @@ namespace LMSG3.Api.Services.Repositories
             throw new NotImplementedException();
         }
 
-        
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
+
+        public void Remove(Literature literature)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

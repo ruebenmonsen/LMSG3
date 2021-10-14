@@ -31,16 +31,7 @@ namespace LMSG3.Api.Controllers
             this.mapper = mapper;
         }
 
-        // GET: api/Literatures
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures(bool includeAllInfo) //bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
-        //{
-        //    var literatures = await uow.LiteratureRepository.GetAsync(includeAllInfo);
-
-        //    return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literatures)); //await _context.Literatures.ToListAsync();
-        //}
-
-        // GET: api/Literatures/5
+        
         //[HttpGet("{id}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfos)
@@ -104,13 +95,16 @@ namespace LMSG3.Api.Controllers
         // POST: api/Literatures
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Literature>> PostLiterature(Literature literature)
+        public ActionResult<Literature> CreateLiterature(Literature literature)
         {
-            _context.Literatures.Add(literature);
-            await _context.SaveChangesAsync();
-
+            var authorEntity = mapper.Map<Literature>(literature);
+            uow.LiteratureRepository.Add(literature);
+            uow.LiteratureRepository.Save();
+          
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
         }
+
+       
 
         // DELETE: api/Literatures/5
         [HttpDelete("{id}")]

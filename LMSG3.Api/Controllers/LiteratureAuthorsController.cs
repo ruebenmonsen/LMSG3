@@ -10,11 +10,12 @@ using LMSG3.Data;
 using AutoMapper;
 using LMSG3.Core.Models.Dtos;
 using LMSG3.Api.Configuration;
+using LMSG3.Api.ResourceParameters;
 
 namespace LMSG3.Api.Controllers
 {
-    [ApiController]
     [Route("api/literatureAuthors")]
+    [ApiController]
     public class LiteratureAuthorsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -28,15 +29,6 @@ namespace LMSG3.Api.Controllers
             this.mapper = mapper;
         }
 
-        // GET: api/LiteratureAuthors 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthors(bool includeAllInfo)
-        {
-            var authors = await uow.LiteratureAuthorRepository.GetAsync(includeAllInfo);
-            return Ok(mapper.Map<IEnumerable<LiteratureAuthorDto>>(authors));
-            //return Ok(authors);
-            //return await _context.LiteratureAuthors.ToListAsync();
-        }
 
         // GET: api/LiteratureAuthors/5
         [HttpGet("{id}")]
@@ -52,10 +44,11 @@ namespace LMSG3.Api.Controllers
             return Ok(mapper.Map<LiteratureAuthorDto>(literatureAuthor));
         }
 
-        [HttpGet("GetByName")]
-        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthor(string searchStr, bool includeAllInfo)
+        [HttpGet()]
+        [HttpHead]   
+        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthors([FromQuery] AuthorResourceParameters authorResourceParameters)
         {
-            var author = await uow.LiteratureAuthorRepository.FindAsync(searchStr.ToLower(), includeAllInfo);
+            var author = await uow.LiteratureAuthorRepository.FindAsync(authorResourceParameters);
 
             if (author == null)
             {
@@ -64,6 +57,8 @@ namespace LMSG3.Api.Controllers
 
             return Ok(mapper.Map<IEnumerable<LiteratureAuthorDto>>(author));
         }
+
+        
 
         // PUT: api/LiteratureAuthors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

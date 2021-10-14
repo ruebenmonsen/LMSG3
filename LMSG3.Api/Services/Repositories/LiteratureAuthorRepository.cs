@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LMSG3.Api.Services.Repositories;
+using LMSG3.Api.ResourceParameters;
+
 namespace LMSG3.Api.Repositories
 {
     public class LiteratureAuthorRepository : ILiteratureAuthorRepository
@@ -45,15 +47,35 @@ namespace LMSG3.Api.Repositories
 
         }
 
-        public async Task<IEnumerable<LiteratureAuthor>> FindAsync(string searchStr, bool includeAllInfo)
+       
+        public async Task<IEnumerable<LiteratureAuthor>> FindAsync(AuthorResourceParameters authorResourceParameters)
         {
-            var author = await _context.LiteratureAuthors.AsQueryable().ToListAsync();
-            if (includeAllInfo)
-            {
-                //author = author.Include(a => a.Literatures);
-            }
+            var author =  _context.LiteratureAuthors.AsQueryable();
+            
 
-            return  author.Where(a => a.FullName.ToLower().Contains(searchStr));
+
+            if (authorResourceParameters == null)
+            {
+                return await author.ToListAsync();
+            }
+           
+            if (!string.IsNullOrWhiteSpace(authorResourceParameters.nameStr))
+            {
+                var searchParam = authorResourceParameters.nameStr.ToLower();
+                //return author.Where(a => a.FullName.ToLower().Contains(authorResourceParameters.nameStr.ToLower()));  // Todo: Trim()
+
+                if (authorResourceParameters.includeAllInfo)
+                {
+                    await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync();
+                    author = author.Include(a => a.Literatures);
+                }
+                return await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync(); ;
+
+            }
+           
+
+            return await author.ToListAsync();
+
         }
         public void Add(LiteratureAuthor literatureAuthor)
         {
