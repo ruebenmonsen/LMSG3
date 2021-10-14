@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMSG3.Core.Models.Dtos;
 using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace LMSG3.Data
             CreateMap<LiteratureLevel, LiteratureLevelDto>().ReverseMap();
             CreateMap<LiteratureType, LiteratureTypeDto>().ReverseMap();
             CreateMap<Subject, SubjectDto>().ReverseMap();
+
+            CreateMap<Course, CreateCourseViewModel>().ReverseMap();
         }
         
     }

@@ -11,6 +11,8 @@ using LMSG3.Data;
 using LMSG3.Core.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using LMSG3.Core.Models.ViewModels;
+using AutoMapper;
 
 namespace LMSG3.Web.Controllers
 {
@@ -19,12 +21,14 @@ namespace LMSG3.Web.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork uow;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMapper mapper;
 
-        public CoursesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context, IUnitOfWork uow)
+        public CoursesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context, IUnitOfWork uow, IMapper mapper)
         {
             _context = context;
             this.uow = uow;
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.mapper = mapper;
         }
 
         // GET: Courses
@@ -66,15 +70,23 @@ namespace LMSG3.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,Description")] Course course)
+        public async Task<IActionResult> Create(CreateCourseViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
+            //if (ModelState.IsValid)
+            //{
+            //    uow.CourseRepository.Add(course);
+            //    await uow.CompleteAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //return View(course);
+
+            var course = mapper.Map<Course>(vm);
+            uow.CourseRepository.Add(course);
+            await uow.CompleteAsync();
+
+            return RedirectToAction(nameof(Index));
+
+
         }
 
         // GET: Courses/Edit/5
@@ -109,8 +121,8 @@ namespace LMSG3.Web.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    uow.CourseRepository.Update(course);
+                    await uow.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
