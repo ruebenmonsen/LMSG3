@@ -12,7 +12,7 @@ namespace LMSG3.Data.Configuration
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly ApplicationDbContext context;
+        private ApplicationDbContext context;
         private readonly ILogger logger;
 
         private ILiteratureRepository literatureRepository;
@@ -30,7 +30,7 @@ namespace LMSG3.Data.Configuration
         {
             get
             {
-                if (this.LiteratureRepository == null)
+                if (this.literatureRepository == null)
                     this.literatureRepository = new LiteratureRepository(context, logger);
 
                 return literatureRepository;
@@ -40,7 +40,7 @@ namespace LMSG3.Data.Configuration
         {
             get
             {
-                if (this.LiteratureAuthorRepository == null)
+                if (this.literatureAuthorRepository == null)
                     this.literatureAuthorRepository = new LiteratureAuthorRepository(context, logger);
 
                 return literatureAuthorRepository;
@@ -50,7 +50,7 @@ namespace LMSG3.Data.Configuration
         {
             get
             {
-                if (this.CourseRepository == null)
+                if (this.courseRepository == null)
                     this.courseRepository = new CourseRepository(context, logger);
 
                 return courseRepository;
@@ -60,7 +60,7 @@ namespace LMSG3.Data.Configuration
         {
             get
             {
-                if (this.ModuleRepository == null)
+                if (this.moduleRepository == null)
                     this.moduleRepository = new ModuleRepository(context, logger);
 
                 return moduleRepository;
@@ -70,7 +70,7 @@ namespace LMSG3.Data.Configuration
         {
             get
             {
-                if (this.ActivityRepository == null)
+                if (this.activityRepository == null)
                     this.activityRepository = new ActivityRepository(context, logger);
 
                 return activityRepository;
