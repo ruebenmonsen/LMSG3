@@ -1,6 +1,6 @@
+using LMSG3.Api.Configuration;
 using LMSG3.Core.Configuration;
 using LMSG3.Data;
-using LMSG3.Data.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IUnitOfWork = LMSG3.Api.Configuration.IUnitOfWork;
 
 namespace LMSG3.Api
 {
@@ -44,7 +45,7 @@ namespace LMSG3.Api
                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddAutoMapper(typeof(Startup));
-            services.AddAutoMapper(typeof(MapperProfile));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//typeof(MapperProfile)
 
 
         }

@@ -14,9 +14,6 @@ namespace LMSG3.Core.Models.Entities
         // NAV
         public ICollection<Literature> Literatures {  get; set; }
 
-        public object ToList()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

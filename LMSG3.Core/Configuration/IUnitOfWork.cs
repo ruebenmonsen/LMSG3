@@ -6,13 +6,13 @@ namespace LMSG3.Core.Configuration
 {
     public interface IUnitOfWork
     {
-        ILiteratureRepository LiteratureRepository { get; }
-        ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
-        
+        //ILiteratureRepository LiteratureRepository { get; }
+        //ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
+
         ICourseRepository CourseRepository { get; }
         IRepository<Module> ModuleRepository { get; }
-        IRepository<Activity> ActivityRepository {  get; }
-        
+        IRepository<Activity> ActivityRepository { get; }
+
         Task CompleteAsync();
         void Dispose();
     }

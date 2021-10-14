@@ -6,15 +6,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
-using LMSG3.Data.Configuration;
 using LMSG3.Data;
-using LMSG3.Core.Configuration;
 using LMSG3.Core.Models.Dtos;
 using AutoMapper;
+using LMSG3.Api.ResourceParameters;
+using LMSG3.Api.Configuration;
+
 
 namespace LMSG3.Api.Controllers
 {
-    [Route("api/[controller]")]
+
+    [Route("api/literatures")]
     [ApiController]
     public class LiteraturesController : ControllerBase
     {
@@ -29,21 +31,12 @@ namespace LMSG3.Api.Controllers
             this.mapper = mapper;
         }
 
-        // GET: api/Literatures
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures(bool includeAllInfo) //bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
-        {
-            var literatures = await uow.LiteratureRepository.GetAsync(includeAllInfo);
 
-            return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literatures)); //await _context.Literatures.ToListAsync();
-        }
-
-        // GET: api/Literatures/5
         //[HttpGet("{id}")]
-        [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfo)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfos)
         {
-            var literature = await uow.LiteratureRepository.GetAsync(id, includeAllInfo);//await _context.Literatures.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetAsync(id, includeAllInfos);//await _context.Literatures.FindAsync(id);
 
             if (literature == null)
             {
@@ -53,23 +46,24 @@ namespace LMSG3.Api.Controllers
             return Ok(mapper.Map<LiteratureDto>(literature));
         }
 
-        //[HttpGet("{title}")]
-        [HttpGet("GetByTitle")]
-        public async Task<ActionResult<IEnumerable<Literature>>> GetLiterature(string searchStr)
+
+        [HttpGet()]
+        [HttpHead]    //authorsResourceParameters.
+        public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures([FromQuery] LiteraturesResourceParameters literatureResourceParameters)
         {
-            var literature = await uow.LiteratureRepository.FindAsync(searchStr);
+            var literature = await uow.LiteratureRepository.FindAsync(literatureResourceParameters);
 
             if (literature == null)
             {
                 return NotFound();
             }
 
-            return literature.ToList();
+            return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literature));
         }
 
         // PUT: api/Literatures/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{Id}")]
         public async Task<IActionResult> PutLiterature(int id, Literature literature)
         {
             if (id != literature.Id)
@@ -101,13 +95,16 @@ namespace LMSG3.Api.Controllers
         // POST: api/Literatures
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Literature>> PostLiterature(Literature literature)
+        public ActionResult<Literature> CreateLiterature(Literature literature)
         {
-            _context.Literatures.Add(literature);
-            await _context.SaveChangesAsync();
+            var authorEntity = mapper.Map<Literature>(literature);
+            uow.LiteratureRepository.Add(literature);
+            uow.LiteratureRepository.Save();
 
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
         }
+
+
 
         // DELETE: api/Literatures/5
         [HttpDelete("{id}")]
