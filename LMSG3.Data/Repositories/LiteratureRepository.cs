@@ -9,33 +9,29 @@ using System.Linq;
 
 namespace LMSG3.Data.Repositories
 {
-    public class LitertureRepository : ILiteratureRepository
+    public class LiteratureRepository : GenericRepository<Literature>, ILiteratureRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public LitertureRepository(ApplicationDbContext context, ILogger logger)
+        public LiteratureRepository(ApplicationDbContext context, ILogger logger) : base(context, logger)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<Literature>> GetAsync(bool includeAllInfo) //bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
         {
 
-            return includeAllInfo ? await _context.Literatures
+            return includeAllInfo ? await context.Literatures
                 .Include(e => e.Authors)
                 .Include(e => e.Subject)
                 .Include(e => e.LiteratureType)
                 .Include(e => e.LiteratureLevel)
                 .ToListAsync() :
-                await _context.Literatures
+                await context.Literatures
                 .ToListAsync();
-           
         }
 
         public async Task<Literature> GetAsync(int id, bool includeAllInfo)
         {
 
-            var literature = _context.Literatures.AsQueryable();
+            var literature = context.Literatures.AsQueryable();
 
             if (includeAllInfo)
             {
@@ -63,30 +59,9 @@ namespace LMSG3.Data.Repositories
             return await  literature.Where(l => l.Title.ToLower().Contains(searchStr.ToLower())).ToListAsync();
 
 
-        }
-        
-        public Task<bool> AnyAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+            return literature.Where(l => l.Title.ToLower().Contains(searchStr.ToLower()));
 
 
-
-
-        public void Add(Literature literature)
-        {
-            throw new NotImplementedException();
-        }
-
-        
-        public void Remove(Literature literature)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Literature literature)
-        {
-            throw new NotImplementedException();
         }
     }
 }

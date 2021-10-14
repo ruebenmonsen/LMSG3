@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Repositories
 {
-    public interface ILiteratureRepository 
+    public interface ILiteratureRepository : IRepository<Literature>
     {
-        void Add(Literature literature);
         Task<IEnumerable<Literature>> GetAsync(bool includeAllInfo); // bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
         Task<IEnumerable<Literature>> FindAsync(string searchStr, bool includeAllInfo);
         Task<Literature> GetAsync(int id, bool includeAllInfo);

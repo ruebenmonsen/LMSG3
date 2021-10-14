@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,19 @@ namespace LMSG3.Web.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
         public IActionResult Index()
         {
-            return View();
+
+            if(User.IsInRole("Student"))
+            {
+                return RedirectToAction("Index", "Student");
+            }
+            else 
+            {
+                return RedirectToAction("Index", "Courses");
+            }
+           
         }
     }
 }
