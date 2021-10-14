@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LMSG3.Core.Configuration;
-using LMSG3.Core.Repositories;
-using LMSG3.Data.Repositories;
-using LMSG3.Core.Models.Entities;
+
+
 
 namespace LMSG3.Data.Configuration
 {
@@ -33,35 +32,11 @@ namespace LMSG3.Data.Configuration
                 if (this.literatureRepository == null)
                     this.literatureRepository = new LiteratureRepository(context, logger);
 
-                return literatureRepository;
-            }
-        }
-        public ILiteratureAuthorRepository LiteratureAuthorRepository
-        {
-            get
-            {
-                if (this.literatureAuthorRepository == null)
-                    this.literatureAuthorRepository = new LiteratureAuthorRepository(context, logger);
+        //public ILiteratureRepository LiteratureRepository { get; private set; }
 
-                return literatureAuthorRepository;
-            }
-        }
-        public ICourseRepository CourseRepository
-        {
-            get
-            {
-                if (this.courseRepository == null)
-                    this.courseRepository = new CourseRepository(context, logger);
+        //public ILiteratureAuthorRepository LiteratureAuthorRepository { get; private set; }
 
-                return courseRepository;
-            }
-        }
-        public IRepository<Module> ModuleRepository
-        {
-            get
-            {
-                if (this.moduleRepository == null)
-                    this.moduleRepository = new ModuleRepository(context, logger);
+        
 
                 return moduleRepository;
             }
@@ -73,8 +48,8 @@ namespace LMSG3.Data.Configuration
                 if (this.activityRepository == null)
                     this.activityRepository = new ActivityRepository(context, logger);
 
-                return activityRepository;
-            }
+           // LiteratureRepository = new LitertureRepository(context, _logger);
+            //LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger);
         }
 
         public async Task CompleteAsync()

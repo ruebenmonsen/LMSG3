@@ -6,8 +6,9 @@ namespace LMSG3.Core.Configuration
 {
     public interface IUnitOfWork
     {
-        ILiteratureRepository LiteratureRepository { get; }
-        ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
+        //ILiteratureRepository LiteratureRepository { get; }
+        //ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
+        //ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
         
         ICourseRepository CourseRepository { get; }
         IRepository<Module> ModuleRepository { get; }
