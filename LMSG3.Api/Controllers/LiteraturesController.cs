@@ -31,7 +31,7 @@ namespace LMSG3.Api.Controllers
             this.mapper = mapper;
         }
 
-        
+
         //[HttpGet("{id}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfos)
@@ -100,11 +100,11 @@ namespace LMSG3.Api.Controllers
             var authorEntity = mapper.Map<Literature>(literature);
             uow.LiteratureRepository.Add(literature);
             uow.LiteratureRepository.Save();
-          
+
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
         }
 
-       
+
 
         // DELETE: api/Literatures/5
         [HttpDelete("{id}")]
