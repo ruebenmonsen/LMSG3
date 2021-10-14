@@ -89,7 +89,6 @@ namespace LMSG3.Data
                 {
                     throw new Exception(String.Join("\n", iResult.Errors));
                 }
-                teachers.Append(defaultTeacher);
                 teachers.Add(defaultTeacher);
 
                 foreach (var teacher in teachers)
@@ -98,7 +97,23 @@ namespace LMSG3.Data
                 }
 
 
-                var students = await GetStudentsAsync(courses, defaultPassword, 12);
+                var students = (await GetStudentsAsync(courses, defaultPassword, 12)).ToList();
+
+                var defaultStudent = new Student
+                {
+                    FName = "Student",
+                    LName = "Teacherson",
+                    Email = "s@lexi.com",
+                    UserName = "s@lexi.com",
+                    Course = courses.FirstOrDefault()
+                };
+                iResult = await userManager.CreateAsync(defaultStudent, defaultPassword);
+                if (!iResult.Succeeded)
+                {
+                    throw new Exception(String.Join("\n", iResult.Errors));
+                }
+                students.Add(defaultStudent);
+
                 foreach (var student in students)
                 {
                     await userManager.AddToRoleAsync(student, studentRole);
