@@ -98,7 +98,7 @@ namespace LMSG3.Api.Controllers
         public ActionResult<Literature> CreateLiterature(Literature literature)
         {
             var authorEntity = mapper.Map<Literature>(literature);
-            uow.LiteratureRepository.Add(literature);
+            //uow.LiteratureRepository.Add(literature);
             uow.LiteratureRepository.Save();
 
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);

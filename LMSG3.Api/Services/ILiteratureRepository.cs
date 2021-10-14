@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Api.Services.Repositories
 {
-    public interface ILiteratureRepository : IRepository<Literature>
+    public interface ILiteratureRepository
     {
         Task<IEnumerable<Literature>> GetAsync(bool includeAllInfo); // bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
         Task<IEnumerable<Literature>> FindAsync(LiteraturesResourceParameters literatureResourceParameters);
