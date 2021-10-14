@@ -7,16 +7,12 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Repositories
 {
-    public interface ICourseRepository
+    public interface ICourseRepository : IRepository<Course>
     {
         Task<IEnumerable<Course>> GetAllCourses();
         Task<IEnumerable<Course>> GetAllCourses(bool includemodules);
         Task<Course> GetCourse(int? id, bool includemodules);
-        void Add(Course course);
         bool Any(int id);
-        void Remove(Course course);
-        void Update(Course course);
-
        
     }
 }

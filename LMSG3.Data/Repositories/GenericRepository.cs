@@ -28,7 +28,11 @@ namespace LMSG3.Data.Repositories
         {
             return await dbSet.FindAsync(id);
         }
-
+        /// <summary>
+        /// Takes a lambda expression to filter the results.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>Returns the filtered elements.</returns>
         public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter)
         {
             return await dbSet.AsQueryable().Where(filter).ToListAsync();
@@ -39,9 +43,16 @@ namespace LMSG3.Data.Repositories
             return await dbSet.ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter,
-                                                            Func<IQueryable<TEntity>,
-                                                            IOrderedQueryable<TEntity>> orderBy = null)
+        /// <summary>
+        /// Takes a lambda expression to filter the results. Can also take an IQueryable and sort, e.g. 
+        /// (e => e.Id == id, q => q.OrderBy(e => e.Name))
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="orderBy"></param>
+        /// <returns></returns>
+        public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter,
+                                                                 Func<IQueryable<TEntity>,
+                                                                 IOrderedQueryable<TEntity>> orderBy = null)
         {
             IQueryable<TEntity> query = dbSet;
 

@@ -10,6 +10,9 @@ namespace LMSG3.Core.Repositories
     public interface IRepository<TEntity>
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter,
+                                                            Func<IQueryable<TEntity>,
+                                                            IOrderedQueryable<TEntity>> orderBy = null);
         Task<TEntity> GetAsync(int? id);
         Task<TEntity> FindAsync(int? id);
         Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
