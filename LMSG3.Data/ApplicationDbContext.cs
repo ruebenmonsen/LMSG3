@@ -22,6 +22,7 @@ namespace LMSG3.Data
         public DbSet<Student> Students {  get; set; }
         public DbSet<Module> Modules {  get; set; }
         public DbSet<Activity> Activities {  get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
