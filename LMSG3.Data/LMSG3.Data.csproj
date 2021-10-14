@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LMSG3.Core\LMSG3.Core.csproj" />
+    <Compile Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Repositories\" />
+    <ProjectReference Include="..\LMSG3.Core\LMSG3.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

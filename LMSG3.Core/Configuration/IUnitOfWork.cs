@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Repositories;
+using System.Threading.Tasks;
 
 namespace LMSG3.Core.Configuration
 {
@@ -6,6 +8,11 @@ namespace LMSG3.Core.Configuration
     {
         //ILiteratureRepository LiteratureRepository { get; }
         //ILiteratureAuthorRepository LiteratureAuthorRepository { get; }
+
+        ICourseRepository CourseRepository { get; }
+        IRepository<Module> ModuleRepository { get; }
+        IRepository<Activity> ActivityRepository { get; }
+
         Task CompleteAsync();
         void Dispose();
     }
