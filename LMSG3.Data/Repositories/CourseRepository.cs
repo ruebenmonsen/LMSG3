@@ -18,7 +18,7 @@ namespace LMSG3.Data.Repositories
 
         public async Task<IEnumerable<Course>> GetAllCourses()
         {
-            var course = await context.Courses.ToListAsync();
+            var course = await context.Courses.Take(10).ToListAsync();
             return course;
         }
 
@@ -37,9 +37,19 @@ namespace LMSG3.Data.Repositories
             return await query.FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<bool> AnyAsync(int id)
+        {
+            return await context.Courses.AnyAsync(e => e.Id == id);
+        }
+        
         public bool Any(int id)
         {
             return context.Courses.Any(e => e.Id == id);
+        }
+
+        public void Update(Task<Course> course)
+        {
+            context.Update(course);
         }
     }
 }

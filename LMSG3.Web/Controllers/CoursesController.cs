@@ -40,9 +40,10 @@ namespace LMSG3.Web.Controllers
 
         }
 
-       
+
 
         // GET: Courses/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -56,7 +57,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            return View(course);
+            return PartialView("Details",course);
         }
 
         // GET: Courses/Create
@@ -72,13 +73,6 @@ namespace LMSG3.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCourseViewModel vm)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    uow.CourseRepository.Add(course);
-            //    await uow.CompleteAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(course);
 
             var course = mapper.Map<Course>(vm);
             uow.CourseRepository.Add(course);
@@ -89,7 +83,6 @@ namespace LMSG3.Web.Controllers
 
         }
 
-        // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,47 +90,37 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await uow.CourseRepository.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
             }
             return View(course);
-        }
+        }   
+        
+     
 
         // POST: Courses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,Description")] Course course)
+        public async Task<IActionResult> Edit(int id,CreateCourseViewModel vm)
         {
-            if (id != course.Id)
+            
+            if (id != vm.Id)
             {
+                return BadRequest();
+            }
+            var course = await uow.CourseRepository.FindAsync(vm.Id);
+            if (course == null)
                 return NotFound();
-            }
+            mapper.Map(vm, course);
+           // uow.CourseRepository.Update(course);
+            await uow.CompleteAsync();
+            
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    uow.CourseRepository.Update(course);
-                    await uow.CompleteAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
+            return RedirectToAction("Index");
         }
 
         // GET: Courses/Delete/5
@@ -148,8 +131,8 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await uow.CourseRepository.FindAsync(id);
+               
             if (course == null)
             {
                 return NotFound();
@@ -163,10 +146,14 @@ namespace LMSG3.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            var course = await uow.CourseRepository.FindAsync(id);
+            if (course == null)
+                return NotFound();
+            uow.CourseRepository.Remove(course);
+            await uow.CompleteAsync();
+
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool CourseExists(int id)

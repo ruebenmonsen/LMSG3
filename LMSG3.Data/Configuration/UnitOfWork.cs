@@ -86,5 +86,9 @@ namespace LMSG3.Data.Configuration
             context.Dispose();
             GC.SuppressFinalize(this);
         }
+        public async Task<bool> CompleteAsyncCheck()
+        {
+            return (await context.SaveChangesAsync()) >= 0;
+        }
     }
 }

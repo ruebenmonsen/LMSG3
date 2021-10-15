@@ -15,5 +15,6 @@ namespace LMSG3.Core.Configuration
         
         Task CompleteAsync();
         void Dispose();
+        Task<bool> CompleteAsyncCheck();
     }
 }
