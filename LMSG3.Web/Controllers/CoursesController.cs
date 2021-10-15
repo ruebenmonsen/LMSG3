@@ -16,6 +16,7 @@ using AutoMapper;
 
 namespace LMSG3.Web.Controllers
 {
+    [Authorize(Roles = "Teacher")]
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -32,11 +33,13 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: Courses
-        [Authorize(Roles ="Teacher")]
+       
         public async Task<IActionResult> Index()
         {
-            var model = await uow.CourseRepository.GetAllCourses();
-            return View(model);
+            var model = await uow.CourseRepository.GetAllCourses(true);
+            
+
+            return View(mapper.Map<IndexCourseViewModel>(model));
 
         }
 
@@ -52,7 +55,8 @@ namespace LMSG3.Web.Controllers
             }
 
             var course = await uow.CourseRepository.GetCourse(id, true);
-            if (course == null)
+           
+;            if (course == null)
             {
                 return NotFound();
             }

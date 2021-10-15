@@ -1,48 +1,58 @@
-﻿@model IEnumerable<Module>
+﻿@model IEnumerable<ModelListViewModel>
 
 
-<table class="table">
+@*<table class="table">*@
     <thead>
         <tr>
+            <th class="col-1"></th>
            
-            <th>
+            <th class="col-2">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
+            <th class="col-3">
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
            
-            <th>
+            <th class="col-2">
                 @Html.DisplayNameFor(model => model.StartDate)
             </th>
-            <th>
+            <th class="col-2">
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CourseId)
-            </th>
-            <th></th>
+           
+            <th class="col-2"></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-           
+            <td>
+                <img src="~/img/down.jpg" width="20" height="20" />
+                <div style="display:none">
+                    <table >
+
+                        <partial name="CourseActivitiesPartial" model="@item.ActivitiesList" />
+
+                    </table>
+
+                </div>
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-             <td>
+            <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.CourseId)
-            </td>
-            <td>
-                <a class="btn btn-primary" asp-controller="" asp-action="Details" asp-route-id="@item.Id">Details </a>
-                <a class="btn btn-primary" asp-controller="" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
-                <a class="btn btn-primary" asp-controller="" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
+               
+                <a class="btn btn-primary" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
+                <a class="btn btn-primary" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
             </td>
         </tr>
 }
     </tbody>
-</table>
+@*</table>*@
