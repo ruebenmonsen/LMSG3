@@ -42,14 +42,19 @@ namespace LMSG3.Web.Controllers
                 StartDate = s.Course.StartDate
             }).FirstOrDefaultAsync();
 
+            //Id = "8e2d4df3-6adf-4517-bd6f-d52d8ea05a73"
+            //userId = "712a4198-1a73-47f8-8046-bc5656aad62f"
+
+            var student2 = await _context.Students.Where(s => s.Id == userId).FirstOrDefaultAsync();
+
             var student = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel 
                 { 
                     FName = s.FName,
                     LName = s.LName,
                     Documents = s.Documents,
-                    Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Equals(new ActivityType { Name = "Assignment" })).ToList(),
-                    Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Equals(new ActivityType { Name = "Assignment" })).ToList(),
+                    Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Name.Equals("Assignment")).ToList(),
+                    //Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Name.Equals("Assignment")).ToList(),
                     Modules = s.Course.Modules,
                     CourseStudents = s.Course.Students,
                     CourseInfo = courseInfo
