@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMSG3.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211008150009_studenttable")]
-    partial class studenttable
+    [Migration("20211015085241_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,7 +52,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.ActivityType", b =>
@@ -277,7 +277,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LiteratureAuthor");
+                    b.ToTable("LiteratureAuthors");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureLevel", b =>
@@ -336,7 +336,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Module");
+                    b.ToTable("Modules");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Subject", b =>
@@ -516,6 +516,13 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("Student");
                 });
 
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
+                {
+                    b.HasBaseType("LMSG3.Core.Models.Entities.ApplicationUser");
+
+                    b.ToTable("Teacher");
+                });
+
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>
                 {
                     b.HasOne("LMSG3.Core.Models.Entities.ActivityType", "ActivityType")
@@ -689,6 +696,15 @@ namespace LMSG3.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("LMSG3.Core.Models.Entities.Teacher", b =>
+                {
+                    b.HasOne("LMSG3.Core.Models.Entities.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("LMSG3.Core.Models.Entities.Teacher", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>
