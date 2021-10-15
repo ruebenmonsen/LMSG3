@@ -7,7 +7,6 @@ using LMSG3.Core.Configuration;
 using LMSG3.Core.Repositories;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data.Repositories;
-using LMSG3.Core.Models.Entities;
 
 namespace LMSG3.Data.Configuration
 {
@@ -16,37 +15,15 @@ namespace LMSG3.Data.Configuration
         private ApplicationDbContext context;
         private readonly ILogger logger;
 
-       // private ILiteratureRepository literatureRepository;
         private ICourseRepository courseRepository;
         private IRepository<Module> moduleRepository;
         private IRepository<Activity> activityRepository;
-       // private ILiteratureAuthorRepository literatureAuthorRepository;
 
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             this.context = context;
             this.logger = loggerFactory.CreateLogger("logs");
         }
-        //public ILiteratureRepository LiteratureRepository
-        //{
-        //    get
-        //    {
-        //        if (this.literatureRepository == null)
-        //            this.literatureRepository = new LiteratureRepository(context, logger);
-
-        //        return literatureRepository;
-        //    }
-        //}
-        //public ILiteratureAuthorRepository LiteratureAuthorRepository
-        //{
-        //    get
-        //    {
-        //        if (this.literatureAuthorRepository == null)
-        //            this.literatureAuthorRepository = new LiteratureAuthorRepository(context, logger);
-
-        //        return literatureAuthorRepository;
-        //    }
-        //}
         public ICourseRepository CourseRepository
         {
             get
