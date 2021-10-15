@@ -32,8 +32,8 @@ namespace LMSG3.Data
 
 
                 // API
-                var letertures = GetLeterature();
-                await db.AddRangeAsync(letertures);
+                //var letertures = GetLeterature();
+                //await db.AddRangeAsync(letertures);
 
 
                 // MVC
@@ -313,7 +313,7 @@ namespace LMSG3.Data
             DateTime startDate;
             DateTime endDate;
             int startHour = 8; // assuming midnight
-            int amount = 3; // per day
+            int amount = 10; // per day
             int days = (int) (module.EndDate - module.StartDate).TotalDays; // could fail
 
             for (int day = 0; day < days; day++)
@@ -322,7 +322,8 @@ namespace LMSG3.Data
 
                 for (int i= 0; i < amount; i++)
                 {
-                    endDate = startDate.AddHours(fake.Random.Int(1, 2));
+                    //endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: fix bug
+                    endDate = startDate.AddHours(1);
                     var e = new Activity
                     {
                         Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.IngVerb()),

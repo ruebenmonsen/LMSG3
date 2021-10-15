@@ -48,15 +48,15 @@ namespace LMSG3.Web.Controllers
                     FName = s.FName,
                     LName = s.LName,
                     Documents = s.Documents,
-                    Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Equals("Assignment")).ToList(),
-                    Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Equals("Assignment")).ToList(),
+                    Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Equals(new ActivityType { Name = "Assignment" })).ToList(),
+                    Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Equals(new ActivityType { Name = "Assignment" })).ToList(),
                     Modules = s.Course.Modules,
                     CourseStudents = s.Course.Students,
                     CourseInfo = courseInfo
 
                 }).FirstOrDefaultAsync();
 
-
+            Console.WriteLine("tst");
             return View(student);
         }
 
