@@ -38,15 +38,26 @@ namespace LMSG3.Web.Controllers
             var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
             {
                 Name = s.Course.Name,
-                Description=s.Course.Description,
-                StartDate=s.Course.StartDate
+                Description = s.Course.Description,
+                StartDate = s.Course.StartDate
             }).FirstOrDefaultAsync();
 
-            var model = new StudentIndexViewModel {
-                CourseInfo = courseInfo
-            };
-            return View(model);
+            var student = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
+                .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel 
+                { 
+                    FName = s.FName,
+                    LName = s.LName,
+                    Documents = s.Documents,
+                    Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Equals("Assignment")).ToList(),
+                    Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Equals("Assignment")).ToList(),
+                    Modules = s.Course.Modules,
+                    CourseStudents = s.Course.Students,
+                    CourseInfo = courseInfo
 
+                }).FirstOrDefaultAsync();
+
+
+            return View(student);
         }
 
         public async Task<ActionResult> ModulesList()
