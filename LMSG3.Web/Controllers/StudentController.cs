@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
 
@@ -33,7 +32,7 @@ namespace LMSG3.Web.Controllers
        
         public async Task<IActionResult> Index()
         {
-
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             var userId = userManager.GetUserId(User);
             var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
             {
@@ -41,6 +40,17 @@ namespace LMSG3.Web.Controllers
                 Description = s.Course.Description,
                 StartDate = s.Course.StartDate
             }).FirstOrDefaultAsync();
+
+            var student3 = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
+                .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).FirstOrDefaultAsync();
+
+            var assignments = student3.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Name.StartsWith("A")).ToList();
+
+            var module = student3.Course.Modules.Where(m => m.StartDate < DateTime.Now && m.EndDate > DateTime.Now).FirstOrDefault();
+
+            //var module = await _context.Students.Where(s => s.Id == userId).Include(s => s.Course).Select(s => s.Course)
+            //                                    .Include(c => c.Modules.Where(m => m.StartDate < DateTime.Now && m.EndDate > DateTime.Now))
+            //                                    .FirstOrDefaultAsync();
 
             //Id = "8e2d4df3-6adf-4517-bd6f-d52d8ea05a73"
             //userId = "712a4198-1a73-47f8-8046-bc5656aad62f"
@@ -50,10 +60,11 @@ namespace LMSG3.Web.Controllers
             var student = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel 
                 { 
+                    Id = s.Id,
                     FName = s.FName,
                     LName = s.LName,
                     Documents = s.Documents,
-                    Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Name.Equals("Assignment")).ToList(),
+                    //Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Name.StartsWith("A")).ToList(),
                     //Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Name.Equals("Assignment")).ToList(),
                     Modules = s.Course.Modules,
                     CourseStudents = s.Course.Students,

@@ -56,7 +56,7 @@ namespace LMSG3.Data
                 var modules = new List<Module>();
                 foreach (var course in courses)
                 {
-                    modules.AddRange(GetModules(course, 5));
+                    modules.AddRange(GetModules(course, 3));
                 }
                 await db.AddRangeAsync(modules);
 
@@ -98,7 +98,7 @@ namespace LMSG3.Data
                 }
 
 
-                var students = (await GetStudentsAsync(courses, defaultPassword, 12)).ToList();
+                var students = (await GetStudentsAsync(courses, defaultPassword, 8)).ToList();
 
                 var defaultStudent = new Student
                 {
@@ -128,10 +128,10 @@ namespace LMSG3.Data
                     new DocumentType { Name = "Excerice" }
                 };
 
-                var teacherDocuments = GetDocuments(teachers, documentTypes, courses, modules, activities, 10);
+                var teacherDocuments = GetDocuments(teachers, documentTypes, courses, modules, activities, 8);
                 await db.AddRangeAsync(teacherDocuments);
 
-                var studentDocuments = GetDocuments(students, documentTypes, courses, modules, activities, 5);
+                var studentDocuments = GetDocuments(students, documentTypes, courses, modules, activities, 4);
                 await db.AddRangeAsync(studentDocuments);
 
 
