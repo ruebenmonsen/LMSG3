@@ -98,7 +98,7 @@ namespace LMSG3.Api.Controllers
         public ActionResult<Literature> CreateLiterature(Literature literature)
         {
             var authorEntity = mapper.Map<Literature>(literature);
-            //uow.LiteratureRepository.Add(literature);
+            uow.LiteratureRepository.AddLiterature(literature);
             uow.LiteratureRepository.Save();
 
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
@@ -110,15 +110,16 @@ namespace LMSG3.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLiterature(int id)
         {
-            var literature = await _context.Literatures.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetAsync(id, false);//await _context.Literatures.FindAsync(id);
             if (literature == null)
             {
                 return NotFound();
             }
 
-            _context.Literatures.Remove(literature);
-            await _context.SaveChangesAsync();
 
+            uow.LiteratureRepository.DeliteLiterature(literature);
+            //await _context.SaveChangesAsync();
+            uow.LiteratureRepository.Save();
             return NoContent();
         }
 

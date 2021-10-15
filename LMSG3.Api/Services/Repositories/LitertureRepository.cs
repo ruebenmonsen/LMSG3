@@ -90,10 +90,7 @@ namespace LMSG3.Api.Services.Repositories
             throw new NotImplementedException();
         }
 
-
-
-
-        public void Add(Literature literature)
+        public void AddLiterature(Literature literature)
         {
             _context.Literatures.Add(literature);
 
@@ -101,9 +98,13 @@ namespace LMSG3.Api.Services.Repositories
         }
 
 
-        public bool Remove()
+        public void DeliteLiterature(Literature literature)
         {
-            throw new NotImplementedException();
+            if (literature == null)
+            {
+                throw new ArgumentNullException(nameof(literature));
+            }
+            _context.Literatures.Remove(literature);
         }
 
         public void Update(Literature literature)
