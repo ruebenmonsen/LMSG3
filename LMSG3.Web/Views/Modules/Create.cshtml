@@ -34,11 +34,43 @@
             </div>
             <div class="form-group">
                 <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class ="form-control" asp-items="ViewBag.CourseId"></select>
+                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a href="#popupModel" role="button" id="ShowPopup" data-toggle="modal">Add Activity</a>
             </div>
+
+            <div id="popupModel" class="modal fade " role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Add New Activity</h3>
+                            <button type="button" class="close" data-dismiss="modal">×</button>
+                        </div>
+                        <div style="padding:5px;">
+                            <div>
+                                <input type="text" id="txtVal" value="">
+                                Test content
+                            </div>
+                            <br />
+                            <div>
+                                <img src="~/Content/Capture.PNG" />
+                                <button type="button" class="close" data-dismiss="modal" onclick="addLi()">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="testtree">
+
+                <ul id="list">
+                </ul>
+
+            </div>
+
+
         </form>
     </div>
 </div>
@@ -46,7 +78,32 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script>
+    var i = 0;
+    function addLi() {
 
+        var txtVal = document.getElementById('txtVal').value,
+            listNode = document.getElementById('list'),
+            liNode = document.createElement("LI"),
+            txtNode = document.createTextNode(txtVal);
+            liNode.id = "li" + i++;
+
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "X";
+        btn.style = "border:none;background-color:white;color:red;font-size:small";
+
+
+        liNode.appendChild(txtNode);
+        liNode.appendChild(btn);
+        btn.addEventListener('click', function () {
+            this.parentNode.remove();
+        });
+
+        listNode.appendChild(liNode);
+        document.getElementById('txtVal').value = "";
+    }
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
