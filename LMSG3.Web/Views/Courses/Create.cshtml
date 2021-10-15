@@ -28,7 +28,67 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                @*<input type="submit" value="Create" class="btn btn-primary" />*@
+
+                <a href="#popupModel" role="button" id="ShowPopup" data-toggle="modal">Show Popup</a>
+
+
+                <div id="popupModel" class="modal fade " role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Sample Popup</h3>
+                                <input type="text" id="txtVal" value="">
+                                <button type="button" class="close" data-dismiss="modal">×</button>
+                            </div>
+                            <div style="padding:5px;">
+                                <div>
+                                    Test content
+                                </div>
+                                <br />
+                                <div>
+                                    <img src="~/Content/Capture.PNG" />
+                                    <button type="button" class="close" data-dismiss="modal" onclick="addLi()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="popupModel1" class="modal fade " role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Sample Popup</h3>
+                                <input type="text" id="txtVal1" value="">
+                                  
+                                <button type="button" class="close" data-dismiss="modal">×</button>
+                            </div>
+                            <div style="padding:5px;">
+                                <div>
+                                    Test content
+                                </div>
+                                <br />
+                                <div>
+                                    <img src="~/Content/Capture.PNG" />
+                                    <button type="button" class="close" data-dismiss="modal" onclick="addUl()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div id="testtree">
+
+                    <ul id="list">
+                    </ul>
+
+                </div>
+
+
             </div>
         </form>
     </div>
@@ -37,7 +97,68 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script>
+    var i = 0;
+    var currentModuleId = '';
+    function addLi() {
 
+        var txtVal = document.getElementById('txtVal').value,
+            listNode = document.getElementById('list'),
+            liNode = document.createElement("LI"),
+            txtNode = document.createTextNode(txtVal);
+        liNode.id = "li" + i++;
+     
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "X";
+        btn.style ="border:none;background-color:white;color:red;font-size:small";
+
+        var a = document.createElement("a");
+        a.innerHTML = "add activity";
+        a.href = "#popupModel1";
+        a.setAttribute("id", "li" + i++);
+        a.addEventListener('click', function () {
+            currentModuleId = this.parentNode.id;
+        });
+        a.setAttribute("data-toggle","modal");
+
+
+        liNode.appendChild(txtNode);
+        liNode.appendChild(btn);
+        liNode.appendChild(a);
+        btn.addEventListener('click', function () {
+            this.parentNode.remove();
+        });
+
+        listNode.appendChild(liNode);
+        document.getElementById('txtVal').value = "";
+    }
+
+    function addUl() {
+
+        var txtVal = document.getElementById('txtVal1').value;
+        var parentLi = document.getElementById(currentModuleId);
+            listNode = document.createElement("ul");
+            parentLi.appendChild(listNode);
+            liNode = document.createElement("LI"),
+            txtNode = document.createTextNode(txtVal);
+            liNode.id = "li" + i++;
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "X";
+        btn.style = "border:none;background-color:white;color:red;font-size:small";
+
+
+        liNode.appendChild(txtNode);
+        liNode.appendChild(btn);
+        btn.addEventListener('click', function () {
+            this.parentNode.remove();
+        });
+
+        listNode.appendChild(liNode);
+        document.getElementById('txtVal1').value = "";
+    }
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
