@@ -8,7 +8,7 @@ namespace LMSG3.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "LiteratureAuthor",
+                name: "LiteratureAuthors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -19,11 +19,11 @@ namespace LMSG3.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LiteratureAuthor", x => x.Id);
+                    table.PrimaryKey("PK_LiteratureAuthors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LiteratureLevel",
+                name: "literatureLevels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -32,33 +32,7 @@ namespace LMSG3.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LiteratureLevel", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LiteratureType",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LiteratureType", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Subject",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Subject", x => x.Id);
+                    table.PrimaryKey("PK_literatureLevels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,31 +44,39 @@ namespace LMSG3.Api.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SubjectId = table.Column<int>(type: "int", nullable: false),
-                    LiteratureLevelId = table.Column<int>(type: "int", nullable: false),
-                    LiteratureTypeId = table.Column<int>(type: "int", nullable: false)
+                    SubId = table.Column<int>(type: "int", nullable: false),
+                    LiteraLevelId = table.Column<int>(type: "int", nullable: false),
+                    LiteraTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Literatures", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Literatures_LiteratureLevel_LiteratureLevelId",
-                        column: x => x.LiteratureLevelId,
-                        principalTable: "LiteratureLevel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Literatures_LiteratureType_LiteratureTypeId",
-                        column: x => x.LiteratureTypeId,
-                        principalTable: "LiteratureType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Literatures_Subject_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subject",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LiteratureSubjects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LiteratureSubjects", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "literatureTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_literatureTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,9 +90,9 @@ namespace LMSG3.Api.Migrations
                 {
                     table.PrimaryKey("PK_LiteratureLiteratureAuthor", x => new { x.AuthorsId, x.LiteraturesId });
                     table.ForeignKey(
-                        name: "FK_LiteratureLiteratureAuthor_LiteratureAuthor_AuthorsId",
+                        name: "FK_LiteratureLiteratureAuthor_LiteratureAuthors_AuthorsId",
                         column: x => x.AuthorsId,
-                        principalTable: "LiteratureAuthor",
+                        principalTable: "LiteratureAuthors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -125,42 +107,27 @@ namespace LMSG3.Api.Migrations
                 name: "IX_LiteratureLiteratureAuthor_LiteraturesId",
                 table: "LiteratureLiteratureAuthor",
                 column: "LiteraturesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Literatures_LiteratureLevelId",
-                table: "Literatures",
-                column: "LiteratureLevelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Literatures_LiteratureTypeId",
-                table: "Literatures",
-                column: "LiteratureTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Literatures_SubjectId",
-                table: "Literatures",
-                column: "SubjectId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "literatureLevels");
+
+            migrationBuilder.DropTable(
                 name: "LiteratureLiteratureAuthor");
 
             migrationBuilder.DropTable(
-                name: "LiteratureAuthor");
+                name: "LiteratureSubjects");
+
+            migrationBuilder.DropTable(
+                name: "literatureTypes");
+
+            migrationBuilder.DropTable(
+                name: "LiteratureAuthors");
 
             migrationBuilder.DropTable(
                 name: "Literatures");
-
-            migrationBuilder.DropTable(
-                name: "LiteratureLevel");
-
-            migrationBuilder.DropTable(
-                name: "LiteratureType");
-
-            migrationBuilder.DropTable(
-                name: "Subject");
         }
     }
 }

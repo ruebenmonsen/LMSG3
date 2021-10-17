@@ -12,9 +12,9 @@ namespace LMSG3.Api.Services.Repositories
 {
     public class LitertureRepository : ILiteratureRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
 
-        public LitertureRepository(ApplicationDbContext context, ILogger logger)
+        public LitertureRepository(ApiDbContext context, ILogger logger)
         {
             _context = context;
         }
@@ -24,9 +24,9 @@ namespace LMSG3.Api.Services.Repositories
 
             return includeAllInfo ? await _context.Literatures
                 .Include(e => e.Authors)
-                .Include(e => e.Subject)
-                .Include(e => e.LiteratureType)
-                .Include(e => e.LiteratureLevel)
+              //  .Include(e => e.Subject)
+               // .Include(e => e.LiteratureType)
+                //.Include(e => e.LiteratureLevel)
                 .ToListAsync() :
                 await _context.Literatures
                 .ToListAsync();
@@ -37,15 +37,21 @@ namespace LMSG3.Api.Services.Repositories
         {
 
             var literature = _context.Literatures.AsQueryable();
+            var literLevel = _context.literatureLevels.AsQueryable();
 
             if (includeAllInfo)
             {
-                literature = literature.Include(e => e.Authors)
-                 .Include(e => e.Subject)
-                 .Include(e => e.LiteratureType)
-                 .Include(e => e.LiteratureLevel);
+                literature = literature.Include(e => e.Authors);
+
+                 //.Include(a => a.li)
+                 //.Where(t => t.LiteraLevelId == literLevel.i).ToList();
+                 //.Include(e => e.LiteratureType)
+                 //.Include(e => e.LiteratureLevel);
+
+              
             }
 
+            
 
             return await literature.FirstOrDefaultAsync(e => e.Id == id);
         }
@@ -68,15 +74,15 @@ namespace LMSG3.Api.Services.Repositories
 
             if (literaturesResourceParameters.includeAllInfo)
             {
-                literature = literature.Include(e => e.Authors)
-                            .Include(e => e.Subject)
-                            .Include(e => e.LiteratureType)
-                            .Include(e => e.LiteratureLevel);
+                literature = literature.Include(e => e.Authors);
+                            //.Include(e => e.Subject);
+                           // .Include(e => e.LiteratureType)
+                            //.Include(e => e.LiteratureLevel);
             }
 
             if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.subjectStr))
             {
-                literature = literature.Where(l => l.Subject.Name.Contains(literaturesResourceParameters.subjectStr.ToLower())).Include(e => e.Subject);
+                //literature = literature.Where(l => l.Subject.Name.Contains(literaturesResourceParameters.subjectStr.ToLower())).Include(e => e.Subject);
             }
 
             return await literature.ToListAsync();

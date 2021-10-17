@@ -1,5 +1,6 @@
-using LMSG3.Data;
+using LMSG3.Api.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,10 +21,13 @@ namespace LMSG3.Api
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-
+               
                 try
                 {
-                   // SeedData.InitAsync(services).Wait();
+                    var context = scope.ServiceProvider.GetService<ApiDbContext>();
+                    //context.Database.EnsureDeleted();
+                    //context.Database.Migrate();
+                    //SeedDbData.InitAsync(services).Wait();
                 }
                 catch (Exception e)
                 {

@@ -20,11 +20,11 @@ namespace LMSG3.Api.Controllers
     [ApiController]
     public class LiteraturesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public LiteraturesController(ApplicationDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
+        public LiteraturesController(ApiDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _context = context;
             uow = unitOfWork;
@@ -42,9 +42,25 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
+            //var somId = literature.LiteraLevelId;
+            var literaDto = mapper.Map<LiteratureDto>(literature);
 
-            return Ok(mapper.Map<LiteratureDto>(literature));
+            literaDto.LevelName = GetLevelName(literature.LiteraLevelId);//levelNames;//levelNames.First(e => e.LiteraLevelId == somId).Name.ToString();
+
+            return Ok(literaDto);
         }
+
+        public string GetLevelName(int levelId)
+        {
+            var levelName = _context.Literatures.Join(_context.literatureLevels,
+                           x => x.LiteraLevelId,
+                           y => y.Id,
+                          (x, y) => new { x.LiteraLevelId, y.Name })
+                            .First(e => e.LiteraLevelId == levelId).Name.ToString();
+
+            return levelName;
+        }
+
 
 
         [HttpGet()]
@@ -57,8 +73,15 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
+            var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
 
-            return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literature));
+            // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
+            foreach (var item in literaDto)
+            {
+                item.LevelName = GetLevelName(item.LiteraLevelId);
+            }
+
+            return Ok(literaDto);
         }
 
         // PUT: api/Literatures/5

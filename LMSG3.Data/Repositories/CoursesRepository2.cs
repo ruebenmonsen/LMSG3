@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Data.Repositories
 {
-    public class CourseRepository : GenericRepository<Course>, ICourseRepository
+    public class CourseRepository2 : GenericRepository<Course>, ICourseRepository
     {
-        public CourseRepository(ApplicationDbContext context, ILogger logger) : base(context, logger)
+        public CourseRepository2(ApplicationDbContext context, ILogger logger) : base(context, logger)
         {
         }
 

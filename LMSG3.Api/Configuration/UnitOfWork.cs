@@ -13,7 +13,7 @@ namespace LMSG3.Api.Configuration
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly ILogger _logger;
 
         
@@ -24,7 +24,7 @@ namespace LMSG3.Api.Configuration
 
         
 
-        public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
+        public UnitOfWork(ApiDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("logs");

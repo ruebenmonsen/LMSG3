@@ -180,18 +180,18 @@ namespace LMSG3.Data
                         }
 
                     },
-                    Subject = new Subject
-                    {
-                        Name = fake.Lorem.Sentence(),
-                    },
-                    LiteratureLevel = new LiteratureLevel
-                    {
-                        Name = levels[index]
-                    },
-                    LiteratureType = new LiteratureType
-                    {
-                        Name = leteraTypes[index]
-                    }
+                    //Subject = new Subject
+                    //{
+                    //    Name = fake.Lorem.Sentence(),
+                    //},
+                    //LiteratureLevel = new LiteratureLevel
+                    //{
+                    //    Name = levels[index]
+                    //},
+                    //LiteratureType = new LiteratureType
+                    //{
+                    //    Name = leteraTypes[index]
+                    //}
                 };
                 literatures.Add(leterature);
             }

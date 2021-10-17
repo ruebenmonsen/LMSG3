@@ -13,10 +13,10 @@ namespace LMSG3.Api.Repositories
 {
     public class LiteratureAuthorRepository : ILiteratureAuthorRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly ILogger logger;
 
-        public LiteratureAuthorRepository(ApplicationDbContext context, ILogger logger)
+        public LiteratureAuthorRepository(ApiDbContext context, ILogger logger)
         {
             _context = context;
             this.logger = logger;
