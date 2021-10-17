@@ -65,11 +65,12 @@ namespace LMSG3.Data
                     new DocumentType { Name = "Excerice" }
                 };
 
-                // (minimal bogus) Uncomment to add nice default seed data 
+                // (static + minimal bogus) Uncomment to add nice default seed data 
                 await AddDefaultMvcDataAsync(db);
 
                 // (all bogus) Uncomment to add more bogus seed data
                 // Modify amounts in sub method signatures
+                // Too much data will slow the program
                 await AddBogusMvcDataAsync(db);
 
 
