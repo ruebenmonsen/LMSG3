@@ -51,8 +51,6 @@ namespace LMSG3.Api.Services.Repositories
               
             }
 
-            
-
             return await literature.FirstOrDefaultAsync(e => e.Id == id);
         }
 

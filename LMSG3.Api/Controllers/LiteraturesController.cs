@@ -11,7 +11,7 @@ using LMSG3.Core.Models.Dtos;
 using AutoMapper;
 using LMSG3.Api.ResourceParameters;
 using LMSG3.Api.Configuration;
-
+using LMSG3.Api.Services;
 
 namespace LMSG3.Api.Controllers
 {
@@ -45,24 +45,14 @@ namespace LMSG3.Api.Controllers
             //var somId = literature.LiteraLevelId;
             var literaDto = mapper.Map<LiteratureDto>(literature);
 
-            literaDto.LevelName = GetLevelName(literature.LiteraLevelId);//levelNames;//levelNames.First(e => e.LiteraLevelId == somId).Name.ToString();
-
+            literaDto.LevelName = ModelsJoinHelper.GetLevelName(literature.LiteraLevelId, _context);//levelNames;//levelNames.First(e => e.LiteraLevelId == somId).Name.ToString();
+            literaDto.LiteraTypeName = ModelsJoinHelper.GetTypeName(literature.LiteraTypeId, _context);
+            literaDto.SubjectName = ModelsJoinHelper.GetSubjectName(literature.SubId, _context);
             return Ok(literaDto);
         }
 
-        public string GetLevelName(int levelId)
-        {
-            var levelName = _context.Literatures.Join(_context.literatureLevels,
-                           x => x.LiteraLevelId,
-                           y => y.Id,
-                          (x, y) => new { x.LiteraLevelId, y.Name })
-                            .First(e => e.LiteraLevelId == levelId).Name.ToString();
-
-            return levelName;
-        }
-
-
-
+       
+        
         [HttpGet()]
         [HttpHead]    //authorsResourceParameters.
         public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures([FromQuery] LiteraturesResourceParameters literatureResourceParameters)
@@ -78,11 +68,15 @@ namespace LMSG3.Api.Controllers
             // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
             foreach (var item in literaDto)
             {
-                item.LevelName = GetLevelName(item.LiteraLevelId);
+               item.LevelName = ModelsJoinHelper.GetLevelName(item.LiteraLevelId, _context);
+               item.LiteraTypeName = ModelsJoinHelper.GetTypeName(item.LiteraTypeId, _context);
+               item.SubjectName = ModelsJoinHelper.GetSubjectName(item.SubId, _context);
             }
 
             return Ok(literaDto);
         }
+
+       
 
         // PUT: api/Literatures/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

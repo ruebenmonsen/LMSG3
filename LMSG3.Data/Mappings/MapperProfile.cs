@@ -12,9 +12,10 @@ namespace LMSG3.Data
     {
         public MapperProfile()
         {
-            CreateMap<Literature, LiteratureDto>().ReverseMap();
-                //.ForMember(dest => dest.LiteraLevelId,
-                     // from => from.MapFrom(s => s.LevelName));
+            CreateMap<Literature, LiteratureDto>().ReverseMap()
+                .ForMember(dest => dest.SubId, opt => opt.Ignore());
+            //.ForMember(dest => dest.LiteraLevelId,
+            // from => from.MapFrom(s => s.LevelName));
             CreateMap<LiteratureAuthor, LiteratureAuthorDto>().ReverseMap()
                .ForMember(dest => dest.DateOfBirth, opt => opt.Ignore());
             //CreateMap<LiteratureLevel, LiteratureLevelDto>().ReverseMap();

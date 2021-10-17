@@ -76,7 +76,7 @@ namespace LMSG3.Api
         private static List<LiteratureType> GetLiteratureTypes()
         {
             List<LiteratureType> literatureTypes = new List<LiteratureType>();
-            var leteraTypes = new List<string> { "Drama", "Fable", "Fiction", "Poetry", "Science", "IT" };
+            var leteraTypes = new List<string> { "Book", "Blog", "Article", "Magazine", "Reports", "Studies", "Research" };
             for(int t = 0; t < leteraTypes.Count; t++)
             {
                 var literatureType = new LiteratureType
@@ -122,7 +122,7 @@ namespace LMSG3.Api
                     Description = fake.Lorem.Paragraph(),
                     ReleaseDate = fake.Date.Between(dt2, DateTime.Now).Date,
                     LiteraLevelId = fake.Random.Number(1, 3),
-                    LiteraTypeId = fake.Random.Number(1, 5),
+                    LiteraTypeId = fake.Random.Number(1, 7),
                     SubId = fake.Random.Number(1, 6),
                      Authors = new LiteratureAuthor[]
                     {

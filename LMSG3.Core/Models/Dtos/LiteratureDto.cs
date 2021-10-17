@@ -13,11 +13,17 @@ namespace LMSG3.Core.Models.Dtos
         public string Description { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-        public string SubjectName { get; set; }
-        public int LiteraLevelId { get; set; }
-        public string LevelName { get; set; }
+        public int SubId { get; set; }
 
-        public string TypeName { get; set; }
+        public int LiteraLevelId { get; set; }
+
+        public int LiteraTypeId { get; set; }
+      
+        public string SubjectName { get; set; }
+       
+        public string LevelName { get; set; }
+     
+        public string LiteraTypeName { get; set; }
         // NAV
         public ICollection<LiteratureAuthorDto> Authors { get; set; }
         //public SubjectDto Subject { get; set; }
