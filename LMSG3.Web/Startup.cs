@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using LMSG3.Data;
 using LMSG3.Core.Configuration;
 using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 
 namespace LMSG3.Web
 {
@@ -33,6 +34,8 @@ namespace LMSG3.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
+            services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
+            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -72,7 +75,7 @@ namespace LMSG3.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     //pattern: "{area:identity}/{controller:account}/{action=login}");
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Modules}/{action=Create}/{id?}");
                 endpoints.MapRazorPages();
                 //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });

@@ -7,13 +7,12 @@ using LMSG3.Core.Configuration;
 using LMSG3.Core.Repositories;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data.Repositories;
-using LMSG3.Core.Models.Entities;
 
 namespace LMSG3.Data.Configuration
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private ApplicationDbContext context;
+        private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
        // private ILiteratureRepository literatureRepository;

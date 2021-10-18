@@ -1,5 +1,7 @@
-﻿@model LMSG3.Core.Models.Entities.Module
-
+﻿@inject LMSG3.Web.Services.IActivityTypeSelectListService ActivityTypeListservice
+@inject LMSG3.Web.Services.ICourseSelectListService CourseListservice
+@using LMSG3.Core.Models.Entities;
+@model LMSG3.Core.Models.Entities.Module
 @{
     ViewData["Title"] = "Create";
 }
@@ -10,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="frm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -33,12 +35,15 @@
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
+                <label asp-for="Course" class="control-label"></label>
+                <select asp-for="CourseId" asp-items="@await CourseListservice.GetCourseAsync()" class="form-control">
+                    <option value="">Please select</option>
+                </select>
+                <span asp-validation-for="CourseId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-                <a href="#popupModel" role="button" id="ShowPopup" data-toggle="modal">Add Activity</a>
+                <a href="#popupModel" role="button" id="ShowPopup" data-toggle="modal" class="btn btn-primary">Add Activity</a>
             </div>
 
             <div id="popupModel" class="modal fade " role="dialog">
@@ -48,30 +53,50 @@
                             <h3 class="modal-title">Add New Activity</h3>
                             <button type="button" class="close" data-dismiss="modal">×</button>
                         </div>
-                        <div style="padding:5px;">
-                            <div>
-                                <input type="text" id="txtVal" value="">
-                                Test content
+                        <div class="p-5">
+                            <div class="row">
+                                <label class="control-label col-md-3">Activity Name</label>
+                                <input id="ActivityName" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Name Here')"
+                                       oninput="this.setCustomValidity('')" />
+                            </div>
+                            <div class="row">
+                                <label class="control-label col-md-3">Description</label>
+                                <input id="ActivityDescription" class="form-control-lg col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Description Here')"
+                                       oninput="this.setCustomValidity('')" />
+                            </div>
+                            <div class="row">
+                                <label class="control-label col-md-3">Start Date</label>
+                                <input type="datetime-local" id="ActivityStartDate" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Start Date Here')"
+                                       oninput="this.setCustomValidity('')" />
+                            </div>
+                            <div class="row">
+                                <label class="control-label col-md-3">End Date</label>
+                                <input type="datetime-local" id="ActivityEndDate" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity End Date Here')"
+                                       oninput="this.setCustomValidity('')" />
+                            </div>
+                            <div class="row" id="Student">
+                                <label class="control-label col-md-3">ActivityType</label>
+                                <select id="ActivityTypeId" asp-items="@await ActivityTypeListservice.GetActivityTypeAsync()" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Type Here')"
+                                        oninput="this.setCustomValidity('')">
+                                    <option value=""> Please select</option>
+                                </select>
                             </div>
                             <br />
-                            <div>
-                                <img src="~/Content/Capture.PNG" />
-                                <button type="button" class="close" data-dismiss="modal" onclick="addLi()">Add</button>
+                            <div class="text-center">
+                                <input type="button" class="bg-opacity-10 btn-primary" onclick="addLi()" value="Add" />
+                                <button type="button" class="bg-opacity-10 btn-primary" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div id="testtree">
-
+            <div>
                 <ul id="list">
+                    @Html.EditorFor(x => x.Activities)
                 </ul>
-
             </div>
-
-
         </form>
+
     </div>
 </div>
 
@@ -79,29 +104,79 @@
     <a asp-action="Index">Back to List</a>
 </div>
 <script>
-    var i = 0;
+
     function addLi() {
 
-        var txtVal = document.getElementById('txtVal').value,
-            listNode = document.getElementById('list'),
-            liNode = document.createElement("LI"),
-            txtNode = document.createTextNode(txtVal);
-            liNode.id = "li" + i++;
+        if (!$("#ActivityName")[0].checkValidity()) {
+            $("#ActivityName")[0].reportValidity();
+            return;
+        }
+
+        if (!$("#ActivityDescription")[0].checkValidity()) {
+            $("#ActivityDescription")[0].reportValidity();
+            return;
+        }
+
+        if (!$("#ActivityStartDate")[0].checkValidity()) {
+            $("#ActivityStartDate")[0].reportValidity();
+            return;
+        }
+        if (!$("#ActivityEndDate")[0].checkValidity()) {
+            $("#ActivityEndDate")[0].reportValidity();
+            return;
+        }
+        if (!$("#ActivityTypeId")[0].checkValidity()) {
+            $("#ActivityTypeId")[0].reportValidity();
+            return;
+        }
+
+        if (document.getElementById('ActivityName').value != "") {
+            var ActivityName = document.getElementById('ActivityName').value,
+                listNode = document.getElementById('list'),
+                liNode = document.createElement("LI"),
+                txtNode = document.createTextNode(ActivityName),
+                itemIndex = listNode.children.length;
+
+            var ActivityDescription = document.getElementById('ActivityDescription');
+            var ActivityStartDate = document.getElementById('ActivityStartDate').value;
+            var ActivityEndDate = document.getElementById('ActivityEndDate').value;
+            var ActivityTypeId = document.getElementById('ActivityTypeId').value;
 
 
-        var btn = document.createElement("button");
-        btn.innerHTML = "X";
-        btn.style = "border:none;background-color:white;color:red;font-size:small";
+            var btn = document.createElement("button");
+            btn.innerHTML = "X";
+            btn.style = "border:none;background-color:white;color:red;font-size:small";
 
+            liNode.appendChild(txtNode);
+            liNode.appendChild(btn);
+            addHidden(liNode, itemIndex, 'Name', ActivityName);
+            addHidden(liNode, itemIndex, 'Description', ActivityDescription);
+            addHidden(liNode, itemIndex, 'StartDate', ActivityStartDate);
+            addHidden(liNode, itemIndex, 'EndDate', ActivityEndDate);
+            addHidden(liNode, itemIndex, 'ActivityTypeId', ActivityTypeId);
 
-        liNode.appendChild(txtNode);
-        liNode.appendChild(btn);
-        btn.addEventListener('click', function () {
-            this.parentNode.remove();
-        });
+            btn.addEventListener('click', function () {
+                this.parentNode.remove();
+            });
 
-        listNode.appendChild(liNode);
-        document.getElementById('txtVal').value = "";
+            listNode.appendChild(liNode);
+
+            document.getElementById('ActivityName').value = "";
+            document.getElementById('ActivityDescription').value = "";
+            document.getElementById('ActivityStartDate').value = "";
+            document.getElementById('ActivityEndDate').value = "";
+            document.getElementById('ActivityTypeId').value = "";
+        }
+
+        function addHidden(theLi, itemIndex, key, value) {
+            // Create a hidden input element, and append it to the li:
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.id = "Activities_" + itemIndex + "__" + key;
+            input.name = "Activities[" + itemIndex + "]." + key;
+            input.value = value;
+            theLi.appendChild(input);
+        }
     }
 </script>
 @section Scripts {

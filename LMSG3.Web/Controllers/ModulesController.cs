@@ -13,10 +13,12 @@ namespace LMSG3.Web.Controllers
     public class ModulesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private List<Activity> Activities;
 
         public ModulesController(ApplicationDbContext context)
         {
             _context = context;
+           
         }
 
         // GET: Modules
@@ -48,6 +50,8 @@ namespace LMSG3.Web.Controllers
         // GET: Modules/Create
         public IActionResult Create()
         {
+            Activities = new List<Activity>();
+
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
             return View();
         }
@@ -57,7 +61,7 @@ namespace LMSG3.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,CourseId")] Module module)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,CourseId,Activities")] Module module)
         {
             if (ModelState.IsValid)
             {
@@ -156,5 +160,7 @@ namespace LMSG3.Web.Controllers
         {
             return _context.Modules.Any(e => e.Id == id);
         }
+
+
     }
 }

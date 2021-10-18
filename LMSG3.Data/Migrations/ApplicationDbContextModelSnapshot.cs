@@ -65,7 +65,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityType");
+                    b.ToTable("ActivityTypes");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.ApplicationUser", b =>
