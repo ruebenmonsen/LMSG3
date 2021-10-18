@@ -267,7 +267,7 @@ namespace LMSG3.Data
             var teacherDocuments = GetDocuments(teachers, teacherRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 100);
             await db.AddRangeAsync(teacherDocuments);
 
-            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 150);
+            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 600);
             await db.AddRangeAsync(studentDocuments);
 
         }
@@ -491,9 +491,9 @@ namespace LMSG3.Data
                         {
                             document.UploadDate = document.Activity.StartDate;
                         }
-                        else
+                        else if (DateTime.Now > document.Activity.StartDate)
                         {
-                            document.UploadDate = document.Activity.StartDate.AddHours(fake.Random.Int(1, 4));
+                            document.UploadDate = document.Activity.StartDate.AddHours(fake.Random.Int(0, 4));
                         }
                         break;
                     case "Personal":

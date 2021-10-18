@@ -10,49 +10,34 @@
                 {
                     <li class="list-group-item justify-content-between">
                         <div class="row">
-                            <div class="col-9">
+                            <div class="col-6">
                                 <div>@Html.DisplayFor(modelA => a.Name)</div>
-                                <div class="@(a.IsOverdue ? "text-danger" : "text-dark")"><p><small>Due @Html.DisplayFor(_ => a.EndDate)</small></p></div>
-                                <div class="@(a.IsSubmitted ? "text-success" : "text-dark")">
-
-                                    <p><small><i class="@(a.IsSubmitted ? "bi bi-check2" : "")"></i></small></p>
-
-
-
-      </div>
-
-
-  </div>
-
-
-  <div class="col-3">
-                                <a class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#assignmentModal" data-id="@a.Id">
+                                <div class="@(a.IsOverdue ? "text-danger" : (a.IsSubmitted ? "text-success" : "text-dark"))"><p class="small mb-0">Due @Html.DisplayFor(_ => a.EndDate)</p></div>
+                            </div>
+                            <div class="col-3">
+                                <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="@(a.IsSubmitted ? "bi bi-check2" : "")"></i></p>
+                            </div>
+                            <div class="col-3">
+                                <a class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#assignmentModal" data-id="@a.Id"
+                                   asp-controller="Student" asp-action="Upload">
                                     <i class="bi bi-upload"></i>
                                 </a>
                             </div>
                         </div>
-                        <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="assignmentModalLabel">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" asp-controller="Student" asp-action="Upload" asp-route-id="@a.Id">Upload</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </li>
                 }
             </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id='assignmentModalContent'>
+
+                </div>
+            </div>
         </div>
     </div>
 

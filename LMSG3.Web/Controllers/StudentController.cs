@@ -29,7 +29,7 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: Courses
-       
+
         public async Task<IActionResult> Index()
         {
             //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -58,15 +58,16 @@ namespace LMSG3.Web.Controllers
             var currentDate = DateTime.Now;
 
             //var student = await _context.Students.FindAsync(userId);
-            var assignmentTypeId = await _context.Activities.Where(a => a.ActivityType.Name == "Assignment").Select(a => a.ActivityTypeId).FirstOrDefaultAsync(); 
+            var assignmentTypeId = await _context.Activities.Where(a => a.ActivityType.Name == "Assignment").Select(a => a.ActivityTypeId).FirstOrDefaultAsync();
             var modules = await _context.Students.Where(s => s.Id == userId).Select(s => s.Course.Modules).FirstOrDefaultAsync();
             var currentModule = modules.Where(m => m.StartDate < currentDate && m.EndDate > currentDate).FirstOrDefault();
 
-            _context.Entry(currentModule).Collection(m => m.Activities).Load();
+            await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
 
             var documents = await _context.Students.Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
-            var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a => new AssignmentViewModel { 
+            var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a => new AssignmentViewModel
+            {
                 Id = a.Id,
                 Name = a.Name,
                 Description = a.Description,
@@ -87,8 +88,8 @@ namespace LMSG3.Web.Controllers
             var student2 = await _context.Students.Where(s => s.Id == userId).FirstOrDefaultAsync();
 
             var student = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
-                .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel 
-                { 
+                .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel
+                {
                     Id = s.Id,
                     FName = s.FName,
                     LName = s.LName,
@@ -106,13 +107,36 @@ namespace LMSG3.Web.Controllers
             return View(student);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Upload(int activityId)
+        [HttpGet]
+        public async Task<PartialViewResult> Upload(int? id)
         {
+            var activity = await _context.Activities.FindAsync(id);
 
-
-            return View();
+            var model = new AssignmentUploadViewModel
+            {
+                ActivityId = activity.Id,
+                ActivityName = activity.Name,
+                EndDate = activity.EndDate
+            };
+            return PartialView("AssignmentModal", model);
         }
+
+        [HttpPost]
+        public ActionResult Upload(AssignmentUploadViewModel model)
+        {
+            var uploadedDocument = new Document
+            {
+                Name = model.Name,
+                Description = model.Description,
+                UploadDate = DateTime.Now
+            };
+
+            _context.Add(uploadedDocument);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
 
         public async Task<ActionResult> ModulesList()
         {
@@ -120,7 +144,7 @@ namespace LMSG3.Web.Controllers
             var userId = userManager.GetUserId(User);
             var courseId = await _context.Students.Where(s => s.Id == userId).Select(s => s.CourseId).FirstOrDefaultAsync();
             var model = await _context.Modules.Where(m => m.CourseId == courseId).ToListAsync();
-                      
+
             return View(model);
 
         }
