@@ -11,6 +11,5 @@ namespace LMSG3.Core.Models.ViewModels
         public bool IsOverdue { get; set; }
         public bool IsSubmitted { get; set; }
 
-
     }
 }
