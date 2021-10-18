@@ -44,7 +44,7 @@ namespace LMSG3.Api.Controllers
             }
             //var somId = literature.LiteraLevelId;
             var literaDto = mapper.Map<LiteratureDto>(literature);
-
+            
             literaDto.LevelName = ModelsJoinHelper.GetLevelName(literature.LiteraLevelId, _context);//levelNames;//levelNames.First(e => e.LiteraLevelId == somId).Name.ToString();
             literaDto.LiteraTypeName = ModelsJoinHelper.GetTypeName(literature.LiteraTypeId, _context);
             literaDto.SubjectName = ModelsJoinHelper.GetSubjectName(literature.SubId, _context);

@@ -47,10 +47,15 @@ namespace LMSG3.Web.Controllers
 
             var cancellation = new CancellationTokenSource();
             var litratureModel = await SimpleGet();
-
+           
             if (!String.IsNullOrEmpty(searchString))
             {
-                litratureModel = litratureModel.Where(s => s.Title.Contains(searchString));
+                litratureModel = litratureModel.Where(s => s.Title.ToLower().Contains(searchString.ToLower()) 
+                                                    || s.SubjectName.ToLower().Contains(searchString.ToLower()) 
+                                                    || s.Description.ToLower().Contains(searchString.ToLower()) 
+                                                    || s.ReleaseDate.ToString().Contains(searchString.ToLower())
+                                                    || s.LevelName.ToLower().Contains(searchString.ToLower())
+                                                    || s.LiteraTypeName.ToLower().Contains(searchString.ToLower()));
             }
             switch (sortOrder)
             {
@@ -91,6 +96,7 @@ namespace LMSG3.Web.Controllers
            // IEnumerable<SelectListItem> lieratureLevelSlectItems = await GetVehicleLevelSelectListItems();
 
            // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
+
             return View(litratureModel);
 
 
