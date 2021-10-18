@@ -71,8 +71,11 @@ namespace LMSG3.Web.Controllers
                 Name = a.Name,
                 Description = a.Description,
                 EndDate = a.EndDate,
-                IsOverdue = documents.Where(d => d?.ActivityId != null && d?.ActivityId == a.Id)?.FirstOrDefault().UploadDate > a.EndDate,
-                IsSubmitted = documents.Where(d => d?.ActivityId != null && d?.ActivityId == a.Id).Any()
+                // Document.exist > EndDate || DateNow > EndDate
+                IsOverdue = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any() ?
+                    documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id)?.FirstOrDefault().UploadDate > a.EndDate :
+                    DateTime.Now > a.EndDate,
+                IsSubmitted = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any()
 
             }).ToList();
 
@@ -101,6 +104,14 @@ namespace LMSG3.Web.Controllers
 
             Console.WriteLine("tst");
             return View(student);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Upload(int activityId)
+        {
+
+
+            return View();
         }
 
         public async Task<ActionResult> ModulesList()
