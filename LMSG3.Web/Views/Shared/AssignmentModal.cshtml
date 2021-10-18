@@ -11,13 +11,13 @@
     </button>
     <div class="modal-body">
         <p>Deadline: @Model.EndDate</p>
-        @Html.LabelFor(model => model.Name, new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Name)
+        @Html.LabelFor(model => model.DocumentName, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.DocumentName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DocumentName)
 
-        @Html.LabelFor(model => model.Name, new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Description)
+        @Html.LabelFor(model => model.DocumentDescription, new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.DocumentDescription, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DocumentDescription)
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

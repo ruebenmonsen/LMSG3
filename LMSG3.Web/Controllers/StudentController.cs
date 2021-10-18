@@ -116,7 +116,7 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityId = activity.Id,
                 ActivityName = activity.Name,
-                EndDate = activity.EndDate
+                EndDate = activity.EndDate              
             };
             return PartialView("AssignmentModal", model);
         }
@@ -126,9 +126,12 @@ namespace LMSG3.Web.Controllers
         {
             var uploadedDocument = new Document
             {
-                Name = model.Name,
-                Description = model.Description,
-                UploadDate = DateTime.Now
+                Name = model.DocumentName,
+                Description = model.DocumentDescription,
+                UploadDate = DateTime.Now,
+                ApplicationUserId = userManager.GetUserId(User),
+                ActivityId = model.ActivityId,
+                DocumentTypeId = _context.Documents.Where(d => d.DocumentType.Name.Equals("Assignment")).FirstOrDefault().DocumentTypeId
             };
 
             _context.Add(uploadedDocument);

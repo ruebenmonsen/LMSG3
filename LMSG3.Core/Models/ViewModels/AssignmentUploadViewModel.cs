@@ -11,7 +11,8 @@ namespace LMSG3.Core.Models.ViewModels
         public int ActivityId { get; set; }
         public string ActivityName { get; set; }
         public DateTime EndDate { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public int? DocumentId { get; set; }
+        public string DocumentName { get; set; }
+        public string DocumentDescription { get; set; }
     }
 }
