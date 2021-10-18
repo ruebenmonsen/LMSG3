@@ -36,7 +36,7 @@ namespace LMSG3.Web.Controllers
         }
 
         
-        public async Task<ActionResult> Index(string sortOrder, string searchString)
+        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter)
         {
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["DescriptionSortParm"] = sortOrder == "FullName" ? "description_desc" : "Description";
@@ -50,12 +50,21 @@ namespace LMSG3.Web.Controllers
            
             if (!String.IsNullOrEmpty(searchString))
             {
-                litratureModel = litratureModel.Where(s => s.Title.ToLower().Contains(searchString.ToLower()) 
-                                                    || s.SubjectName.ToLower().Contains(searchString.ToLower()) 
-                                                    || s.Description.ToLower().Contains(searchString.ToLower()) 
-                                                    || s.ReleaseDate.ToString().Contains(searchString.ToLower())
-                                                    || s.LevelName.ToLower().Contains(searchString.ToLower())
-                                                    || s.LiteraTypeName.ToLower().Contains(searchString.ToLower()));
+                litratureModel = litratureModel.Where(s => s.Title.ToLower().Contains(searchString.ToLower().Trim())
+                                                    || s.SubjectName.ToLower().Contains(searchString.ToLower().Trim())
+                                                    || s.Description.ToLower().Contains(searchString.ToLower().Trim())
+                                                    || s.ReleaseDate.ToString().Contains(searchString.ToLower().Trim())
+                                                    || s.LevelName.ToLower().Contains(searchString.ToLower().Trim())
+                                                    //|| s.LiteraLevelId.Equals(currentFilter)
+                                                    || s.LiteraTypeName.ToLower().Contains(searchString.ToLower().Trim()));
+                                                     
+                                        //Todo Add countfor each creteria result
+            }
+
+            if (!String.IsNullOrEmpty(currentFilter))
+            {
+                litratureModel = litratureModel.Where(s => s.LiteraLevelId.Equals(Int16.Parse(currentFilter)));
+                                                  
             }
             switch (sortOrder)
             {
@@ -101,9 +110,6 @@ namespace LMSG3.Web.Controllers
 
 
         }
-
-       
-       
 
         private async Task<IEnumerable<LiteratureDto>> SimpleGet()
         {

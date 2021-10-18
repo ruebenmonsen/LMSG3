@@ -45,7 +45,7 @@ namespace LMSG3.Web
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-           // services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
            
