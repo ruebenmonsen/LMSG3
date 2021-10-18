@@ -35,13 +35,56 @@ namespace LMSG3.Web.Controllers
         }
 
         
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sortOrder)
         {
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["DescriptionSortParm"] = sortOrder == "FullName" ? "description_desc" : "Description";
+            ViewData["ReleaseDateSortParm"] = sortOrder == "ReleaseDate" ? "releaseDate_desc" : "ReleaseDate";
+            ViewData["SubjectSortParm"] = sortOrder == "Subject" ? "subject_desc" : "Subject";
+            ViewData["LevelSortParm"] = sortOrder == "Level" ? "level_desc" : "Level";
+            ViewData["TypeSortParm"] = sortOrder == "Type" ? "type_desc" : "Type";
+
             var cancellation = new CancellationTokenSource();
-            var res = await SimpleGet();
+            var viewModels = await SimpleGet();
             //var res = await GetWithStream();
             //return View(Json(res));
-            return View(res);
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    viewModels = viewModels.OrderByDescending(s => s.Title).ToList();
+                    break;
+                case "Description":
+                    viewModels = viewModels.OrderBy(s => s.Description).ToList();
+                    break;
+                case "description_desc":
+                    viewModels = viewModels.OrderBy(s => s.Description).ToList();
+                    break;
+                case "releaseDate_desc":
+                    viewModels = viewModels.OrderByDescending(s => s.ReleaseDate).ToList();
+                    break;
+                case "Subject":
+                    viewModels = viewModels.OrderBy(s => s.SubjectName).ToList();
+                    break;
+                case "subject_desc":
+                    viewModels = viewModels.OrderByDescending(s => s.SubjectName).ToList();
+                    break;
+                case "Level":
+                    viewModels = viewModels.OrderBy(s => s.LevelName).ToList();
+                    break;
+                case "level_desc":
+                    viewModels = viewModels.OrderByDescending(s => s.LevelName).ToList();
+                    break;
+                case "Type":
+                    viewModels = viewModels.OrderBy(s => s.LiteraTypeName).ToList();
+                    break;
+                case "type_desc":
+                    viewModels = viewModels.OrderByDescending(s => s.LiteraTypeName).ToList();
+                    break;
+                default:
+                    viewModels = viewModels.OrderBy(s => s.Title).ToList();
+                    break;
+            }
+            return View(viewModels);
 
 
         }

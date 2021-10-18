@@ -13,25 +13,26 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">ReleaseDate</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SubjectName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SubjectSortParm"]">Subject</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LevelName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LevelSortParm"]">Level</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LiteraTypeName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]">Type</a>
             </th>
             <th></th>
         </tr>
+       
     </thead>
     <tbody>
 @foreach (var item in Model) {
