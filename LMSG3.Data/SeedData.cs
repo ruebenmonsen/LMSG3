@@ -15,8 +15,16 @@ namespace LMSG3.Data
     {
         private static RoleManager<IdentityRole> roleManager;
         private static UserManager<ApplicationUser> userManager;
+
         private static Faker fake;
         private static TextInfo ti;
+
+        private static string defaultPassword;
+        private static string teacherRole;
+        private static string studentRole;
+
+        private static List<ActivityType> activityTypes;
+        private static List<DocumentType> documentTypes;
 
         public static async Task InitAsync(IServiceProvider services)
         {
@@ -25,114 +33,45 @@ namespace LMSG3.Data
                 // TODO: Check all entites or just one?
                 if (await db.Literatures.AnyAsync()) return;
 
-
-                // Common
+                //Common
                 fake = new Faker("en");
                 ti = new CultureInfo("en-US", false).TextInfo;
-
 
                 // API
                 //var letertures = GetLeterature();
                 //await db.AddRangeAsync(letertures);
 
-
                 // MVC
-                var defaultPassword = "Abc123!";
-                var teacherRole = "Teacher";
-                var studentRole = "Student";
+                defaultPassword = "Abc123!";
 
                 roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
+                teacherRole = "Teacher";
+                studentRole = "Student";
+
                 await AddRoleAsync(teacherRole);
                 await AddRoleAsync(studentRole);
 
-
-                // MVC : Courses
-                var courses = GetCourses(3);
-                await db.AddRangeAsync(courses);
-
-                // MVC : Modules
-                var modules = new List<Module>();
-                foreach (var course in courses)
-                {
-                    modules.AddRange(GetModules(course, 3));
-                }
-                await db.AddRangeAsync(modules);
-
-                // MVC : Activities
-                List<ActivityType> activityTypes = new List<ActivityType> {
+                activityTypes = new List<ActivityType> {
                     new ActivityType { Name = "Lecture" },
                     new ActivityType { Name = "Assignment" },
                     new ActivityType { Name = "E-Learning" }
                 };
 
-                var activities = new List<Activity>();
-                foreach (var module in modules)
-                {
-                    activities.AddRange(GetActivities(module, activityTypes));
-                }
-                await db.AddRangeAsync(activities);
-
-
-                // MVC : Users
-                var teachers = (await GetTeachersAsync(defaultPassword, 2)).ToList();
-
-                var defaultTeacher = new Teacher 
-                { 
-                    FName = "David",
-                    LName = "Nokto",
-                    Email = "d@lexi.com",
-                    UserName = "d@lexi.com"
-                };
-                var iResult = await userManager.CreateAsync(defaultTeacher, defaultPassword);
-                if (!iResult.Succeeded)
-                {
-                    throw new Exception(String.Join("\n", iResult.Errors));
-                }
-                teachers.Add(defaultTeacher);
-
-                foreach (var teacher in teachers)
-                {
-                    await userManager.AddToRoleAsync(teacher, teacherRole);
-                }
-
-
-                var students = (await GetStudentsAsync(courses, defaultPassword, 8)).ToList();
-
-                var defaultStudent = new Student
-                {
-                    FName = "Student",
-                    LName = "Teacherson",
-                    Email = "s@lexi.com",
-                    UserName = "s@lexi.com",
-                    Course = courses.FirstOrDefault()
-                };
-                iResult = await userManager.CreateAsync(defaultStudent, defaultPassword);
-                if (!iResult.Succeeded)
-                {
-                    throw new Exception(String.Join("\n", iResult.Errors));
-                }
-                students.Add(defaultStudent);
-
-                foreach (var student in students)
-                {
-                    await userManager.AddToRoleAsync(student, studentRole);
-                }
-
-
-                // MVC : Documents
-                List<DocumentType> documentTypes = new List<DocumentType> {
+                documentTypes = new List<DocumentType> {
                     new DocumentType { Name = "Assignment" },
                     new DocumentType { Name = "Information" },
                     new DocumentType { Name = "Excerice" }
                 };
 
-                var teacherDocuments = GetDocuments(teachers, documentTypes, courses, modules, activities, 8);
-                await db.AddRangeAsync(teacherDocuments);
+                // (static + minimal bogus) Uncomment to add nice default seed data 
+                await AddDefaultMvcDataAsync(db);
 
-                var studentDocuments = GetDocuments(students, documentTypes, courses, modules, activities, 4);
-                await db.AddRangeAsync(studentDocuments);
+                // (all bogus) Uncomment to add more bogus seed data
+                // Modify amounts in sub method signatures
+                // Too much data will slow the program
+                await AddBogusMvcDataAsync(db);
 
 
                 // Save to DB
@@ -200,6 +139,187 @@ namespace LMSG3.Data
             return literatures;
         }
 
+        private static async Task AddDefaultMvcDataAsync(ApplicationDbContext db)
+        {
+            // Keep a day between the modules to reduce logic for activities.
+            var currentModuleStart = DateTime.Now.AddDays(-7);
+            var currentModuleEnd = currentModuleStart.AddDays(13);
+            var previousModuleStart = currentModuleStart.AddDays(-7);
+            var previousModuleEnd = currentModuleStart.AddDays(-1);
+            var nextModuleStart = currentModuleEnd.AddDays(1);
+            var nextModuleEnd = currentModuleEnd.AddDays(7);
+
+
+            // Default course
+            var defaultCourse = new Course
+            {
+                Name = "Fullstack in C# and JavaScript",
+                Description = fake.Lorem.Paragraph(),
+                StartDate = currentModuleStart
+            };
+            await db.AddAsync(defaultCourse);
+
+            // Default modules
+            var modules = new List<Module>();
+
+            var previousModule = new Module
+            {
+                Name = "HTML5 and JavaScript",
+                Description = fake.Lorem.Sentence(),
+                StartDate = previousModuleStart,
+                EndDate = previousModuleEnd,
+                Course = defaultCourse
+            };
+            modules.Add(previousModule);
+
+            var currentModule = new Module
+            {
+                Name = "C# with MVC and API",
+                Description = fake.Lorem.Sentence(),
+                StartDate = currentModuleStart,
+                EndDate = currentModuleEnd,
+                Course = defaultCourse
+            };
+            modules.Add(currentModule);
+
+            var nextModule = new Module
+            {
+                Name = "Fullstack project",
+                Description = fake.Lorem.Sentence(),
+                StartDate = nextModuleStart,
+                EndDate = nextModuleEnd,
+                Course = defaultCourse
+            };
+            modules.Add(nextModule);
+            await db.AddRangeAsync(modules);
+
+            // Bogus activities for default modules
+            var activities = new List<Activity>();
+            foreach (var module in modules)
+            {
+                activities.AddRange(GetActivities(module, activityTypes, 3));
+            }
+            await db.AddRangeAsync(activities);
+
+            // Default teachers
+            List<Teacher> teachers = new List<Teacher>();
+            teachers.Add(new Teacher
+            {
+                FName = "David",
+                LName = "Novell",
+                Email = "d@lexi.com",
+                UserName = "d@lexi.com"
+            });
+            teachers.Add(new Teacher
+            {
+                FName = "Dimitris",
+                LName = "Backman",
+                Email = "t@lexi.com",
+                UserName = "t@lexi.com"
+            });
+            foreach (var teacher in teachers)
+            {
+                var iResult = await userManager.CreateAsync(teacher, defaultPassword);
+                if (!iResult.Succeeded)
+                {
+                    throw new Exception(String.Join("\n", iResult.Errors));
+                }
+                await userManager.AddToRoleAsync(teacher, teacherRole);
+            }
+
+            // Default students
+            List<Student> students = new List<Student>();
+            students.Add(new Student
+            {
+                FName = "Student",
+                LName = "Teacherson",
+                Email = "s@lexi.com",
+                UserName = "s@lexi.com",
+                Course = defaultCourse
+            });
+            students.Add(new Student
+            {
+                FName = "Kalle",
+                LName = "Anka",
+                Email = "s2@lexi.com",
+                UserName = "s2@lexi.com",
+                Course = defaultCourse
+            });
+            students.Add(new Student
+            {
+                FName = "Pelle",
+                LName = "Svanslös",
+                Email = "s3@lexi.com",
+                UserName = "s3@lexi.com",
+                Course = defaultCourse
+            });
+            foreach (var student in students)
+            {
+                var iResult = await userManager.CreateAsync(student, defaultPassword);
+                if (!iResult.Succeeded)
+                {
+                    throw new Exception(String.Join("\n", iResult.Errors));
+                }
+                await userManager.AddToRoleAsync(student, studentRole);
+            }
+
+            // Default bogus documents
+            var teacherDocuments = GetDocuments(teachers, teacherRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 50);
+            await db.AddRangeAsync(teacherDocuments);
+
+            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 75);
+            await db.AddRangeAsync(studentDocuments);
+
+        }
+
+        private static async Task AddBogusMvcDataAsync(ApplicationDbContext db)
+        {
+            // MVC : Courses
+            var courses = GetCourses(2);
+            await db.AddRangeAsync(courses);
+
+            // MVC : Modules
+            var modules = new List<Module>();
+            foreach (var course in courses)
+            {
+                modules.AddRange(GetModules(course, fake.Random.Int(2, 5)));
+            }
+            await db.AddRangeAsync(modules);
+
+            // MVC : Activities
+
+            var activities = new List<Activity>();
+            foreach (var module in modules)
+            {
+                activities.AddRange(GetActivities(module, activityTypes, fake.Random.Int(1, 3)));
+            }
+            await db.AddRangeAsync(activities);
+
+
+            // MVC : Users
+
+            var teachers = (await GetTeachersAsync(defaultPassword, 2)).ToList();
+            foreach (var teacher in teachers)
+            {
+                await userManager.AddToRoleAsync(teacher, teacherRole);
+            }
+
+
+            var students = (await GetStudentsAsync(courses, defaultPassword, 8)).ToList();
+            foreach (var student in students)
+            {
+                await userManager.AddToRoleAsync(student, studentRole);
+            }
+
+
+            // MVC : Documents
+
+            var teacherDocuments = GetDocuments(teachers, teacherRole, documentTypes, courses, modules, activities, 12);
+            await db.AddRangeAsync(teacherDocuments);
+
+            var studentDocuments = GetDocuments(students, studentRole, documentTypes, courses, modules, activities, 16);
+            await db.AddRangeAsync(studentDocuments);
+        }
         private static async Task AddRoleAsync(string roleName)
         {
             if (await roleManager.RoleExistsAsync(roleName) is false)
@@ -272,7 +392,7 @@ namespace LMSG3.Data
                 var e = new Course
                 {
                     Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.Verb()),
-                    Description = fake.Lorem.Sentence(),
+                    Description = fake.Lorem.Paragraph(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(1, 364))
                 };
 
@@ -307,21 +427,20 @@ namespace LMSG3.Data
             return modules;
         }
 
-        private static IEnumerable<Activity> GetActivities(Module module, IEnumerable<ActivityType> types)
+        private static IEnumerable<Activity> GetActivities(Module module, IEnumerable<ActivityType> types, int amountPerDay)
         {
             var activities = new List<Activity>();
             DateTime startDay = module.StartDate;
             DateTime startDate;
             DateTime endDate;
-            int startHour = 8; // assuming midnight
-            int amount = 3; // per day
+            int startHour = 0; // TODO: maybe some logic here
             int days = (int) (module.EndDate - module.StartDate).TotalDays; // could fail
 
             for (int day = 0; day < days; day++)
             {
                 startDate = startDay.AddDays(day).AddHours(startHour);
 
-                for (int i= 0; i < amount; i++)
+                for (int i= 0; i < amountPerDay; i++)
                 {
                     endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: fix bug
                     var e = new Activity
@@ -339,7 +458,8 @@ namespace LMSG3.Data
             }
             return activities;
         }
-        private static IEnumerable<Document> GetDocuments(IEnumerable<ApplicationUser> users, 
+
+        private static IEnumerable<Document> GetDocuments(IEnumerable<ApplicationUser> users, string role,
             IEnumerable<DocumentType> documentTypes, IEnumerable<Course> courses, 
             IEnumerable<Module> modules, IEnumerable<Activity> activities, int amount)
         {
@@ -347,30 +467,40 @@ namespace LMSG3.Data
 
             for (int i = 0; i < amount; i++)
             {
-                var e = new Document
+                var document = new Document
                 {
                     Name = fake.Hacker.Noun(),
                     Description = fake.Lorem.Sentence(),
-                    UploadDate = DateTime.Now.AddDays(fake.Random.Int(1, 364)), // TODO: logic
+                    UploadDate = DateTime.Now.AddDays(fake.Random.Int(-14, 1)), // TODO: logic
                     DocumentType = fake.PickRandom(documentTypes),
                     ApplicationUser = fake.PickRandom(users)             
                 };
                 switch (fake.PickRandom( new string[] {"Course", "Module", "Activity", "Personal"}))
                 {
                     case "Course":
-                        e.Course = fake.PickRandom(courses);
+                        document.Course = fake.PickRandom(courses);
+                        document.UploadDate = document.Course.StartDate.AddDays(fake.Random.Int(0, 30));
                         break;
                     case "Module":
-                        e.Module = fake.PickRandom(modules);
+                        document.Module = fake.PickRandom(modules);
+                        document.UploadDate = document.Module.StartDate.AddDays(fake.Random.Int(0, 14));
                         break;
                     case "Activity":
-                        e.Activity = fake.PickRandom(activities);
+                        document.Activity = fake.PickRandom(activities);
+                        if (role == teacherRole)
+                        {
+                            document.UploadDate = document.Activity.StartDate;
+                        }
+                        else
+                        {
+                            document.UploadDate = document.Activity.StartDate.AddHours(fake.Random.Int(0, 4));
+                        }
                         break;
                     case "Personal":
                         break;
                 }
 
-                documents.Add(e);
+                documents.Add(document);
             }
 
             return documents;
