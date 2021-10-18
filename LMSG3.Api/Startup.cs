@@ -1,9 +1,7 @@
 using LMSG3.Core.Configuration;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data;
-using LMSG3.Data;
 using LMSG3.Data.Configuration;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;

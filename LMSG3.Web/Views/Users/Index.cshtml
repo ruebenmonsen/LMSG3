@@ -9,16 +9,23 @@
 <p>
     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register New User</a>
 </p>
-<table class="table">
+<table data-toggle="table"
+       data-classes="table table-hover table-condensed"
+       data-striped="true"
+       data-sort-order="desc"
+       data-sort-name="StartTime"
+       data-pagination="true"
+       data-page-list="[5,10, 20, ALL]"
+       data-page-size="20">
     <thead>
         <tr>
-            <th>
+            <th data-sortable="true">
                 @Html.DisplayNameFor(model => model.FullName)
             </th>
-            <th>
+            <th data-sortable="true">
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-            <th>
+            <th data-sortable="true">
                 @Html.DisplayNameFor(model => model.Role)
             </th>
             <th></th>

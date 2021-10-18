@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using LMSG3.Core.Configuration;
 using LMSG3.Core.Repositories;
 using LMSG3.Data.Repositories;
-using Microsoft.AspNet.Identity;
 using LMSG3.Core.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 
