@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LMSG3.Api\LMSG3.Api.csproj" />
     <ProjectReference Include="..\LMSG3.Core\LMSG3.Core.csproj" />
     <ProjectReference Include="..\LMSG3.Data\LMSG3.Data.csproj" />
   </ItemGroup>

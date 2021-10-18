@@ -1,6 +1,7 @@
 ﻿using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace LMSG3.Web.Controllers
         }
 
         
-        public async Task<ActionResult> Index(string sortOrder)
+        public async Task<ActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["DescriptionSortParm"] = sortOrder == "FullName" ? "description_desc" : "Description";
@@ -45,49 +46,58 @@ namespace LMSG3.Web.Controllers
             ViewData["TypeSortParm"] = sortOrder == "Type" ? "type_desc" : "Type";
 
             var cancellation = new CancellationTokenSource();
-            var viewModels = await SimpleGet();
-            //var res = await GetWithStream();
-            //return View(Json(res));
+            var litratureModel = await SimpleGet();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                litratureModel = litratureModel.Where(s => s.Title.Contains(searchString));
+            }
             switch (sortOrder)
             {
                 case "title_desc":
-                    viewModels = viewModels.OrderByDescending(s => s.Title).ToList();
+                    litratureModel = litratureModel.OrderByDescending(s => s.Title).ToList();
                     break;
                 case "Description":
-                    viewModels = viewModels.OrderBy(s => s.Description).ToList();
+                    litratureModel = litratureModel.OrderBy(s => s.Description).ToList();
                     break;
                 case "description_desc":
-                    viewModels = viewModels.OrderBy(s => s.Description).ToList();
+                    litratureModel = litratureModel.OrderBy(s => s.Description).ToList();
                     break;
                 case "releaseDate_desc":
-                    viewModels = viewModels.OrderByDescending(s => s.ReleaseDate).ToList();
+                    litratureModel = litratureModel.OrderByDescending(s => s.ReleaseDate).ToList();
                     break;
                 case "Subject":
-                    viewModels = viewModels.OrderBy(s => s.SubjectName).ToList();
+                    litratureModel = litratureModel.OrderBy(s => s.SubjectName).ToList();
                     break;
                 case "subject_desc":
-                    viewModels = viewModels.OrderByDescending(s => s.SubjectName).ToList();
+                    litratureModel = litratureModel.OrderByDescending(s => s.SubjectName).ToList();
                     break;
                 case "Level":
-                    viewModels = viewModels.OrderBy(s => s.LevelName).ToList();
+                    litratureModel = litratureModel.OrderBy(s => s.LevelName).ToList();
                     break;
                 case "level_desc":
-                    viewModels = viewModels.OrderByDescending(s => s.LevelName).ToList();
+                    litratureModel = litratureModel.OrderByDescending(s => s.LevelName).ToList();
                     break;
                 case "Type":
-                    viewModels = viewModels.OrderBy(s => s.LiteraTypeName).ToList();
+                    litratureModel = litratureModel.OrderBy(s => s.LiteraTypeName).ToList();
                     break;
                 case "type_desc":
-                    viewModels = viewModels.OrderByDescending(s => s.LiteraTypeName).ToList();
+                    litratureModel = litratureModel.OrderByDescending(s => s.LiteraTypeName).ToList();
                     break;
                 default:
-                    viewModels = viewModels.OrderBy(s => s.Title).ToList();
+                    litratureModel = litratureModel.OrderBy(s => s.Title).ToList();
                     break;
             }
-            return View(viewModels);
+           // IEnumerable<SelectListItem> lieratureLevelSlectItems = await GetVehicleLevelSelectListItems();
+
+           // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
+            return View(litratureModel);
 
 
         }
+
+       
+       
 
         private async Task<IEnumerable<LiteratureDto>> SimpleGet()
         {

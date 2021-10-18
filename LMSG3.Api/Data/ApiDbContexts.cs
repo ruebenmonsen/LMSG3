@@ -23,12 +23,12 @@ namespace LMSG3.Api
         public DbSet<LiteratureType> literatureTypes { get; set; }
         public DbSet<Subject> LiteratureSubjects { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
 
             
-        }
+        //}
 
     }
 }

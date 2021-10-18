@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using LMSG3.Data;
 using LMSG3.Core.Configuration;
 using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 
 namespace LMSG3.Web
 {
@@ -35,6 +36,7 @@ namespace LMSG3.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
+           
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -43,8 +45,12 @@ namespace LMSG3.Web
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+           // services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+           
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
