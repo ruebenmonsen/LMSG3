@@ -7,23 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data;
+using LMSG3.Core.Repositories;
+using Microsoft.Extensions.Logging;
+using LMSG3.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMSG3.Web.Controllers
 {
     public class ActivitiesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
+        private readonly IRepository<Activity> ActivityRepo = null;
+        private readonly ILogger logger = null;
 
         public ActivitiesController(ApplicationDbContext context)
         {
-            _context = context;
+            db = context;
+            this.ActivityRepo = new GenericRepository<Activity>(context, logger);
         }
 
         // GET: Activities
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Activities.Include(a => a.ActivityType).Include(a => a.Module);
-            return View(await applicationDbContext.ToListAsync());
+            var activities = db.Activities.Include(a => a.ActivityType).Include(a => a.Module);
+            return View(await activities.ToListAsync());
         }
 
         // GET: Activities/Details/5
@@ -34,7 +41,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities
+            var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -47,10 +54,11 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: Activities/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id");
+            ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id");
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id");
             return View();
         }
 
@@ -59,20 +67,23 @@ namespace LMSG3.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
         {
+            CheckDate(activity);
             if (ModelState.IsValid)
             {
-                _context.Add(activity);
-                await _context.SaveChangesAsync();
+                ActivityRepo.Add(activity);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
             return View(activity);
         }
 
         // GET: Activities/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,13 +91,13 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities.FindAsync(id);
+            var activity = await ActivityRepo.FindAsync(id);
             if (activity == null)
             {
                 return NotFound();
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
             return View(activity);
         }
 
@@ -95,19 +106,20 @@ namespace LMSG3.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,ModuleId,ActivityTypeId")] Activity activity)
         {
             if (id != activity.Id)
             {
                 return NotFound();
             }
-
+            CheckDate(activity);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(activity);
-                    await _context.SaveChangesAsync();
+                    ActivityRepo.Update(activity);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -122,12 +134,13 @@ namespace LMSG3.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
             return View(activity);
         }
 
         // GET: Activities/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,7 +148,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities
+            var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -150,17 +163,35 @@ namespace LMSG3.Web.Controllers
         // POST: Activities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await _context.Activities.FindAsync(id);
-            _context.Activities.Remove(activity);
-            await _context.SaveChangesAsync();
+            var activity = await ActivityRepo.FindAsync(id);
+            ActivityRepo.Remove(activity);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ActivityExists(int id)
         {
-            return _context.Activities.Any(e => e.Id == id);
+            return db.Activities.Any(e => e.Id == id);
+        }
+        private void CheckDate(Activity activity)
+        {
+            var module = db.Modules.Find(activity.ModuleId);
+            if (module != null)
+            {
+                if (module.StartDate < activity.StartDate|| module.StartDate > activity.EndDate)
+                {
+                    ModelState.AddModelError("StartDate",
+                                             "Activity  StartDate must be within  Module Interval");
+                }
+                else if (module.EndDate < activity.StartDate || module.EndDate > activity.EndDate)
+                {
+                    ModelState.AddModelError("EndDate",
+                                             "Activity  EndDate must be within  Module Interval");
+                }
+            }
         }
     }
 }

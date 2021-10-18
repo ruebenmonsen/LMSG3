@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LMSG3.Core.Models.Entities
 {
-    public class Course
+    public class Course 
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,8 @@ namespace LMSG3.Core.Models.Entities
         public ICollection<Student> Students { get; set; }
         public ICollection<Module> Modules { get; set; }
         public ICollection<Document> Documents { get; set; }
+
+
 
     }
 }
