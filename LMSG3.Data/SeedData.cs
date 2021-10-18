@@ -71,7 +71,7 @@ namespace LMSG3.Data
                 // (all bogus) Uncomment to add more bogus seed data
                 // Modify amounts in sub method signatures
                 // Too much data will slow the program
-                await AddBogusMvcDataAsync(db);
+                //await AddBogusMvcDataAsync(db);
 
 
                 // Save to DB

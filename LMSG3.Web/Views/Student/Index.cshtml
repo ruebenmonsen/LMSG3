@@ -6,17 +6,26 @@
     <div class="row">
         <div class="col-6">
             <ul class="list-group">
-                @*@foreach (var a in Model.Assignments)
+                @foreach (var a in Model.CurrentModule.Assignments)
                 {
                     <li class="list-group-item justify-content-between">
                         <div class="row">
                             <div class="col-9">
                                 <div>@Html.DisplayFor(modelA => a.Name)</div>
-                                <div class="@((DateTime.Now > a.EndDate)  ? "text-danger" : "text-dark")"><p><small>Due @Html.DisplayFor(_ => a.EndDate)</small></p></div>
-                                <div class="@(IsHandedIn ? "text-success" : "text-dark")"><p><small>X</small></p></div>
-                                <div class="@(((bool)a?.Documents.Where(d => d.ApplicationUserId == Model.Id).Any())  ? "text-success" : "text-dark")"><p><small>X</small></p></div>
-                            </div>
-                            <div class="col-3">
+                                <div class="@(a.IsOverdue ? "text-danger" : "text-dark")"><p><small>Due @Html.DisplayFor(_ => a.EndDate)</small></p></div>
+                                <div class="@(a.IsSubmitted ? "text-success" : "text-dark")">
+
+                                    <p><small><i class="@(a.IsSubmitted ? "bi bi-check2" : "")"></i></small></p>
+
+
+
+      </div>
+
+
+  </div>
+
+
+  <div class="col-3">
                                 <a class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#assignmentModal" data-id="@a.Id">
                                     <i class="bi bi-upload"></i>
                                 </a>
@@ -42,7 +51,7 @@
                             </div>
                         </div>
                     </li>
-                }*@
+                }
             </ul>
         </div>
     </div>

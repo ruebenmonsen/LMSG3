@@ -32,7 +32,7 @@ namespace LMSG3.Web.Controllers
        
         public async Task<IActionResult> Index()
         {
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //_context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             var userId = userManager.GetUserId(User);
             var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
             {
@@ -58,9 +58,12 @@ namespace LMSG3.Web.Controllers
             var currentDate = DateTime.Now;
 
             //var student = await _context.Students.FindAsync(userId);
-            var assignmentTypeId = _context.Activities.Where(a => a.ActivityType.Name == "Assignment").Select(a => a.ActivityTypeId);
+            var assignmentTypeId = await _context.Activities.Where(a => a.ActivityType.Name == "Assignment").Select(a => a.ActivityTypeId).FirstOrDefaultAsync(); 
             var modules = await _context.Students.Where(s => s.Id == userId).Select(s => s.Course.Modules).FirstOrDefaultAsync();
             var currentModule = modules.Where(m => m.StartDate < currentDate && m.EndDate > currentDate).FirstOrDefault();
+
+            _context.Entry(currentModule).Collection(m => m.Activities).Load();
+
             var documents = await _context.Students.Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a => new AssignmentViewModel { 
@@ -68,10 +71,15 @@ namespace LMSG3.Web.Controllers
                 Name = a.Name,
                 Description = a.Description,
                 EndDate = a.EndDate,
-                IsOverdue = documents.Where(d => d.ActivityId == a.Id).FirstOrDefault().UploadDate < a.EndDate,
-                IsSubmitted = documents.Where(d => d.ActivityId == a.Id).Any()
+                IsOverdue = documents.Where(d => d?.ActivityId != null && d?.ActivityId == a.Id)?.FirstOrDefault().UploadDate > a.EndDate,
+                IsSubmitted = documents.Where(d => d?.ActivityId != null && d?.ActivityId == a.Id).Any()
 
-            });
+            }).ToList();
+
+            var moduleModel = new CurrentModuleViewModel
+            {
+                Assignments = assignmnets
+            };
 
             var student2 = await _context.Students.Where(s => s.Id == userId).FirstOrDefaultAsync();
 
@@ -82,6 +90,7 @@ namespace LMSG3.Web.Controllers
                     FName = s.FName,
                     LName = s.LName,
                     Documents = s.Documents,
+                    CurrentModule = moduleModel,
                     //Assignments = s.Course.Modules.SelectMany(m => m.Activities).Where(a => a.ActivityType.Name.StartsWith("A")).ToList(),
                     //Activities = s.Course.Modules.SelectMany(m => m.Activities).Where(a => !a.ActivityType.Name.Equals("Assignment")).ToList(),
                     Modules = s.Course.Modules,
