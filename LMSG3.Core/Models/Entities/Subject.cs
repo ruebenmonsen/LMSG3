@@ -8,6 +8,6 @@ namespace LMSG3.Core.Models.Entities
         public string Name { get; set; }
 
         // NAV
-        public ICollection<Literature> Literatures { get; set; }
+      //  public ICollection<Literature> Literatures { get; set; }
     }
 }

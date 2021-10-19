@@ -19,6 +19,7 @@ using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using LMSG3.Core.Configuration;
 using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 
 namespace LMSG3.Web
 {
@@ -32,12 +33,17 @@ namespace LMSG3.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddHttpClient();
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
+           
+            services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
+            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
+            services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -63,6 +69,10 @@ namespace LMSG3.Web
             //services.AddMvc().AddRazorPagesOptions(options => {
             //    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
             //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+            services.AddControllersWithViews();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +101,7 @@ namespace LMSG3.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Users}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

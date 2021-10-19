@@ -5,6 +5,10 @@
     {
       "library": "bootstrap-table@1.18.3",
       "destination": "wwwroot/lib/bootstrap-table/"
+    },
+    {
+      "library": "bootstrap@5.1.3",
+      "destination": "wwwroot/bootstrap/"
     }
   ]
 }
