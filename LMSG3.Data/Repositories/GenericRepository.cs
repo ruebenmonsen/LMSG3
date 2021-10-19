@@ -65,7 +65,7 @@ namespace LMSG3.Data.Repositories
             else
                 return await query.ToListAsync();
         }
-        
+
         public virtual async Task<TEntity> GetAsync(int? id)
         {
             return await dbSet.FindAsync(id);
@@ -76,7 +76,7 @@ namespace LMSG3.Data.Repositories
             if (context.Entry(entity).State == EntityState.Detached)
                 dbSet.Attach(entity);
 
-                dbSet.Remove(entity);
+            dbSet.Remove(entity);
         }
 
         public virtual void Remove(int id)
