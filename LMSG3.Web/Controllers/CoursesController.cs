@@ -65,7 +65,7 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: Courses/Create
-        public IActionResult Create()
+        public IActionResult CreateCourse()
         {
             return View();
         }
@@ -87,35 +87,54 @@ namespace LMSG3.Web.Controllers
         //        uow.ModuleRepository.Add(item);
         //        await uow.CompleteAsync();
         //    }
-           
+
 
         //    return RedirectToAction(nameof(Index));
 
 
         //}
         //[HttpPost]
-        public async Task<ActionResult> CreateCourse(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
+        public async Task<ActionResult> CreateCoursejs(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
         {
-            var course = mapper.Map<Course>(coursevm);
-            uow.CourseRepository.Add(course);
-            await uow.CompleteAsync();
-
-            foreach (var modulevm in modulesetsvm)
+            //need to add validation 
+            if (coursevm.Name == null)
             {
-                var modules = new Module 
-                {
-                Name=modulevm.Name,
-                Description=modulevm.Description,
-                StartDate=modulevm.StartDate,
-                EndDate=modulevm.EndDate,
-                CourseId=course.Id
-                };
-                uow.ModuleRepository.Add(modules);
-                await uow.CompleteAsync();
+                TempData["Message"] = "Error! Empty fields...";
+                return Json(new { redirectToUrl = Url.Action("CreateCourse", "Courses") });
             }
-            
-            //return RedirectToAction(nameof(Index));
-            return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+            else
+            {
+                var courseexist = await _context.Courses.Where(c => c.Name == coursevm.Name).FirstOrDefaultAsync();
+                if (courseexist != null)
+                {
+                    //create viewbag to send the msg 
+                    ViewBag.Message = "Course already exists.";
+                    return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+                }
+                else
+                {
+                    var course = mapper.Map<Course>(coursevm);
+                    uow.CourseRepository.Add(course);
+                    await uow.CompleteAsync();
+
+                    foreach (var modulevm in modulesetsvm)
+                    {
+                        var modules = new Module
+                        {
+                            Name = modulevm.Name,
+                            Description = modulevm.Description,
+                            StartDate = modulevm.StartDate,
+                            EndDate = modulevm.EndDate,
+                            CourseId = course.Id
+                        };
+                        uow.ModuleRepository.Add(modules);
+                        await uow.CompleteAsync();
+                    }
+
+
+                    return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+                }
+            }
 
         }
 

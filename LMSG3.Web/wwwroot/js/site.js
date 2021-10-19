@@ -68,24 +68,43 @@ $(document).on('click', '#Btn_DeleteModuleset', function () {
 $(document).on('click', '#BtnCreate', function (e) {
     var course = getCourse();
     var moduleSets = getModulesets();
+    var validate = validation(course, moduleSets)
+    if (validate == 'true')
+    {
+        $.ajax({
+            type: 'POST',
+            // url: '@Url.Action("CreateCoursejs", "Courses")',
+            url: "https://localhost:44314/Courses/CreateCoursejs",
 
-    $.ajax({
-        type: 'POST',
-       // url: '@Url.Action("CreateCourse", "Courses")',
-        url: "https://localhost:44314/Courses/CreateCourse",
-       
-        data: { "coursevm": course, "modulesetsvm":moduleSets },
-        success: function (response) {
-            window.location.href = response.redirectToUrl;
-            alert('successfully course created');
-        }
-        ,
-        error: function (err) {
-           alert('error');
-        }
-    });
+            data: { "coursevm": course, "modulesetsvm": moduleSets },
+            success: function (response) {
+                window.location.href = response.redirectToUrl;
+
+            }
+            ,
+            error: function (err) {
+                alert('error');
+            }
+        });
+    }
 });
-
+function validation(course, moduleSets) {
+    if (course.Name == '')
+    { }
+    else if (course.StartDate < Date.now())
+    { }
+    else
+    {
+        for (var i = 0; i < moduleSets.length(); i++)
+        {
+            if (moduleSets[i].Name == '')
+            { }
+            else if (moduleSets[i].StartDate < course.StartDate)
+            { }
+        }
+        return true;
+    }
+}
 function getCourse() {
     var course = {
         Name: $("#CourseName").val(),
@@ -102,7 +121,10 @@ function getModulesets() {
     var ModuleStartDate = document.querySelectorAll('#ModuleStartDate');
     var ModuleEndDate = document.querySelectorAll('#ModuleEndDate');
     for (var i = 0; i < ModuleName.length; i++) {
-       /* if (!ModuleStartDate[i].value >= cou.StartDate)*/
+        if (ModuleStartDate[i].value < cou.StartDate) {
+
+        }
+
         if (ModuleName[i].value != '') {
             moduleSets.push({
                 Name: ModuleName[i].value,

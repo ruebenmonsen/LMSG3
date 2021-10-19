@@ -7,7 +7,7 @@ namespace LMSG3.Core.Models.ViewModels
     public class ModelListViewModel
     {
         public int Id { get; set; }
-        [Display(Name = "Activity Name")]
+        [Display(Name = "Module Name")]
         public string Name { get; set; }
         public string Description { get; set; }
         [DataType(DataType.DateTime)]
