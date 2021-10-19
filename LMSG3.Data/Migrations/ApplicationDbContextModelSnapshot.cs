@@ -16,7 +16,7 @@ namespace LMSG3.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Activity", b =>
@@ -30,6 +30,7 @@ namespace LMSG3.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
@@ -39,6 +40,7 @@ namespace LMSG3.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
@@ -65,7 +67,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityType");
+                    b.ToTable("ActivityTypes");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.ApplicationUser", b =>
@@ -203,7 +205,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Document");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.DocumentType", b =>
@@ -221,93 +223,6 @@ namespace LMSG3.Data.Migrations
                     b.ToTable("DocumentType");
                 });
 
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Literature", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LiteratureLevelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LiteratureTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LiteratureLevelId");
-
-                    b.HasIndex("LiteratureTypeId");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("Literatures");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureAuthor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LiteratureAuthors");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureLevel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LiteratureLevel");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LiteratureType");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Module", b =>
                 {
                     b.Property<int>("Id")
@@ -319,12 +234,14 @@ namespace LMSG3.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
@@ -335,36 +252,6 @@ namespace LMSG3.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Modules");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Subject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Subject");
-                });
-
-            modelBuilder.Entity("LiteratureLiteratureAuthor", b =>
-                {
-                    b.Property<int>("AuthorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LiteraturesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorsId", "LiteraturesId");
-
-                    b.HasIndex("LiteraturesId");
-
-                    b.ToTable("LiteratureLiteratureAuthor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -575,33 +462,6 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("Module");
                 });
 
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Literature", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.LiteratureLevel", "LiteratureLevel")
-                        .WithMany("Literatures")
-                        .HasForeignKey("LiteratureLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMSG3.Core.Models.Entities.LiteratureType", "LiteratureType")
-                        .WithMany("Literatures")
-                        .HasForeignKey("LiteratureTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMSG3.Core.Models.Entities.Subject", "Subject")
-                        .WithMany("Literatures")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LiteratureLevel");
-
-                    b.Navigation("LiteratureType");
-
-                    b.Navigation("Subject");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Module", b =>
                 {
                     b.HasOne("LMSG3.Core.Models.Entities.Course", "Course")
@@ -611,21 +471,6 @@ namespace LMSG3.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("LiteratureLiteratureAuthor", b =>
-                {
-                    b.HasOne("LMSG3.Core.Models.Entities.LiteratureAuthor", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMSG3.Core.Models.Entities.Literature", null)
-                        .WithMany()
-                        .HasForeignKey("LiteraturesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -734,26 +579,11 @@ namespace LMSG3.Data.Migrations
                     b.Navigation("Documents");
                 });
 
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureLevel", b =>
-                {
-                    b.Navigation("Literatures");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.LiteratureType", b =>
-                {
-                    b.Navigation("Literatures");
-                });
-
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Module", b =>
                 {
                     b.Navigation("Activities");
 
                     b.Navigation("Documents");
-                });
-
-            modelBuilder.Entity("LMSG3.Core.Models.Entities.Subject", b =>
-                {
-                    b.Navigation("Literatures");
                 });
 #pragma warning restore 612, 618
         }

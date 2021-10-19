@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LMSG3.Data;
+using LMSG3.Core.Configuration;
+using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using LMSG3.Web.Services;
@@ -35,9 +38,15 @@ namespace LMSG3.Web
         [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddHttpClient();
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
+           
+            services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
+            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
+            services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -46,6 +55,10 @@ namespace LMSG3.Web
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+            services.AddControllersWithViews();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(typeof(MapperProfile));
 
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
@@ -91,8 +104,10 @@ namespace LMSG3.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Users}/{action=Index}/{id?}");
+                    //pattern: "{area:identity}/{controller:account}/{action=login}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });
         }
     }

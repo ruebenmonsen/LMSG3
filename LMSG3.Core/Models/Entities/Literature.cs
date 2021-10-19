@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,15 +15,20 @@ namespace LMSG3.Core.Models.Entities
         public DateTime ReleaseDate { get; set; }
 
         // FK
-        public int SubjectId {  get; set; }
-        public int LiteratureLevelId {  get; set; }
-        public int LiteratureTypeId {  get; set; }
+        
+        public int SubId {  get; set; }
+        
+        public int LiteraLevelId {  get; set; }
+       
+        public int LiteraTypeId {  get; set; }
+
 
         // NAV
-        public Subject Subject { get; set; }
-        public LiteratureLevel LiteratureLevel { get; set; }
-        public LiteratureType LiteratureType { get; set; }
         public ICollection<LiteratureAuthor> Authors { get; set; }
+        //public Subject Subject { get; set; }
+        //public LiteratureLevel LiteratureLevel { get; set; }
+        //public LiteratureType LiteratureType { get; set; }
+
 
 
     }
