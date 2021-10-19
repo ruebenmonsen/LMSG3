@@ -103,6 +103,7 @@ function getModulesets() {
     var ModuleStartDate = document.querySelectorAll('#ModuleStartDate');
     var ModuleEndDate = document.querySelectorAll('#ModuleEndDate');
     for (var i = 0; i < ModuleName.length; i++) {
+       /* if (!ModuleStartDate[i].value >= cou.StartDate)*/
         if (ModuleName[i].value != '') {
             moduleSets.push({
                 Name: ModuleName[i].value,
