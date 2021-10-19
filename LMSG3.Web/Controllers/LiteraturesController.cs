@@ -142,6 +142,8 @@ namespace LMSG3.Web.Controllers
 
         }
 
+
+
         private async Task<IEnumerable<LiteratureDto>> GetWithStream()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "api/literatures?includeAllInfos=false");
@@ -171,9 +173,20 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: LiteraturesController1/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync($"api/literatures/{id}?includeAllInfo=true");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var literature = System.Text.Json.JsonSerializer.Deserialize<LiteratureDto>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+                 
+            return View(literature);
         }
 
         // GET: LiteraturesController1/Create

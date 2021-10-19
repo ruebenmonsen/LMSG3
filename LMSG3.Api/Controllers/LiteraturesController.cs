@@ -34,9 +34,9 @@ namespace LMSG3.Api.Controllers
 
         //[HttpGet("{id}")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfos)
+        public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfo)
         {
-            var literature = await uow.LiteratureRepository.GetAsync(id, includeAllInfos);//await _context.Literatures.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetAsync(id, includeAllInfo);//await _context.Literatures.FindAsync(id);
 
             if (literature == null)
             {
