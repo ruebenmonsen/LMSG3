@@ -10,10 +10,9 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Core.Models.Dtos
 {
-    public class UserDto : IdentityUser
+    public class UserDto : IdentityUser<string>
 
     {
-        public string Id { get; set; }
         [Display(Name = "First Name")]
         [Required]
         public string FName { get; set; }

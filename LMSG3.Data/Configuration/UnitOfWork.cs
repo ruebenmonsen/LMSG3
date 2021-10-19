@@ -7,7 +7,6 @@ using LMSG3.Core.Configuration;
 using LMSG3.Core.Repositories;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data.Repositories;
-using LMSG3.Core.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace LMSG3.Data.Configuration
