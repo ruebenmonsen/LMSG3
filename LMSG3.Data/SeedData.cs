@@ -31,15 +31,11 @@ namespace LMSG3.Data
             using (var db = services.GetRequiredService<ApplicationDbContext>())
             {
                 // TODO: Check all entites or just one?
-                if (await db.Literatures.AnyAsync()) return;
+                if (await db.Courses.AnyAsync()) return;
 
                 //Common
                 fake = new Faker("en");
                 ti = new CultureInfo("en-US", false).TextInfo;
-
-                // API
-                //var letertures = GetLeterature();
-                //await db.AddRangeAsync(letertures);
 
                 // MVC
                 defaultPassword = "Abc123!";
@@ -73,70 +69,9 @@ namespace LMSG3.Data
                 // Too much data will slow the program
                 //await AddBogusMvcDataAsync(db);
 
-
                 // Save to DB
                 await db.SaveChangesAsync();
             }
-        }
-
-        private static List<Literature> GetLeterature()
-        {
-
-            var literatures = new List<Literature>();
-            DateTime dt2 = new DateTime(2015, 12, 31);
-            var levels = new List<string> { "Advanced", "Beginner", "Expert", "Intermediate" };
-            var leteraTypes = new List<string> { "Drama", "Fable", "Fiction", "Poetry", "Science", "IT"};
-            var random = new Random();
-            for (int i = 0; i < 200; i++)
-            {
-                int index = random.Next(levels.Count);
-                var title = fake.Lorem.Sentence();
-                var description = fake.Lorem.Paragraph();
-                var releaseDate = fake.Date.Between(dt2, DateTime.Now);
-                var leterature = new Literature
-                {
-                    Title = title,
-                    Description = description,
-                    ReleaseDate = releaseDate.Date,
-                    Authors = new LiteratureAuthor[]
-                    {
-                        new LiteratureAuthor
-                        {
-                            FirstName = fake.Name.FirstName(),
-                            LastName = fake.Name.LastName(),
-                            DateOfBirth = fake.Date.Between(new DateTime(1940, 12, 31), new DateTime(1995, 12, 31)).Date
-                        },
-                        new LiteratureAuthor
-                        {
-                            FirstName = fake.Name.FirstName(),
-                            LastName = fake.Name.LastName(),
-                            DateOfBirth = fake.Date.Between(new DateTime(1940, 12, 31), new DateTime(1995, 12, 31)).Date
-                        },
-                         new LiteratureAuthor
-                        {
-                            FirstName = fake.Name.FirstName(),
-                            LastName = fake.Name.LastName(),
-                            DateOfBirth = fake.Date.Between(new DateTime(1940, 12, 31).Date, new DateTime(1995, 12, 31).Date).Date
-                        }
-
-                    },
-                    Subject = new Subject
-                    {
-                        Name = fake.Lorem.Sentence(),
-                    },
-                    LiteratureLevel = new LiteratureLevel
-                    {
-                        Name = levels[index]
-                    },
-                    LiteratureType = new LiteratureType
-                    {
-                        Name = leteraTypes[index]
-                    }
-                };
-                literatures.Add(leterature);
-            }
-
-            return literatures;
         }
 
         private static async Task AddDefaultMvcDataAsync(ApplicationDbContext db)
@@ -267,7 +202,7 @@ namespace LMSG3.Data
             var teacherDocuments = GetDocuments(teachers, teacherRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 100);
             await db.AddRangeAsync(teacherDocuments);
 
-            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 600);
+            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 500);
             await db.AddRangeAsync(studentDocuments);
 
         }
