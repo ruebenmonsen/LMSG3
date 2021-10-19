@@ -1,4 +1,4 @@
-﻿@model LMSG3.Core.Models.ViewModels.CreateCourseViewModel
+﻿@model CreateCourseViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -8,34 +8,87 @@
 
 <h4>Course</h4>
 <hr />
+
+    
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            Name
+            <input class="form-control text-box single-line" data-val="true" id="CourseName" type="text" autocomplete="off" style="width:70%">
+            @*<input asp-for="Name" id="CourseName" class="form-control" />*@
+            @*<span asp-validation-for="Name" class="text-danger"></span>*@
+        </div>
+        <div class="form-group">
+            StartDate
+            <input class="form-control text-box single-line" data-val="true" id="CourseStartDate" type="date" autocomplete="off" style="width:70%">
+            @*<input asp-for="StartDate" id="CourseStartDate" class="form-control" />*@
+            @*<span asp-validation-for="StartDate" class="text-danger"></span>*@
+        </div>
+        <div class="form-group">
+            Description
+            <input class="form-control text-box single-line" data-val="true" id="CourseDescription" type="text" autocomplete="off" style="width:70%">
+            @*<input asp-for="Description" class="form-control" />*@
+            @*<span asp-validation-for="Description" class="text-danger"></span>*@
+        </div>
+    </div>
+</div>
+    @*<div class="form-content">
+        Add Modules
+        <button id="Btn_AddModuleset" class="btn btn-info"> + </button>
+    </div>*@
+  
+
+<div class="form-content">
+   _____ Add Modules_____
+    <div class="form-content">
+        <br /><button id="Btn_AddModuleset" class="btn-info"> + </button>
+    </div>
+    <div class="panel panel-default">
+        <div class="featured-box featured-box featured-box-dark featured-box-text-left jquery_accordion_content">
+
+
+            <div class="container ">
+
+
+                <div class="ModulesListSet">
+
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+
+
+        </div>
     </div>
 </div>
 
+
+
+        <br />
+
+        <div class="col-sm-12 text-right">
+
+
+            <input type="button" id="BtnCreate" class="btn btn-primary" value="Create Course" /> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-danger" asp-action="Index">Cancel</a>
+
+        </div>
+
+
+   
+
+    @*<div>
+
+        <button id="BtnCreate" type="submit" class="btn btn-primary"> Create Course </button> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="btn btn-danger" asp-action="Index">Cancel</a>
+    </div>*@
+
+
+
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    
 </div>
 
 @section Scripts {

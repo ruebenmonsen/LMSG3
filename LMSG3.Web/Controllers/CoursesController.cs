@@ -73,18 +73,57 @@ namespace LMSG3.Web.Controllers
         // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCourseViewModel vm)
-        {
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(CreateCourseViewModel vm)
+        //{
 
-            var course = mapper.Map<Course>(vm);
+        //    var course = mapper.Map<Course>(vm);
+        //    var modules = mapper.Map<List<Module>>(vm.Modelslist);
+        //    uow.CourseRepository.Add(course);
+        //    await uow.CompleteAsync();
+        //    foreach (var item in modules)
+        //    {
+        //        uow.ModuleRepository.Add(item);
+        //        await uow.CompleteAsync();
+        //    }
+           
+
+        //    return RedirectToAction(nameof(Index));
+
+
+        //}
+        //[HttpPost]
+        public async Task<ActionResult> CreateCourse(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
+        {
+            var course = mapper.Map<Course>(coursevm);
             uow.CourseRepository.Add(course);
             await uow.CompleteAsync();
 
-            return RedirectToAction(nameof(Index));
+            foreach (var modulevm in modulesetsvm)
+            {
+                var modules = new Module 
+                {
+                Name=modulevm.Name,
+                Description=modulevm.Description,
+                StartDate=modulevm.StartDate,
+                EndDate=modulevm.EndDate,
+                CourseId=course.Id
+                };
+                uow.ModuleRepository.Add(modules);
+                await uow.CompleteAsync();
+            }
+            
+            //return RedirectToAction(nameof(Index));
+            return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+
+        }
 
 
+
+        public ActionResult DisplayNewModuleSet()
+        {
+            return PartialView("CreateModulePartial");
         }
 
         public async Task<IActionResult> Edit(int? id)
