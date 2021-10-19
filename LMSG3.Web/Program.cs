@@ -26,7 +26,9 @@ namespace LMSG3.Web
                 context.Database.Migrate();
                 try
                 {
-                    SeedData.InitAsync(context, services, adminPW).Wait();
+                    //var config = services.GetRequiredService<IConfiguration>();
+                    //var adminPW = config["AdminPW"];
+                    SeedData.InitAsync(services).Wait();
                 }
                 catch (Exception e)
                 {

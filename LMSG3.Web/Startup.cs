@@ -20,8 +20,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Mvc;
-using LMSG3.Core.Configuration;
-using LMSG3.Data.Configuration;
 
 namespace LMSG3.Web
 {
@@ -55,6 +53,7 @@ namespace LMSG3.Web
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
            services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -62,7 +61,6 @@ namespace LMSG3.Web
 
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddControllersWithViews(opt => 
             //{
             //    var policy = new AuthorizationPolicyBuilder()
