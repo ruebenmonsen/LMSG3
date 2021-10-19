@@ -198,6 +198,7 @@
         function checkDate(startDate, endDate) {
             
             var End_Date = document.getElementById('EndDate').value;
+            var Start_Date = document.getElementById('StartDate').value;
             var div_Error = document.getElementById('divError');
             var error_Msg = document.getElementById('errorMsg');
 
@@ -206,12 +207,12 @@
                 error_Msg.innerText = "EndDate must be greater than StartDate";
                 return true;
             }
-            else if (startDate > End_Date) {
+            else if (Start_Date > startDate || End_Date < startDate){
                 div_Error.hidden = false;
                 error_Msg.innerText = "Activity  StartDate must be less than Module EndDate";
                 return true;
             }
-            else if (endDate > End_Date) {
+            else if (Start_Date > endDate || End_Date < endDate){
                 div_Error.hidden = false;
                 error_Msg.innerText = "Activity  EndDate must be less than Module EndDate";
                 return true;

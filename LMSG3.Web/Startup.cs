@@ -76,7 +76,7 @@ namespace LMSG3.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     //pattern: "{area:identity}/{controller:account}/{action=login}");
-                    pattern: "{controller=Activities}/{action=Create}/{id?}");
+                    pattern: "{controller=Modules}/{action=Create}/{id?}");
                 endpoints.MapRazorPages();
                 //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });
