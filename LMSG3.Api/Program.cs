@@ -25,9 +25,9 @@ namespace LMSG3.Api
                 try
                 {
                     var context = scope.ServiceProvider.GetService<ApiDbContext>();
-                    //context.Database.EnsureDeleted();
-                    //context.Database.Migrate();
-                    //SeedDbData.InitAsync(services).Wait();
+                    context.Database.EnsureDeleted();
+                    context.Database.Migrate();
+                    SeedDbData.InitAsync(services).Wait();
                 }
                 catch (Exception e)
                 {
