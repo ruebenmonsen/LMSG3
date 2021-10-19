@@ -28,28 +28,18 @@ namespace LMSG3.Web.Controllers
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-        // GET: Courses
-
+        // GET: Student landing page
         public async Task<IActionResult> Index()
         {
             var userId = userManager.GetUserId(User);
-            var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
-            {
-                Name = s.Course.Name,
-                Description = s.Course.Description,
-                StartDate = s.Course.StartDate
-
-            }).FirstOrDefaultAsync();
 
             var currentDate = DateTime.Now;
 
             var assignmentTypeId = await _context.Activities.Where(a => a.ActivityType.Name == "Assignment").Select(a => a.ActivityTypeId).FirstOrDefaultAsync();
-
             var currentModule = await _context.Students.Where(s => s.Id == userId).Select(s => s.Course.Modules
                 .Where(m => m.StartDate < currentDate && m.EndDate > currentDate).FirstOrDefault()).FirstOrDefaultAsync();
-
+            // Include Activities for one single module.
             await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
-
             var documents = await _context.Students.Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
@@ -62,7 +52,7 @@ namespace LMSG3.Web.Controllers
                     Name = a.Name,
                     Description = a.Description,
                     EndDate = a.EndDate,
-                    // Document.exist > EndDate || DateNow > EndDate
+                    // Document.submitted > EndDate || DateNow > EndDate
                     IsOverdue = isSubmitted ? document.UploadDate > a.EndDate : currentDate > a.EndDate,
                     IsSubmitted = isSubmitted,
                     IsCurrent = currentDate < a.EndDate && !isSubmitted
@@ -74,6 +64,14 @@ namespace LMSG3.Web.Controllers
             {
                 Assignments = assignmnets
             };
+
+            var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
+            {
+                Name = s.Course.Name,
+                Description = s.Course.Description,
+                StartDate = s.Course.StartDate
+
+            }).FirstOrDefaultAsync();
 
             var studentModel = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel
@@ -125,7 +123,6 @@ namespace LMSG3.Web.Controllers
             return RedirectToAction("Index");
         }
 
-
         public async Task<ActionResult> ModulesList()
         {
 
@@ -136,6 +133,5 @@ namespace LMSG3.Web.Controllers
             return View(model);
 
         }
-
     }
 }
