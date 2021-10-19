@@ -36,6 +36,7 @@ namespace LMSG3.Web
                         Configuration.GetConnectionString("ApplicationDbContext")));
             services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
+            services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -75,7 +76,7 @@ namespace LMSG3.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     //pattern: "{area:identity}/{controller:account}/{action=login}");
-                    pattern: "{controller=Modules}/{action=Create}/{id?}");
+                    pattern: "{controller=Activities}/{action=Create}/{id?}");
                 endpoints.MapRazorPages();
                 //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });

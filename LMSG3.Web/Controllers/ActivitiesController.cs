@@ -181,12 +181,12 @@ namespace LMSG3.Web.Controllers
             var module = db.Modules.Find(activity.ModuleId);
             if (module != null)
             {
-                if (module.StartDate < activity.StartDate|| module.StartDate > activity.EndDate)
+                if (module.StartDate > activity.StartDate|| module.EndDate <activity.StartDate)
                 {
                     ModelState.AddModelError("StartDate",
                                              "Activity  StartDate must be within  Module Interval");
                 }
-                else if (module.EndDate < activity.StartDate || module.EndDate > activity.EndDate)
+                else if (module.StartDate > activity.EndDate || module.EndDate < activity.EndDate)
                 {
                     ModelState.AddModelError("EndDate",
                                              "Activity  EndDate must be within  Module Interval");
