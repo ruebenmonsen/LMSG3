@@ -54,7 +54,8 @@ namespace LMSG3.Web.Controllers
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
             {
-                var isSubmitted = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any();
+                var document = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).FirstOrDefault();
+                var isSubmitted = document != default;
                 return new AssignmentViewModel
                 {
                     Id = a.Id,
@@ -62,9 +63,7 @@ namespace LMSG3.Web.Controllers
                     Description = a.Description,
                     EndDate = a.EndDate,
                     // Document.exist > EndDate || DateNow > EndDate
-                    IsOverdue = isSubmitted ?
-                        documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id)?.FirstOrDefault().UploadDate > a.EndDate :
-                        currentDate > a.EndDate,
+                    IsOverdue = isSubmitted ? document.UploadDate > a.EndDate : currentDate > a.EndDate,
                     IsSubmitted = isSubmitted,
                     IsCurrent = currentDate < a.EndDate && !isSubmitted
 
