@@ -1,13 +1,12 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMSG3.Data
+namespace LMSG3.Data.Repositories
 {
-    public class AutoMapper : Profile
+    class StudentRepository
     {
     }
 }

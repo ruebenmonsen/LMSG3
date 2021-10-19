@@ -93,6 +93,7 @@ namespace LMSG3.Web
                     name: "default",
                     pattern: "{controller=Users}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });
         }
     }

@@ -4,14 +4,16 @@ using LMSG3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LMSG3.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211015085241_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +205,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Document");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.DocumentType", b =>
