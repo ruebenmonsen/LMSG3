@@ -143,7 +143,7 @@ namespace LMSG3.Data
         {
             // Keep a day between the modules to reduce logic for activities.
             var currentModuleStart = DateTime.Now.AddDays(-7);
-            var currentModuleEnd = currentModuleStart.AddDays(13);
+            var currentModuleEnd = currentModuleStart.AddDays(21);
             var previousModuleStart = currentModuleStart.AddDays(-7);
             var previousModuleEnd = currentModuleStart.AddDays(-1);
             var nextModuleStart = currentModuleEnd.AddDays(1);

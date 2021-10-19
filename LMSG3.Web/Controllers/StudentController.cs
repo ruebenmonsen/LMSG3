@@ -66,19 +66,24 @@ namespace LMSG3.Web.Controllers
 
             var documents = await _context.Students.Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
-            var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a => new AssignmentViewModel
+            var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
             {
-                Id = a.Id,
-                Name = a.Name,
-                Description = a.Description,
-                EndDate = a.EndDate,
-                // Document.exist > EndDate || DateNow > EndDate
-                IsOverdue = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any() ?
-                    documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id)?.FirstOrDefault().UploadDate > a.EndDate :
-                    DateTime.Now > a.EndDate,
-                IsSubmitted = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any()
+                var isSubmitted = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any();
+                return new AssignmentViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    EndDate = a.EndDate,
+                    // Document.exist > EndDate || DateNow > EndDate
+                    IsOverdue = isSubmitted ?
+                        documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id)?.FirstOrDefault().UploadDate > a.EndDate :
+                        currentDate > a.EndDate,
+                    IsSubmitted = isSubmitted,
+                    IsCurrent = currentDate < a.EndDate && !isSubmitted
 
-            }).ToList();
+                };
+             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
             var moduleModel = new CurrentModuleViewModel
             {

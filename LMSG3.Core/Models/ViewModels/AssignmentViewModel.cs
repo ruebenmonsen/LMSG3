@@ -13,6 +13,7 @@ namespace LMSG3.Core.Models.ViewModels
         public DateTime EndDate { get; set; }
         public bool IsOverdue { get; set; }
         public bool IsSubmitted { get; set; }
-
+        public bool IsCurrent { get; set; }
+        //public int postion { get; set; } // TODO: 0 is first element, -n is prev
     }
 }

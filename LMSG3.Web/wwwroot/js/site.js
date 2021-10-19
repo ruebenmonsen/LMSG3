@@ -19,3 +19,10 @@ function OpenAssignmentModal(id) {
             }
         });
 }
+
+document.addEventListener('DOMContentLoaded', initScrollPostion);
+
+function initScrollPostion() {
+    var scrollFirst = document.getElementById("scrollFirst");
+    scrollFirst.scrollIntoView();
+}
