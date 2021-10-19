@@ -1,0 +1,57 @@
+﻿@model IEnumerable<LMSG3.Core.Models.Dtos.LiteratureAuthorDto>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["FullNameSortParm"]">Name</a>
+            </th>
+            @*<th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
+        </th>*@
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateOfBirthSortParm"]">Date of birth</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AgeSortParm"]">Age</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CountLiteraturesSortParm"]">Number of works</a>
+            </th>
+            <th></th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Literatures.Count)
+            </td>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.LevelName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LiteraTypeName)
+        </td>*@
+            @*<td>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>*@
+        </tr>
+        }
+    </tbody>
+</table>

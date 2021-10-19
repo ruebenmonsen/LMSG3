@@ -62,15 +62,15 @@ namespace LMSG3.Api.Repositories
                 var searchParam = authorResourceParameters.nameStr.ToLower();
                 //return author.Where(a => a.FullName.ToLower().Contains(authorResourceParameters.nameStr.ToLower()));  // Todo: Trim()
 
-                if (authorResourceParameters.includeAllInfo)
-                {
-                    await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync();
-                    author = author.Include(a => a.Literatures);
-                }
+                
                 return await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync(); ;
 
             }
-
+            if (authorResourceParameters.includeAllInfo)
+            {
+                //await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync();
+                author = author.Include(a => a.Literatures);
+            }
 
             return await author.ToListAsync();
 

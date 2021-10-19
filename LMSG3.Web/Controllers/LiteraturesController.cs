@@ -36,8 +36,13 @@ namespace LMSG3.Web.Controllers
         }
 
         
-        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter)
+        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["DescriptionSortParm"] = sortOrder == "FullName" ? "description_desc" : "Description";
             ViewData["ReleaseDateSortParm"] = sortOrder == "ReleaseDate" ? "releaseDate_desc" : "ReleaseDate";
@@ -57,10 +62,13 @@ namespace LMSG3.Web.Controllers
                                                     || s.LevelName.ToLower().Contains(searchString.ToLower().Trim())
                                                     //|| s.LiteraLevelId.Equals(currentFilter)
                                                     || s.LiteraTypeName.ToLower().Contains(searchString.ToLower().Trim()));
+                                                    
                                                      
                                         //Todo Add countfor each creteria result
             }
-
+           // var authors = litratureModel.Where(d => d.Authors.FirstOrDefault);
+          //  var authors = from s in litratureModel.Where(a => a.Authors != null) select s.Authors;
+            
             if (!String.IsNullOrEmpty(currentFilter))
             {
                 litratureModel = litratureModel.Where(s => s.LiteraLevelId.Equals(Int16.Parse(currentFilter)));
@@ -75,7 +83,10 @@ namespace LMSG3.Web.Controllers
                     litratureModel = litratureModel.OrderBy(s => s.Description).ToList();
                     break;
                 case "description_desc":
-                    litratureModel = litratureModel.OrderBy(s => s.Description).ToList();
+                    litratureModel = litratureModel.OrderByDescending(s => s.Description).ToList();
+                    break;
+                case "ReleaseDate":
+                    litratureModel = litratureModel.OrderBy(s => s.ReleaseDate).ToList();
                     break;
                 case "releaseDate_desc":
                     litratureModel = litratureModel.OrderByDescending(s => s.ReleaseDate).ToList();
@@ -102,19 +113,22 @@ namespace LMSG3.Web.Controllers
                     litratureModel = litratureModel.OrderBy(s => s.Title).ToList();
                     break;
             }
-           // IEnumerable<SelectListItem> lieratureLevelSlectItems = await GetVehicleLevelSelectListItems();
+            // IEnumerable<SelectListItem> lieratureLevelSlectItems = await GetVehicleLevelSelectListItems();
 
-           // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
+            // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
+
+            //return View(litratureModel);
+           
+           // int pageSize = 10;
+            //return View(await PaginatedList<LiteratureDto>.CreateAsync(litratureModel.AsNoTracking(), pageNumber ?? 1, pageSize));
 
             return View(litratureModel);
-
-
         }
 
         private async Task<IEnumerable<LiteratureDto>> SimpleGet()
         {
 
-            var response = await httpClient.GetAsync("api/literatures?includeAllInfos=false");
+            var response = await httpClient.GetAsync("api/literatures?includeAllInfo=true");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

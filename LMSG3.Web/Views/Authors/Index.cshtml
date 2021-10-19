@@ -1,6 +1,4 @@
-﻿@inject LMSG3.Web.Services.ILiteratureSelectService service
-
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
@@ -16,13 +14,8 @@
         <input type="text" class="form-control" name="searchString" placeholder="Search literature..." />
         <span class="form-clear d-none"><i class="material-icons">clear</i></span>
         <div class="input-group-append">
-            <select   asp-items="@await service.GetLevelAsync()" name="currentFilter"  class="form-control">
-                <option selected="selected" value="">Please select</option>
-            </select>
-        </div>
-        <div class="input-group-append">
             <button type="submit" class="btn btn-primary"><i class="fa fa-search">Search</i></button>
         </div>
     </div>
 </form>
-<partial name="LiteraturePartial"/>
+<partial name="AuthorPartial" />
