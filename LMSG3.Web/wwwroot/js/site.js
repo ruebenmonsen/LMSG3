@@ -21,12 +21,11 @@ $(document).ready(function () {
     });
 });
 
-//Assign Click event to up Down image.
 $("body").on("click", "img[src*='down.jpg']", function () {
     $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
     $(this).attr("src", "/img/up.jpg");
 });
-//Assign Click event to up Image.
+//Assign Click event to Minus Image.
 $("body").on("click", "img[src*='up.jpg']", function () {
     $(this).attr("src", "/img/down.jpg");
     $(this).closest("tr").next().remove();
