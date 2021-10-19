@@ -13,10 +13,10 @@ namespace LMSG3.Api.Repositories
 {
     public class LiteratureAuthorRepository : ILiteratureAuthorRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly ILogger logger;
 
-        public LiteratureAuthorRepository(ApplicationDbContext context, ILogger logger)
+        public LiteratureAuthorRepository(ApiDbContext context, ILogger logger)
         {
             _context = context;
             this.logger = logger;
@@ -62,15 +62,15 @@ namespace LMSG3.Api.Repositories
                 var searchParam = authorResourceParameters.nameStr.ToLower();
                 //return author.Where(a => a.FullName.ToLower().Contains(authorResourceParameters.nameStr.ToLower()));  // Todo: Trim()
 
-                if (authorResourceParameters.includeAllInfo)
-                {
-                    await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync();
-                    author = author.Include(a => a.Literatures);
-                }
+                
                 return await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync(); ;
 
             }
-
+            if (authorResourceParameters.includeAllInfo)
+            {
+                //await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync();
+                author = author.Include(a => a.Literatures);
+            }
 
             return await author.ToListAsync();
 

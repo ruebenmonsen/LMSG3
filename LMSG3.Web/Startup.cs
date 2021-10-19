@@ -31,9 +31,12 @@ namespace LMSG3.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddHttpClient();
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
+           
             services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
@@ -45,8 +48,10 @@ namespace LMSG3.Web
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

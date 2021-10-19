@@ -15,37 +15,15 @@ namespace LMSG3.Data.Configuration
         private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
-       // private ILiteratureRepository literatureRepository;
         private ICourseRepository courseRepository;
         private IRepository<Module> moduleRepository;
         private IRepository<Activity> activityRepository;
-       // private ILiteratureAuthorRepository literatureAuthorRepository;
 
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             this.context = context;
             this.logger = loggerFactory.CreateLogger("logs");
         }
-        //public ILiteratureRepository LiteratureRepository
-        //{
-        //    get
-        //    {
-        //        if (this.literatureRepository == null)
-        //            this.literatureRepository = new LiteratureRepository(context, logger);
-
-        //        return literatureRepository;
-        //    }
-        //}
-        //public ILiteratureAuthorRepository LiteratureAuthorRepository
-        //{
-        //    get
-        //    {
-        //        if (this.literatureAuthorRepository == null)
-        //            this.literatureAuthorRepository = new LiteratureAuthorRepository(context, logger);
-
-        //        return literatureAuthorRepository;
-        //    }
-        //}
         public ICourseRepository CourseRepository
         {
             get
@@ -85,6 +63,10 @@ namespace LMSG3.Data.Configuration
         {
             context.Dispose();
             GC.SuppressFinalize(this);
+        }
+        public async Task<bool> CompleteAsyncCheck()
+        {
+            return (await context.SaveChangesAsync()) >= 0;
         }
     }
 }

@@ -18,11 +18,11 @@ namespace LMSG3.Api.Controllers
     [ApiController]
     public class LiteratureAuthorsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public LiteratureAuthorsController(ApplicationDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
+        public LiteratureAuthorsController(ApiDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _context = context;
             uow = unitOfWork;

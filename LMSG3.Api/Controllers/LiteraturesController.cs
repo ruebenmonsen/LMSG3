@@ -11,7 +11,7 @@ using LMSG3.Core.Models.Dtos;
 using AutoMapper;
 using LMSG3.Api.ResourceParameters;
 using LMSG3.Api.Configuration;
-
+using LMSG3.Api.Services;
 
 namespace LMSG3.Api.Controllers
 {
@@ -20,11 +20,11 @@ namespace LMSG3.Api.Controllers
     [ApiController]
     public class LiteraturesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public LiteraturesController(ApplicationDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
+        public LiteraturesController(ApiDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _context = context;
             uow = unitOfWork;
@@ -34,19 +34,25 @@ namespace LMSG3.Api.Controllers
 
         //[HttpGet("{id}")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfos)
+        public async Task<ActionResult<Literature>> GetLiterature(int id, bool includeAllInfo)
         {
-            var literature = await uow.LiteratureRepository.GetAsync(id, includeAllInfos);//await _context.Literatures.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetAsync(id, includeAllInfo);//await _context.Literatures.FindAsync(id);
 
             if (literature == null)
             {
                 return NotFound();
             }
-
-            return Ok(mapper.Map<LiteratureDto>(literature));
+            //var somId = literature.LiteraLevelId;
+            var literaDto = mapper.Map<LiteratureDto>(literature);
+            
+            literaDto.LevelName = ModelsJoinHelper.GetLevelName(literature.LiteraLevelId, _context);//levelNames;//levelNames.First(e => e.LiteraLevelId == somId).Name.ToString();
+            literaDto.LiteraTypeName = ModelsJoinHelper.GetTypeName(literature.LiteraTypeId, _context);
+            literaDto.SubjectName = ModelsJoinHelper.GetSubjectName(literature.SubId, _context);
+            return Ok(literaDto);
         }
 
-
+       
+        
         [HttpGet()]
         [HttpHead]    //authorsResourceParameters.
         public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures([FromQuery] LiteraturesResourceParameters literatureResourceParameters)
@@ -57,9 +63,20 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
+            var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
 
-            return Ok(mapper.Map<IEnumerable<LiteratureDto>>(literature));
+            // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
+            foreach (var item in literaDto)
+            {
+               item.LevelName = ModelsJoinHelper.GetLevelName(item.LiteraLevelId, _context);
+               item.LiteraTypeName = ModelsJoinHelper.GetTypeName(item.LiteraTypeId, _context);
+               item.SubjectName = ModelsJoinHelper.GetSubjectName(item.SubId, _context);
+            }
+
+            return Ok(literaDto);
         }
+
+       
 
         // PUT: api/Literatures/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -98,7 +115,7 @@ namespace LMSG3.Api.Controllers
         public ActionResult<Literature> CreateLiterature(Literature literature)
         {
             var authorEntity = mapper.Map<Literature>(literature);
-            //uow.LiteratureRepository.Add(literature);
+            uow.LiteratureRepository.AddLiterature(literature);
             uow.LiteratureRepository.Save();
 
             return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
@@ -110,15 +127,16 @@ namespace LMSG3.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLiterature(int id)
         {
-            var literature = await _context.Literatures.FindAsync(id);
+            var literature = await uow.LiteratureRepository.GetAsync(id, false);//await _context.Literatures.FindAsync(id);
             if (literature == null)
             {
                 return NotFound();
             }
 
-            _context.Literatures.Remove(literature);
-            await _context.SaveChangesAsync();
 
+            uow.LiteratureRepository.DeliteLiterature(literature);
+            //await _context.SaveChangesAsync();
+            uow.LiteratureRepository.Save();
             return NoContent();
         }
 

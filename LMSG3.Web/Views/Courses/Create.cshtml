@@ -1,4 +1,4 @@
-﻿@model LMSG3.Core.Models.Entities.Course
+﻿@model CreateCourseViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -8,94 +8,86 @@
 
 <h4>Course</h4>
 <hr />
+
+    
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                @*<input type="submit" value="Create" class="btn btn-primary" />*@
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input  asp-for="Name" class="form-control text-box single-line" data-val="true" id="CourseName" autocomplete="off" style="width:70%">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input  asp-for="StartDate" class="form-control text-box single-line" data-val="true" id="CourseStartDate" autocomplete="off" style="width:70%">
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+           
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control text-box single-line" data-val="true" id="CourseDescription"  autocomplete="off" style="width:70%">
+            <span asp-validation-for="Description" class="text-danger"></span>
+           
+        </div>
+    </div>
+</div>
+    @*<div class="form-content">
+        Add Modules
+        <button id="Btn_AddModuleset" class="btn btn-info"> + </button>
+    </div>*@
+  
 
-                <a href="#popupModel" role="button" id="ShowPopup" data-toggle="modal">Add Module</a>
-
-
-                <div id="popupModel" class="modal fade " role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title">Sample Popup</h3>
-                                <input type="text" id="txtVal" value="">
-                                <button type="button" class="close" data-dismiss="modal">×</button>
-                            </div>
-                            <div style="padding:5px;">
-                                <div>
-                                    Test content
-                                </div>
-                                <br />
-                                <div>
-                                    <img src="~/Content/Capture.PNG" />
-                                    <button type="button" class="close" data-dismiss="modal" onclick="addLi()">Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="form-content">
+   _____ Add Modules_____
+    <div class="form-content">
+        <br /><button id="Btn_AddModuleset" class="btn-info"> + </button>
+    </div>
+    <div class="panel panel-default">
+       
 
 
-                <div id="popupModel1" class="modal fade " role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title">Sample Popup</h3>
-                                <input type="text" id="txtVal1" value="">
-                                  
-                                <button type="button" class="close" data-dismiss="modal">×</button>
-                            </div>
-                            <div style="padding:5px;">
-                                <div>
-                                    Test content
-                                </div>
-                                <br />
-                                <div>
-                                    <img src="~/Content/Capture.PNG" />
-                                    <button type="button" class="close" data-dismiss="modal" onclick="addUl()">Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="container ">
 
 
-
-                <div id="testtree">
-
-                    <ul id="list">
-                    </ul>
+                <div class="ModulesListSet">
 
                 </div>
 
-
             </div>
-        </form>
+
+
+       
     </div>
 </div>
 
+
+
+        <br />
+
+        <div class="col-sm-12 text-right">
+
+
+            <input type="button" id="BtnCreate" class="btn btn-primary" value="Create Course" /> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-danger" asp-action="Index">Cancel</a>
+
+        </div>
+
+
+   
+
+    @*<div>
+
+        <button id="BtnCreate" type="submit" class="btn btn-primary"> Create Course </button> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="btn btn-danger" asp-action="Index">Cancel</a>
+    </div>*@
+
+
+
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    
 </div>
 <script>
     var i = 0;

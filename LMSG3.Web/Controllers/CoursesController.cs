@@ -11,34 +11,42 @@ using LMSG3.Data;
 using LMSG3.Core.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using LMSG3.Core.Models.ViewModels;
+using AutoMapper;
 
 namespace LMSG3.Web.Controllers
 {
+    [Authorize(Roles = "Teacher")]
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork uow;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMapper mapper;
 
-        public CoursesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context, IUnitOfWork uow)
+        public CoursesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context, IUnitOfWork uow, IMapper mapper)
         {
             _context = context;
             this.uow = uow;
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.mapper = mapper;
         }
 
         // GET: Courses
-        [Authorize(Roles ="Teacher")]
+       
         public async Task<IActionResult> Index()
         {
-            var model = await uow.CourseRepository.GetAllCourses();
-            return View(model);
+            var model = await uow.CourseRepository.GetAllCourses(true);
+            
+
+            return View(mapper.Map<IndexCourseViewModel>(model));
 
         }
 
-       
+
 
         // GET: Courses/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,12 +55,13 @@ namespace LMSG3.Web.Controllers
             }
 
             var course = await uow.CourseRepository.GetCourse(id, true);
-            if (course == null)
+           
+;            if (course == null)
             {
                 return NotFound();
             }
 
-            return View(course);
+            return PartialView("Details",course);
         }
 
         // GET: Courses/Create
@@ -64,20 +73,59 @@ namespace LMSG3.Web.Controllers
         // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,Description")] Course course)
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(CreateCourseViewModel vm)
+        //{
+
+        //    var course = mapper.Map<Course>(vm);
+        //    var modules = mapper.Map<List<Module>>(vm.Modelslist);
+        //    uow.CourseRepository.Add(course);
+        //    await uow.CompleteAsync();
+        //    foreach (var item in modules)
+        //    {
+        //        uow.ModuleRepository.Add(item);
+        //        await uow.CompleteAsync();
+        //    }
+           
+
+        //    return RedirectToAction(nameof(Index));
+
+
+        //}
+        //[HttpPost]
+        public async Task<ActionResult> CreateCourse(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
         {
-            if (ModelState.IsValid)
+            var course = mapper.Map<Course>(coursevm);
+            uow.CourseRepository.Add(course);
+            await uow.CompleteAsync();
+
+            foreach (var modulevm in modulesetsvm)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var modules = new Module 
+                {
+                Name=modulevm.Name,
+                Description=modulevm.Description,
+                StartDate=modulevm.StartDate,
+                EndDate=modulevm.EndDate,
+                CourseId=course.Id
+                };
+                uow.ModuleRepository.Add(modules);
+                await uow.CompleteAsync();
             }
-            return View(course);
+            
+            //return RedirectToAction(nameof(Index));
+            return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+
         }
 
-        // GET: Courses/Edit/5
+
+
+        public ActionResult DisplayNewModuleSet()
+        {
+            return PartialView("CreateModulePartial");
+        }
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,47 +133,37 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await uow.CourseRepository.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
             }
             return View(course);
-        }
+        }   
+        
+     
 
         // POST: Courses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,Description")] Course course)
+        public async Task<IActionResult> Edit(int id,CreateCourseViewModel vm)
         {
-            if (id != course.Id)
+            
+            if (id != vm.Id)
             {
+                return BadRequest();
+            }
+            var course = await uow.CourseRepository.FindAsync(vm.Id);
+            if (course == null)
                 return NotFound();
-            }
+            mapper.Map(vm, course);
+           // uow.CourseRepository.Update(course);
+            await uow.CompleteAsync();
+            
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
+            return RedirectToAction("Index");
         }
 
         // GET: Courses/Delete/5
@@ -136,8 +174,8 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await uow.CourseRepository.FindAsync(id);
+               
             if (course == null)
             {
                 return NotFound();
@@ -151,10 +189,14 @@ namespace LMSG3.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            var course = await uow.CourseRepository.FindAsync(id);
+            if (course == null)
+                return NotFound();
+            uow.CourseRepository.Remove(course);
+            await uow.CompleteAsync();
+
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool CourseExists(int id)
