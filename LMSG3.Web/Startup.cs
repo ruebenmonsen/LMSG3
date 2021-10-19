@@ -19,6 +19,7 @@ using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using LMSG3.Core.Configuration;
 using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 
 namespace LMSG3.Web
 {
@@ -35,9 +36,12 @@ namespace LMSG3.Web
         [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddHttpClient();
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
+           
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -49,20 +53,12 @@ namespace LMSG3.Web
 
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
+           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+            services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //services.AddControllersWithViews(opt => 
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //                        .RequireAuthenticatedUser()
-            //                        .RequireRole("Student")
-            //                        .Build();
+           
 
-            //    opt.Filters.Add(new AuthorizeFilter(policy));
 
-            //});
-            //services.AddMvc().AddRazorPagesOptions(options => {
-            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
-            //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +87,8 @@ namespace LMSG3.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Users}/{action=Index}/{id?}");
+                    //pattern: "{area:identity}/{controller:account}/{action=login}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
                 //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });

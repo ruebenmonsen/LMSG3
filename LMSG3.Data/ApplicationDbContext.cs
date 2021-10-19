@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using LMSG3.Core.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using LMSG3.Core.Models.Dtos;
 
 namespace LMSG3.Data
 {
@@ -17,8 +18,9 @@ namespace LMSG3.Data
         }
 
         public DbSet<Course> Courses { get; set; }
+       
         public DbSet<Literature> Literatures { get; set; }
-        public DbSet<LiteratureAuthor> LiteratureAuthors { get; set; }
+       
         public DbSet<Student> Students {  get; set; }
         public DbSet<Module> Modules {  get; set; }
         public DbSet<Activity> Activities {  get; set; }
