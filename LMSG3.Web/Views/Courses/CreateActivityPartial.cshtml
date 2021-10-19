@@ -1,0 +1,47 @@
+﻿@model CreateActivityListViewModel
+
+<div id="ActivitySetDiv" class="row">
+    <div class="col-sm-2">   </div>
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            Acitvity Name :
+
+            <input class="form-control text-box single-line" data-val="true" id="ActivityName[][]" type="text" autocomplete="off">
+        </div>
+
+    </div>
+    <div class="col-sm-3 target">
+        <div class="form-group ">
+
+            Description  :
+
+            <input class="form-control text-box single-line" data-val="true" id="ActivityDescription[][]" type="text" autocomplete="off">
+
+        </div>
+
+    </div>
+
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            Start Date :
+
+            <input type="date" class="form-control single-line" data-val="true" id="ActivityStartDate[][]" autocomplete="off">
+        </div>
+    </div>
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            End Date :
+
+            <input type="date" class="form-control single-line" data-val="true" id="ActivityEndDate[][]" autocomplete="off">
+        </div>
+    </div>
+    <div class="col-sm-1 target">
+
+        <br />
+        <button id="Btn_DeleteActivityset" type="submit" class="btn btn-danger"> <b>-</b></button>
+
+    </div>
+</div>  

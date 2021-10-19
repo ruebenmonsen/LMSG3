@@ -126,6 +126,11 @@ namespace LMSG3.Web.Controllers
             return PartialView("CreateModulePartial");
         }
 
+        public ActionResult DisplayNewActivitySet()
+        {
+            return PartialView("CreateActivityPartial");
+        }
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

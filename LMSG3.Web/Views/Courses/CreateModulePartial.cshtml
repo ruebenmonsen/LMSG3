@@ -5,9 +5,9 @@
     <div class="col-sm-2 target">
         <div class="form-group">
 
-            Name :
+            module Name :
 
-            <input class="form-control text-box single-line" data-val="true" id="ModuleName" type="text" autocomplete="off">
+            <input class="form-control text-box single-line" data-val="true" id="ModuleName[]" type="text" autocomplete="off">
         </div>
 
     </div>
@@ -16,7 +16,7 @@
 
             Description  :
 
-            <input class="form-control text-box single-line" data-val="true" id="ModuleDescription" type="text" autocomplete="off">
+            <input class="form-control text-box single-line" data-val="true" id="ModuleDescription[]" type="text" autocomplete="off">
 
         </div>
 
@@ -27,7 +27,7 @@
 
             Start Date :
 
-            <input type="date" class="form-control single-line" data-val="true" id="ModuleStartDate" autocomplete="off">
+            <input type="date" class="form-control single-line" data-val="true" id="ModuleStartDate[]" autocomplete="off">
         </div>
     </div>
     <div class="col-sm-3 target">
@@ -35,7 +35,7 @@
 
             End Date :
 
-            <input type="date" class="form-control single-line" data-val="true" id="ModuleEndDate" autocomplete="off">
+            <input type="date" class="form-control single-line" data-val="true" id="ModuleEndDate[]" autocomplete="off">
         </div>
     </div>
     <div class="col-sm-1 target">
@@ -44,4 +44,22 @@
         <button id="Btn_DeleteModuleset" type="submit" class="btn btn-danger"> <b>-</b></button>
 
     </div>
-</div>  
+
+    _____ Add Activity_____
+    <div class="form-content">
+        <br /><button id="Btn_AddActivityset" class="btn-info"> + </button>
+    </div>
+    <div class="form-content">
+                
+
+                @*second method adding partial view from controller and javascript*@
+                <div class="ActivityListSet">
+
+                </div>
+
+           
+
+
+       
+    </div>
+</div>

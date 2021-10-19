@@ -31,17 +31,39 @@ $("body").on("click", "img[src*='up.jpg']", function () {
     $(this).attr("src", "/img/down.jpg");
     $(this).closest("tr").next().remove();
 });
-
+var i = 0;
+var j = 0;
 // plus module Click event 
 $("#addModules").click(function () {
     var html = '';
+    html += ' <div>';
     html += ' <div id="inputFormRow">';
-    html += ' <input type="text" name="ModuleName[]" placeholder="Name" autocomplete="off" /> &nbsp;';
-    html += '<input type="text" name="ModuleDescription[]"  placeholder="Description" autocomplete="off"> &nbsp;';
-    html += '<input type="date" name="ModuleStartDate[]"  placeholder="Start Date" autocomplete="off"> &nbsp;';
-    html += '<input type="date" name="ModuleEnddate[]"  placeholder="End Date" autocomplete="off"> &nbsp;';
+    html += ' <input type="text" name="ModuleName[i]" placeholder="Name" autocomplete="off" /> &nbsp;';
+    html += '<input type="text" name="ModuleDescription[i]"  placeholder="Description" autocomplete="off"> &nbsp;';
+    html += '<input type="date" name="ModuleStartDate[i]"  placeholder="Start Date" autocomplete="off"> &nbsp;';
+    html += '<input type="date" name="ModuleEnddate[i]"  placeholder="End Date" autocomplete="off"> &nbsp;';
    
     html += '  <button id="removeModules" type="button" class="btn btn-danger"> - </button> <br><br>';
+    html += '</div> ';
+    html += '  <button id="addActivity" type="button" class="btn btn-info"> Add Activity </button> <br><br>';
+    html += '</div> ';
+
+    $('#newRow').append(html);
+});
+$("#addActivity").click(function () {
+    var html = '';
+    html += ' <div>';
+    html += ' <div id="inputFormRow">';
+    html += ' <div class="col-sm-2"></div>';
+
+    html += ' <input type="text" name="ActivityName[i][j]" placeholder="Name" autocomplete="off" /> &nbsp;';
+    html += '<input type="text" name="ActivityDescription[i][j]"  placeholder="Description" autocomplete="off"> &nbsp;';
+    html += '<input type="date" name="ActivityStartDate[i][j]"  placeholder="Start Date" autocomplete="off"> &nbsp;';
+    html += '<input type="date" name="ActivityEnddate[i][j]"  placeholder="End Date" autocomplete="off"> &nbsp;';
+   
+    html += '  <button id="removeModules" type="button" class="btn btn-danger"> - </button> <br><br>';
+    html += '</div> ';
+    html += '  <button id="addActivity" type="button" class="btn btn-info"> + </button> <br><br>';
     html += '</div> ';
 
     $('#newRow').append(html);
@@ -52,7 +74,7 @@ $(document).on('click', '#removeModules', function () {
     $(this).closest('#inputFormRow').remove();
 });
 
-//test
+//for adding module-----
 $(document).on('click', '#Btn_AddModuleset', function (e) {
     $.ajax({
         url: '/Courses/DisplayNewModuleSet',
@@ -63,6 +85,20 @@ $(document).on('click', '#Btn_AddModuleset', function (e) {
 });
 
 $(document).on('click', '#Btn_DeleteModuleset', function () {
+    $(this).parent().parent().remove();
+});
+
+//for adding and deleting activity
+$(document).on('click', '#Btn_AddActivityset', function (e) {
+    $.ajax({
+        url: '/Courses/DisplayNewActivitySet',
+        success: function (partialView) {
+            $('.ActivityListSet').append(partialView);
+        }
+    });
+});
+
+$(document).on('click', '#Btn_DeleteActivityset', function () {
     $(this).parent().parent().remove();
 });
 
@@ -109,6 +145,7 @@ function getModulesets() {
                 Description: ModuleDescription[i].value,
                 StartDate: ModuleStartDate[i].value,
                 EndDate: ModuleEndDate[i].value
+                
             });
         }
     }

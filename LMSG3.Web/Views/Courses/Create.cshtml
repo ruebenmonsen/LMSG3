@@ -16,25 +16,26 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             Name
-            <input class="form-control text-box single-line" data-val="true" id="CourseName" type="text" autocomplete="off" style="width:70%">
+            <input asp-for="Name" class="form-control text-box single-line" data-val="true" id="CourseName" type="text" autocomplete="off" style="width:70%">
             @*<input asp-for="Name" id="CourseName" class="form-control" />*@
-            @*<span asp-validation-for="Name" class="text-danger"></span>*@
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
             StartDate
-            <input class="form-control text-box single-line" data-val="true" id="CourseStartDate" type="date" autocomplete="off" style="width:70%">
+            <input asp-for="StartDate" class="form-control text-box single-line" data-val="true" id="CourseStartDate" type="date" autocomplete="off" style="width:70%">
             @*<input asp-for="StartDate" id="CourseStartDate" class="form-control" />*@
-            @*<span asp-validation-for="StartDate" class="text-danger"></span>*@
+           <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
         <div class="form-group">
             Description
-            <input class="form-control text-box single-line" data-val="true" id="CourseDescription" type="text" autocomplete="off" style="width:70%">
+            <input asp-for="Description" class="form-control text-box single-line" data-val="true" id="CourseDescription" type="text" autocomplete="off" style="width:70%">
             @*<input asp-for="Description" class="form-control" />*@
-            @*<span asp-validation-for="Description" class="text-danger"></span>*@
+            <span asp-validation-for="Description" class="text-danger"></span>
         </div>
     </div>
 </div>
-    @*<div class="form-content">
+    @* //first way adding row from js
+        <div class="form-content">
         Add Modules
         <button id="Btn_AddModuleset" class="btn btn-info"> + </button>
     </div>*@
@@ -51,7 +52,7 @@
 
             <div class="container ">
 
-
+                @*second method adding partial view from controller and javascript*@
                 <div class="ModulesListSet">
 
                 </div>
