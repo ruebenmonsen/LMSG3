@@ -84,6 +84,7 @@ namespace LMSG3.Web.Controllers
 
 
         // GET: UsersController/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
