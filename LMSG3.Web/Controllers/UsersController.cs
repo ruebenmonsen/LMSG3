@@ -25,15 +25,17 @@ namespace LMSG3.Web.Controllers
         }
         [Authorize(Roles = "Teacher")]
         // GET: UsersController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Name,string RoleList)
         {
             var usersDto = new List<UserDto>();
-            var users = userManager.Users.OrderBy(u => u.FName);
+            var users = db.ApplicationUser.Where(u => (string.IsNullOrWhiteSpace(Name) || u.FName.ToUpper().StartsWith(Name.ToUpper())) ||
+                                                     (string.IsNullOrWhiteSpace(Name) || u.LName.ToUpper().StartsWith(Name.ToUpper())))
+                                                     .OrderBy(u => u.FName);
 
             foreach (var user in users)
             {
                 var role = await userManager.GetRolesAsync(user);
-
+               
                 var userDto = new UserDto()
                 {
                     Id = user.Id,
@@ -42,7 +44,16 @@ namespace LMSG3.Web.Controllers
                     Email = user.Email,
                     Role = role[0].ToString()
                 };
-                usersDto.Add(userDto);
+                if (string.IsNullOrWhiteSpace(RoleList))
+                {
+                    usersDto.Add(userDto);
+                }
+                else
+                {
+                    if (role[0] == RoleList)
+                        usersDto.Add(userDto);
+
+                }
             }
             
             if (usersDto == null)
