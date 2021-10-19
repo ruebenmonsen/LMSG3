@@ -4,7 +4,6 @@
 <div class="jumbotron">
     <div class="row">
         <div class="col-6">
-            <div class="scrollbar square scrollbar-lady-lips thin">
                 <ul class="list-group overflow-auto assignment-list">
                     @{ bool current = false;}
                     @foreach (var a in Model.CurrentModule.Assignments)
@@ -17,17 +16,18 @@
                                 <div class="@(a.IsOverdue ? "text-danger" : (a.IsSubmitted ? "text-success" : "text-dark"))"><p class="small mb-0">Due @Html.DisplayFor(_ => a.EndDate)</p></div>
                             </div>
                             <div class="col-3">
-                                <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="@(a.IsSubmitted ? "bi bi-check2" : "")"></i></p>
+                                @if (a.IsSubmitted)
+                                {
+                                    <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
+                                }
                             </div>
                             <div class="col-3">
                                 @*<a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>*@
                             </div>
                         </div>
-
                     </li>
                     }
                 </ul>
-            </div>
         </div>
     </div>
 
