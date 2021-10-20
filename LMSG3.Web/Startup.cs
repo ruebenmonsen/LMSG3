@@ -1,21 +1,15 @@
+using LMSG3.Core.Configuration;
 using LMSG3.Core.Models.Entities;
+using LMSG3.Data;
+using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using LMSG3.Data.Configuration;
-using LMSG3.Web.Services;
 
 namespace LMSG3.Web
 {
@@ -36,21 +30,22 @@ namespace LMSG3.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
-           
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+
+            services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
+            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
+            services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
+            services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+            services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
+
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-           
-
-
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,10 +74,8 @@ namespace LMSG3.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    //pattern: "{area:identity}/{controller:account}/{action=login}");
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });
         }
     }

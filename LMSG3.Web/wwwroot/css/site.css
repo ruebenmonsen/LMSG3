@@ -79,3 +79,17 @@ body {
     max-height: 277px !important;
     /*overflow-y: scroll !important;*/
 }
+
+/* pagination styles */
+
+.fixed-table-pagination {
+    display: flex !important;
+}
+
+.pull-right pagination {
+    margin-left: auto !important;
+}
+
+div.pagination {
+    margin-left: auto !important;
+}

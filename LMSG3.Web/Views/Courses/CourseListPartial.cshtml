@@ -1,0 +1,30 @@
+﻿@model IEnumerable<CourseIndexViewModel>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            <img src="~/img/down.jpg" width="20" height="20"/>
+            <div style="display:none">
+                <table cellpadding="0" cellspacing="0" class="ChildGrid">
+
+                    <partial name="CourseModulePartial" model="@item.Modelslist" />
+
+                </table>
+               
+            </div>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
+            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+        </td>
+    </tr>
+}

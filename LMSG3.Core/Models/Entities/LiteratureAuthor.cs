@@ -12,8 +12,8 @@ namespace LMSG3.Core.Models.Entities
         public DateTime DateOfBirth {  get; set; } 
 
         // NAV
-        public ICollection<Literature> Literatures {  get; set; }
+        public ICollection<Literature> Literatures { get; set; }
 
-        
+
     }
-}
+    }

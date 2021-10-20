@@ -1,0 +1,64 @@
+﻿@inject LMSG3.Web.Services.ICourseSelectListService CourseListservice
+@inject LMSG3.Web.Services.IUserRoleSelectListService RoleListservice
+
+@model LMSG3.Core.Models.Dtos.UserDto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Update User Profile</h1>
+
+<h4>Update</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="FName" class="control-label"></label>
+                    <input asp-for="FName" class="form-control" />
+                    <span asp-validation-for="FName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LName" class="control-label"></label>
+                    <input asp-for="LName" class="form-control" />
+                    <span asp-validation-for="LName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Role"></label>
+                    <input asp-for="Role" class="form-control" id="Role" readonly />
+                </div>
+                @if (Model.Role == "Student")
+                {
+                    <div class="form-group" id="Student" >
+                        <label asp-for="Course"></label>
+                        <select asp-for="CourseId" asp-items="@await CourseListservice.GetCourseAsync()" class="form-control">
+                            <option  value="">Please select</option>
+                        </select>
+
+                        @*<span asp-validation-for="CourseId" class="text-danger"></span>*@
+                    </div>
+                }
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+</form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

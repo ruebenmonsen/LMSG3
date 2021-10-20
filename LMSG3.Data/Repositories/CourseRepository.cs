@@ -18,14 +18,14 @@ namespace LMSG3.Data.Repositories
 
         public async Task<IEnumerable<Course>> GetAllCourses()
         {
-            var course = await context.Courses.ToListAsync();
+            var course = await context.Courses.Take(10).ToListAsync();
             return course;
         }
 
         public async Task<IEnumerable<Course>> GetAllCourses(bool includemodules)
         {
             return includemodules ?
-                await context.Courses.Include(c => c.Modules).ToListAsync() : await context.Courses.ToListAsync();
+                await context.Courses.Include(c => c.Modules).ThenInclude(m=>m.Activities).Take(10).ToListAsync() : await context.Courses.ToListAsync();
         }
 
         public async Task<Course> GetCourse(int? id, bool includemodules)
@@ -37,9 +37,24 @@ namespace LMSG3.Data.Repositories
             return await query.FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<bool> AnyAsync(int id)
+        {
+            return await context.Courses.AnyAsync(e => e.Id == id);
+        }
+        
         public bool Any(int id)
         {
             return context.Courses.Any(e => e.Id == id);
+        }
+
+        public void Update(Task<Course> course)
+        {
+            context.Update(course);
+        }
+
+        public override void Remove(Course entity)
+        {
+            context.Remove(entity);
         }
     }
 }

@@ -7,12 +7,13 @@ using LMSG3.Core.Configuration;
 using LMSG3.Core.Repositories;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSG3.Data.Configuration
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private ApplicationDbContext context;
+        private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
         private ICourseRepository courseRepository;
@@ -63,6 +64,10 @@ namespace LMSG3.Data.Configuration
         {
             context.Dispose();
             GC.SuppressFinalize(this);
+        }
+        public async Task<bool> CompleteAsyncCheck()
+        {
+            return (await context.SaveChangesAsync()) >= 0;
         }
     }
 }
