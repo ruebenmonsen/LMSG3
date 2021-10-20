@@ -39,7 +39,7 @@
                 @if (Model.Role == "Student")
                 {
                     <div class="form-group" id="Student" >
-                        <label asp-for="CourseId"></label>
+                        <label asp-for="Course"></label>
                         <select asp-for="CourseId" asp-items="@await CourseListservice.GetCourseAsync()" class="form-control">
                             <option  value="">Please select</option>
                         </select>
