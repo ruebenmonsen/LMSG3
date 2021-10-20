@@ -13,3 +13,4 @@ function bootstrapClearButton() {
         $(this).addClass('d-none').prevAll(':input').val('');
     });
 }
+bootstrapClearButton();

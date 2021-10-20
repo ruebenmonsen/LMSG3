@@ -1,22 +1,20 @@
 ﻿@inject LMSG3.Web.Services.ILiteratureSelectService service
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Literatures";
 }
 
 <h1>Literatures</h1>
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="~/js/literature.js"></script>
-<link href="~/css/literature.css" rel="stylesheet" />
+
 @*<p>
         <a asp-action="Create">Create New</a>
     </p>*@
-<form asp-action="Index">
+<form asp-action="Index" class="form-group position-relative">
     <div class="input-group mb-3">
         <input type="text" class="form-control" name="searchString" placeholder="Search literature..." />
-        <span class="form-clear d-none"><i class="material-icons">clear</i></span>
+        <!--<span class="form-clear d-none"><i class="material-icons">clear</i></span>-->
         <div class="input-group-append">
-            <select   asp-items="@await service.GetLevelAsync()" name="currentFilter"  class="form-control">
+            <select asp-items="@await service.GetLevelAsync()" name="currentFilter" class="form-control">
                 <option selected="selected" value="">Please select</option>
             </select>
         </div>
@@ -24,5 +22,9 @@
             <button type="submit" class="btn btn-primary"><i class="fa fa-search">Search</i></button>
         </div>
     </div>
+
 </form>
-<partial name="LiteraturePartial"/>
+<partial name="LiteraturePartial" />
+@*<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/literature.js"></script>
+<link href="~/css/literature.css" rel="stylesheet" />*@

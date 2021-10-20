@@ -1,8 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Authors";
 }
 
-<h1>Literatures</h1>
+<h1>Authors</h1>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/js/literature.js"></script>
 <link href="~/css/literature.css" rel="stylesheet" />
@@ -11,7 +11,7 @@
     </p>*@
 <form asp-action="Index">
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="searchString" placeholder="Search literature..." />
+        <input type="text" class="form-control" name="searchString" placeholder="Search author..." />
         <span class="form-clear d-none"><i class="material-icons">clear</i></span>
         <div class="input-group-append">
             <button type="submit" class="btn btn-primary"><i class="fa fa-search">Search</i></button>

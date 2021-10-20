@@ -1,7 +1,6 @@
 ﻿using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace LMSG3.Web.Controllers
         private HttpClient httpClient;
         private const string json = "application/json";
         private readonly IHttpClientFactory httpClientFactory;
-       
+
         // GET: LiteraturesController1
         public LiteraturesController(IHttpClientFactory httpClientFactory)
         {
@@ -32,10 +31,10 @@ namespace LMSG3.Web.Controllers
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
             this.httpClientFactory = httpClientFactory;
-           
+
         }
 
-        
+
         public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
             if (searchString != null)
@@ -52,7 +51,7 @@ namespace LMSG3.Web.Controllers
 
             var cancellation = new CancellationTokenSource();
             var litratureModel = await SimpleGet();
-           
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 litratureModel = litratureModel.Where(s => s.Title.ToLower().Contains(searchString.ToLower().Trim())
@@ -62,17 +61,17 @@ namespace LMSG3.Web.Controllers
                                                     || s.LevelName.ToLower().Contains(searchString.ToLower().Trim())
                                                     //|| s.LiteraLevelId.Equals(currentFilter)
                                                     || s.LiteraTypeName.ToLower().Contains(searchString.ToLower().Trim()));
-                                                    
-                                                     
-                                        //Todo Add countfor each creteria result
+
+
+                //Todo Add countfor each creteria result
             }
-           // var authors = litratureModel.Where(d => d.Authors.FirstOrDefault);
-          //  var authors = from s in litratureModel.Where(a => a.Authors != null) select s.Authors;
-            
+            // var authors = litratureModel.Where(d => d.Authors.FirstOrDefault);
+            //  var authors = from s in litratureModel.Where(a => a.Authors != null) select s.Authors;
+
             if (!String.IsNullOrEmpty(currentFilter))
             {
                 litratureModel = litratureModel.Where(s => s.LiteraLevelId.Equals(Int16.Parse(currentFilter)));
-                                                  
+
             }
             switch (sortOrder)
             {
@@ -118,8 +117,8 @@ namespace LMSG3.Web.Controllers
             // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
 
             //return View(litratureModel);
-           
-           // int pageSize = 10;
+
+            // int pageSize = 10;
             //return View(await PaginatedList<LiteratureDto>.CreateAsync(litratureModel.AsNoTracking(), pageNumber ?? 1, pageSize));
 
             return View(litratureModel);
@@ -136,9 +135,9 @@ namespace LMSG3.Web.Controllers
             var literatures = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<LiteratureDto>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
             //Newtonsoft json
-           // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
 
-            return  literatures;
+            return literatures;
 
         }
 
@@ -185,7 +184,7 @@ namespace LMSG3.Web.Controllers
             //Newtonsoft json
             // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
 
-                 
+
             return View(literature);
         }
 

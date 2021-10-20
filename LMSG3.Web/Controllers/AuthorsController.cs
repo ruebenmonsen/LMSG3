@@ -1,11 +1,8 @@
 ﻿using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Web.Controllers
 {
-   
+
     public class AuthorsController : Controller
     {
         private HttpClient httpClient;
@@ -45,7 +42,7 @@ namespace LMSG3.Web.Controllers
             ViewData["DateOfBirthSortParm"] = sortOrder == "DateOfBirth" ? "DateOfBirth_desc" : "DateOfBirth";
             ViewData["CountLiteraturesSortParm"] = sortOrder == "CountLiteratures" ? "CountLiteraturesSortParm_desc" : "DateOfBirth";
 
-            
+
             var cancellation = new CancellationTokenSource();
             var authorModel = await SimpleGet();
 
@@ -58,7 +55,7 @@ namespace LMSG3.Web.Controllers
 
                 //Todo Add countfor each creteria result
             }
-           
+
 
             switch (sortOrder)
             {
@@ -118,9 +115,20 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: AuthorsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync($"api/literatureAuthors/{id}?includeAllInfo=true");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var author = System.Text.Json.JsonSerializer.Deserialize<LiteratureAuthorDto>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+
+            return View(author);
         }
 
         // GET: AuthorsController/Create
