@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
-
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using LMSG3.Core.Models.ViewModels;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LMSG3.Web.Controllers
 {
@@ -58,7 +58,7 @@ namespace LMSG3.Web.Controllers
                     IsCurrent = currentDate < a.EndDate && !isSubmitted
 
                 };
-             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
+            }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
             var moduleModel = new CurrentModuleViewModel
             {
@@ -99,30 +99,26 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityId = activity.Id,
                 ActivityName = activity.Name,
-                EndDate = activity.EndDate              
+                EndDate = activity.EndDate
             };
             return PartialView("AssignmentModal", model);
         }
 
         [HttpPost]
-        public ActionResult Upload(AssignmentUploadViewModel model)
+        public async Task<IActionResult> Upload(IFormFile incomingFile)
         {
-            var uploadedDocument = new Document
+            long size = incomingFile.Length;
+            string filePath = "wwwroot/Uploads";
+            
+            if (size > 0)
             {
-                Name = model.DocumentName,
-                Description = model.DocumentDescription,
-                UploadDate = DateTime.Now,
-                ApplicationUserId = userManager.GetUserId(User),
-                ActivityId = model.ActivityId,
-                DocumentTypeId = _context.Documents.Where(d => d.DocumentType.Name.Equals("Assignment")).FirstOrDefault().DocumentTypeId
-            };
+                filePath += incomingFile.FileName;
 
-            _context.Add(uploadedDocument);
-            _context.SaveChanges();
-
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await incomingFile.CopyToAsync(stream);
+            }
             return RedirectToAction("Index");
         }
-
         public async Task<ActionResult> ModulesList()
         {
 
