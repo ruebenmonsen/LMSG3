@@ -1,14 +1,10 @@
 using LMSG3.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LMSG3.Web
 {
@@ -26,8 +22,6 @@ namespace LMSG3.Web
                 context.Database.Migrate();
                 try
                 {
-                    //var config = services.GetRequiredService<IConfiguration>();
-                    //var adminPW = config["AdminPW"];
                     SeedData.InitAsync(services).Wait();
                 }
                 catch (Exception e)

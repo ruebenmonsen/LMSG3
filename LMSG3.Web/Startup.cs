@@ -1,25 +1,15 @@
+using LMSG3.Core.Configuration;
 using LMSG3.Core.Models.Entities;
+using LMSG3.Data;
+using LMSG3.Data.Configuration;
+using LMSG3.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using LMSG3.Data.Configuration;
-using LMSG3.Web.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using LMSG3.Web.Services;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LMSG3.Web
 {
@@ -33,7 +23,6 @@ namespace LMSG3.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -41,39 +30,21 @@ namespace LMSG3.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ApplicationDbContext")));
-           
-            services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
-            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
-            services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-           services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+            services.AddScoped<IActivityTypeSelectListService, ActivityTypeSelectListService>();
+            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
+            services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
+            services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(MapperProfile));
-
-            services.AddScoped<ICourseSelectListService, CourseSelectListService>();
-            services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
-            //services.AddControllersWithViews(opt => 
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //                        .RequireAuthenticatedUser()
-            //                        .RequireRole("Student")
-            //                        .Build();
-
-            //    opt.Filters.Add(new AuthorizeFilter(policy));
-
-            //});
-            //services.AddMvc().AddRazorPagesOptions(options => {
-            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
-            //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,10 +73,8 @@ namespace LMSG3.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    //pattern: "{area:identity}/{controller:account}/{action=login}");
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                //endpoints.MapDefaultControllerRoute().RequireAuthorization();
             });
         }
     }
