@@ -25,7 +25,7 @@
             @Model.CourseInfo.StartDate
         </dd>
     </dl>
-    <hr/>
+    <hr />
     <div class="row">
         <div class="col-6">
             <h4>Assignments</h4>
@@ -45,9 +45,13 @@
                                 {
                                     <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
                                 }
+                                @if (a.IsOverdue && !a.IsSubmitted)
+                                {
+                                    <p class="text-danger"><i class="bi bi-exclamation"></i></p>
+                                }
                             </div>
                             <div class="col-3">
-                                @*<a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>*@
+                                <a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>
                             </div>
                         </div>
                     </li>
