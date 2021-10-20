@@ -105,7 +105,7 @@ namespace LMSG3.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile incomingFile, AssignmentUploadViewModel model)
+        public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
         {
             var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
             {
@@ -115,14 +115,14 @@ namespace LMSG3.Web.Controllers
 
             }).FirstOrDefaultAsync();
 
-            long size = incomingFile.Length;
+            long size = model.SubmittedFile.Length;
             string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/";
 
             if (!Directory.Exists(fileDirectory))
             {
                 DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
             }
-            var filePath = fileDirectory + incomingFile.FileName;
+            var filePath = fileDirectory + model.SubmittedFile.FileName;
 
             var document = new Document()
             {
@@ -136,7 +136,7 @@ namespace LMSG3.Web.Controllers
             if (size > 0)
             {
                 using var stream = new FileStream(filePath, FileMode.Create);
-                await incomingFile.CopyToAsync(stream);
+                await model.SubmittedFile.CopyToAsync(stream);
 
                 _context.Add(document);
                 await _context.SaveChangesAsync();
