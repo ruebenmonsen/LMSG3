@@ -346,7 +346,7 @@ namespace LMSG3.Data
 
             for (int i = 0; i < amount; i++)
             {
-                endDate = startDate.AddDays(fake.Random.Int(1, 90));
+                endDate = startDate.AddDays(fake.Random.Int(1, 30));
                 var e = new Module
                 {
                     Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.Verb()),
@@ -377,7 +377,7 @@ namespace LMSG3.Data
 
                 for (int i= 0; i < amountPerDay; i++)
                 {
-                    endDate = startDate.AddHours(fake.Random.Int(1, 2));
+                    endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: fix bug
                     var e = new Activity
                     {
                         Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.IngVerb()),
@@ -426,7 +426,7 @@ namespace LMSG3.Data
                         {
                             document.UploadDate = document.Activity.StartDate;
                         }
-                        else
+                        else if (DateTime.Now > document.Activity.StartDate)
                         {
                             document.UploadDate = document.Activity.StartDate.AddHours(fake.Random.Int(0, 4));
                         }

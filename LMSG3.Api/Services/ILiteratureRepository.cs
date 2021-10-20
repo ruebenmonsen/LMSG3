@@ -15,8 +15,9 @@ namespace LMSG3.Api.Services.Repositories
         Task<Literature> GetAsync(int id, bool includeAllInfo);
         bool Save();
         void Update(Literature literature);
-        void Remove(Literature literature);
+        //void Remove(Literature literature);
         Task<bool> AnyAsync(int id);
-        
+        void AddLiterature(Literature literature);
+        void DeliteLiterature(Literature literature);
     }
 }

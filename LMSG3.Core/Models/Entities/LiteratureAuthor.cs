@@ -9,11 +9,11 @@ namespace LMSG3.Core.Models.Entities
         public string FirstName {  get; set; }
         public string LastName {  get; set; }
         public string FullName => $"{FirstName} {LastName}";
-        public DateTime DateOfBirth {  get; set; }
+        public DateTime DateOfBirth {  get; set; } 
 
         // NAV
-        public ICollection<Literature> Literatures {  get; set; }
+        public ICollection<Literature> Literatures { get; set; }
 
-        
+
     }
-}
+    }

@@ -4,6 +4,7 @@
 <div class="jumbotron">
     <h4>Course Info</h4>
     <hr />
+
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CourseInfo.Name)
@@ -24,7 +25,47 @@
             @Model.CourseInfo.StartDate
         </dd>
     </dl>
-    
-</div>
+    <hr/>
+    <div class="row">
+        <div class="col-6">
+            <h4>Assignments</h4>
+            <ul class="list-group overflow-auto assignment-list">
+                @{ bool current = false;}
+                @foreach (var a in Model.CurrentModule.Assignments)
+                {
+                    <li class="list-group-item justify-content-between" id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
+                        @if (a.IsCurrent && !current) { current = true; }
+                        <div class="row">
+                            <div class="col-6">
+                                <div>@Html.DisplayFor(modelA => a.Name)</div>
+                                <div class="@(a.IsOverdue ? "text-danger" : (a.IsSubmitted ? "text-success" : "text-dark"))"><p class="small mb-0">Due @Html.DisplayFor(_ => a.EndDate)</p></div>
+                            </div>
+                            <div class="col-3">
+                                @if (a.IsSubmitted)
+                                {
+                                    <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
+                                }
+                            </div>
+                            <div class="col-3">
+                                @*<a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>*@
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 
+    <br />
+
+    <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id='assignmentModalContent'>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 

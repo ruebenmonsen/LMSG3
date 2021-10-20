@@ -1,4 +1,4 @@
-﻿@model LMSG3.Core.Models.Entities.Course
+﻿@model CreateCourseViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -8,35 +8,149 @@
 
 <h4>Course</h4>
 <hr />
+
+    
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input  asp-for="Name" class="form-control text-box single-line" data-val="true" id="CourseName" autocomplete="off" style="width:70%">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input  asp-for="StartDate" class="form-control text-box single-line" data-val="true" id="CourseStartDate" autocomplete="off" style="width:70%">
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+           
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control text-box single-line" data-val="true" id="CourseDescription"  autocomplete="off" style="width:70%">
+            <span asp-validation-for="Description" class="text-danger"></span>
+           
+        </div>
+    </div>
+</div>
+    @*<div class="form-content">
+        Add Modules
+        <button id="Btn_AddModuleset" class="btn btn-info"> + </button>
+    </div>*@
+  
+
+<div class="form-content">
+   _____ Add Modules_____
+    <div class="form-content">
+        <br /><button id="Btn_AddModuleset" class="btn-info"> + </button>
+    </div>
+    <div class="panel panel-default">
+       
+
+
+            <div class="container ">
+
+
+                <div class="ModulesListSet">
+
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+
+
+       
     </div>
 </div>
 
+
+
+        <br />
+
+        <div class="col-sm-12 text-right">
+
+
+            <input type="button" id="BtnCreate" class="btn btn-primary" value="Create Course" /> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-danger" asp-action="Index">Cancel</a>
+
+        </div>
+
+
+   
+
+    @*<div>
+
+        <button id="BtnCreate" type="submit" class="btn btn-primary"> Create Course </button> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="btn btn-danger" asp-action="Index">Cancel</a>
+    </div>*@
+
+
+
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    
 </div>
+<script>
+    var i = 0;
+    var currentModuleId = '';
+    function addLi() {
+
+        var txtVal = document.getElementById('txtVal').value,
+            listNode = document.getElementById('list'),
+            liNode = document.createElement("LI"),
+            txtNode = document.createTextNode(txtVal);
+        liNode.id = "li" + i++;
+     
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "X";
+        btn.style ="border:none;background-color:white;color:red;font-size:small";
+
+        var a = document.createElement("a");
+        a.innerHTML = "add activity";
+        a.href = "#popupModel1";
+        a.setAttribute("id", "li" + i++);
+        a.addEventListener('click', function () {
+            currentModuleId = this.parentNode.id;
+        });
+        a.setAttribute("data-toggle","modal");
+
+
+        liNode.appendChild(txtNode);
+        liNode.appendChild(btn);
+        liNode.appendChild(a);
+        btn.addEventListener('click', function () {
+            this.parentNode.remove();
+        });
+
+        listNode.appendChild(liNode);
+        document.getElementById('txtVal').value = "";
+    }
+
+    function addUl() {
+
+        var txtVal = document.getElementById('txtVal1').value;
+        var parentLi = document.getElementById(currentModuleId);
+            listNode = document.createElement("ul");
+            parentLi.appendChild(listNode);
+            liNode = document.createElement("LI"),
+            txtNode = document.createTextNode(txtVal);
+            liNode.id = "li" + i++;
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "X";
+        btn.style = "border:none;background-color:white;color:red;font-size:small";
+
+
+        liNode.appendChild(txtNode);
+        liNode.appendChild(btn);
+        btn.addEventListener('click', function () {
+            this.parentNode.remove();
+        });
+
+        listNode.appendChild(liNode);
+        document.getElementById('txtVal1').value = "";
+    }
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
