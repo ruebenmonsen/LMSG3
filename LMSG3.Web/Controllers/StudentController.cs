@@ -116,13 +116,17 @@ namespace LMSG3.Web.Controllers
             }).FirstOrDefaultAsync();
 
             long size = incomingFile.Length;
-            string filePath = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/";
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/";
             
+            if(!Directory.Exists(fileDirectory))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
+            }
+
             if (size > 0)
             {
-                filePath += incomingFile.FileName;
+                var filePath = fileDirectory + incomingFile.FileName;
 
-                // File path needs to exist
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await incomingFile.CopyToAsync(stream);
             }
