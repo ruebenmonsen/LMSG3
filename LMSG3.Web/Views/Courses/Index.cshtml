@@ -1,7 +1,15 @@
 ﻿@model IndexCourseViewModel
 
 <p>
-    <a asp-action="Create">Add New Course</a>
+    <div class="row">
+        <div class="col-md-4">
+            <a asp-action="Create" asp-controller="Courses">Add New Course</a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Create" asp-controller="Modules">Add New Module</a>
+        </div>
+        </div>
+        <a asp-action="Create">Add New Course</a>
 </p>
 <table class="table table-striped table-hover">
     <thead>
