@@ -24,11 +24,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     @if (User.IsInRole("Student"))
                     {
-                        <partial name="_LayoutStudentPartial" />
+                    <partial name="_LayoutStudentPartial" />
                     }
                     else if (User.IsInRole("Teacher"))
                     {
-                        <partial name="_LayoutTeacherPartial" />
+                    <partial name="_LayoutTeacherPartial" />
                     }
 
                     <partial name="_LoginPartial" />
@@ -70,7 +70,9 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
