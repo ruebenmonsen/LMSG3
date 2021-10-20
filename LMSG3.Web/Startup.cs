@@ -41,6 +41,7 @@ namespace LMSG3.Web
             services.AddScoped<ICourseSelectListService, CourseSelectListService>();
             services.AddScoped<IModuleSelectListService, ModuleSelectListService>();
             services.AddScoped<ILiteratureSelectService, LiteratureSelectService>();
+            services.AddScoped<IUserRoleSelectListService, UserRoleSelectListService>();
 
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
