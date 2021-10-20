@@ -1,6 +1,7 @@
 ﻿using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,8 +27,8 @@ namespace LMSG3.Web.Controllers
             //var client = httpClientFactory.CreateClient();
 
             httpClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = System.Net.DecompressionMethods.GZip });
-
-            httpClient.BaseAddress = new Uri("https://localhost:44301");
+            var ApiUrl = ConfigurationHelper.GetByName("ApiUrl");
+            httpClient.BaseAddress = new Uri(ApiUrl);
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
             this.httpClientFactory = httpClientFactory;
@@ -126,7 +127,7 @@ namespace LMSG3.Web.Controllers
 
         private async Task<IEnumerable<LiteratureDto>> SimpleGet()
         {
-
+            
             var response = await httpClient.GetAsync("api/literatures?includeAllInfo=true");
             response.EnsureSuccessStatusCode();
 
@@ -139,6 +140,20 @@ namespace LMSG3.Web.Controllers
 
             return literatures;
 
+        }
+
+        public static class ConfigurationHelper
+        {
+            public static string GetByName(string configKeyName)
+            {
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
+                IConfigurationSection section = config.GetSection(configKeyName);
+
+                return section.Value;
+            }
         }
 
 

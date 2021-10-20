@@ -1,27 +1,48 @@
 ﻿@model IEnumerable<LMSG3.Core.Models.Dtos.LiteratureDto>
 
-<table class="table">
-    <thead>
+<table data-toggle="table"
+       data-classes="table table-hover table-condensed"
+       data-striped="true"
+       data-sort-order="desc"
+       data-sort-name="StartTime"
+       data-pagination="true"
+       data-page-list="[5,10, 20, ALL]"
+       data-page-size="20">
+    <thead class="thead-dark">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>
+            <th data-sortable="true">
+                @Html.DisplayNameFor(model => model.Title)
             </th>
-            @*<th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
-                </th>*@
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">ReleaseDate</a>
+            <th data-sortable="true">
+                @Html.DisplayNameFor(model => model.ReleaseDate)
             </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["SubjectSortParm"]">Subject</a>
+            <th data-sortable="true">
+                @Html.DisplayNameFor(model => model.SubjectName)
             </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["LevelSortParm"]">Level</a>
+            <th data-sortable="true">
+                @Html.DisplayNameFor(model => model.LevelName)
             </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]">Type</a>
+            <th data-sortable="true">
+                @Html.DisplayNameFor(model => model.LiteraTypeName)
             </th>
-            <th></th>
+            <th>said</th>
+            @*<th data-sortable="true">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData[" TitleSortParm"]"></a>
+            </th>
+            <th data-sortable="true">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData[" ReleaseDateSortParm"]"></a>
+            </th>
+            <th data-sortable="true">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData[" SubjectSortParm"]"></a>
+            </th>
+            <th data-sortable="true">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData[" LevelSortParm"]"></a>
+            </th>
+            <th data-sortable="true">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData[" TypeSortParm"]"></a>
+            </th>
+            <th></th>*@
         </tr>
 
     </thead>
@@ -32,9 +53,6 @@
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
                 </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.ReleaseDate)
                 </td>
@@ -56,23 +74,5 @@
         }
     </tbody>
 </table>
-@*@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
 
-<a asp-action="Index3"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index3"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>*@
 
