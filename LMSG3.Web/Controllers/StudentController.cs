@@ -117,18 +117,29 @@ namespace LMSG3.Web.Controllers
 
             long size = incomingFile.Length;
             string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/";
-            
-            if(!Directory.Exists(fileDirectory))
+
+            if (!Directory.Exists(fileDirectory))
             {
                 DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
             }
+            var filePath = fileDirectory + incomingFile.FileName;
+
+            var document = new Document()
+            {
+                UploadDate = DateTime.Now,
+                DocumentTypeId = 2,
+                ActivityId = model.ActivityId,
+                ApplicationUserId = userManager.GetUserId(User),
+                Path = filePath
+            };
 
             if (size > 0)
             {
-                var filePath = fileDirectory + incomingFile.FileName;
-
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await incomingFile.CopyToAsync(stream);
+
+                _context.Add(document);
+                await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index");
         }
