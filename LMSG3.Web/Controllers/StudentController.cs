@@ -61,9 +61,23 @@ namespace LMSG3.Web.Controllers
                 };
              }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
+            var studentActivities = activities.Where(a => !a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
+            {
+                return new StudentActivityViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate,
+                    HasDocument = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any()
+                };
+            }).ToList();
+
             var moduleModel = new CurrentModuleViewModel
             {
-                Assignments = assignmnets
+                Assignments = assignmnets,
+                StudentActivities = studentActivities
             };
 
             var courseInfo = await _context.Students.AsNoTracking().Include(s => s.Course).Select(s => new CourseInfoViewModel
