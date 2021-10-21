@@ -126,14 +126,42 @@ namespace LMSG3.Api.Controllers
 
         // POST: api/Literatures
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public ActionResult<Literature> CreateLiterature(Literature literature)
-        {
-            var authorEntity = mapper.Map<Literature>(literature);
-            uow.LiteratureRepository.AddLiterature(literature);
-            uow.LiteratureRepository.Save();
+        //[HttpPost]
+        //public ActionResult<Literature> CreateLiterature2(Literature literature)
+        //{
+        //    var authorEntity = mapper.Map<Literature>(literature);
+        //    uow.LiteratureRepository.AddLiterature(literature);
+        //    uow.LiteratureRepository.Save();
 
-            return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
+        //    return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
+        //}
+
+        [HttpPost]
+        public async Task<ActionResult<LiteratureDto>> CreateLiterature(LiteratureDto literatureDto)
+        {
+            
+            LiteraturesResourceParameters literatureResourceParameters = new LiteraturesResourceParameters();
+            literatureResourceParameters.titleStr = literatureDto.Title;
+
+
+            if (await uow.LiteratureRepository.FindAsync(literatureResourceParameters) != null)
+            {
+                ModelState.AddModelError("Title", "Title is in use");
+                return BadRequest(ModelState);
+            }
+
+            var literature = mapper.Map<Literature>(literatureDto);
+            uow.LiteratureRepository.AddLiterature(literature);
+
+            if (uow.LiteratureRepository.Save())
+            {
+                var model = mapper.Map<LiteratureDto>(literature);
+                return CreatedAtAction(nameof(literature), new { name = model.Title }, model);
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
 
 

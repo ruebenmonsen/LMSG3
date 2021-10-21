@@ -73,9 +73,9 @@ namespace LMSG3.Api.Services.Repositories
                             //.Include(e => e.LiteratureLevel);
             }
 
-            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.subjectStr))
+            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
             {
-                //literature = literature.Where(l => l.Subject.Name.Contains(literaturesResourceParameters.subjectStr.ToLower())).Include(e => e.Subject);
+                literature = literature.Where(l => l.Title.Contains(literaturesResourceParameters.titleStr.ToLower()));
             }
 
             return await literature.ToListAsync();
