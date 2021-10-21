@@ -64,7 +64,16 @@ namespace LMSG3.Api.Controllers
                 return NotFound();
             }
             var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
+            if (!string.IsNullOrWhiteSpace(literatureResourceParameters.titleStr))
+            {
+                //return await _context.Literatures.AsQueryable().ToListAsync();
+                // var literature = GetLiteratures(literaturesResourceParameters);
+                literaDto = literaDto.Where(l => l.Title.ToLower()
+                                       .Contains(literatureResourceParameters.titleStr.ToLower())
+                                       || l.SubjectName.ToLower().Contains(literatureResourceParameters.subjectStr.ToLower())
+                                       ||l.Description.ToLower().Contains(literatureResourceParameters.discriptionStr.ToLower()));
 
+            }
             // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
             foreach (var item in literaDto)
             {

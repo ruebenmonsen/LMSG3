@@ -63,12 +63,7 @@ namespace LMSG3.Api.Services.Repositories
                 return await literature.ToListAsync();
             }
 
-            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
-            {
-                //return await _context.Literatures.AsQueryable().ToListAsync();
-                // var literature = GetLiteratures(literaturesResourceParameters);
-                literature = literature.Where(l => l.Title.ToLower().Contains(literaturesResourceParameters.titleStr.ToLower()));
-            }
+            
 
             if (literaturesResourceParameters.includeAllInfo)
             {
