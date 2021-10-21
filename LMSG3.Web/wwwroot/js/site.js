@@ -20,6 +20,29 @@ function OpenAssignmentModal(id) {
         });
 }
 
+
+//document.addEventListener('DOMContentLoaded', loadPTT(2021, 42));
+
+
+
+function loadPTT(year, week) {
+    var data = { year: year, week: week };
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/Student/TimeTable',
+            contentType: 'application/json; charset=utf=8',
+            data: data,
+            success: function (result) {
+                $('#pttContent').html(result);
+                $('#pttModal').modal('show');
+            },
+            error: function (er) {
+                alert(er);
+            }
+        });
+});
+
 document.addEventListener('DOMContentLoaded', initScrollPostion);
 
 function initScrollPostion() {
