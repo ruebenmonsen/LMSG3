@@ -11,6 +11,7 @@ using LMSG3.Core.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using LMSG3.Core.Models.ViewModels;
+using System.Globalization;
 
 namespace LMSG3.Web.Controllers
 {
@@ -136,6 +137,80 @@ namespace LMSG3.Web.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> TimeTable(int week, int year)
+        {
+            // TODO: If we want to be able to select module, currentDate
+            // need to be adjusted to the selected startdate, but if
+            // the selected module is the current then the date should be Now.
+            
+            var currentDate = DateTime.Now;
+
+            if (week == 0 || year == 0) // TODO: logic
+            {
+                week = ISOWeek.GetWeekOfYear(currentDate);
+                year = ISOWeek.GetYear(currentDate);
+            }
+
+            var y2 = currentDate.Year;
+            // week ??= ISOWeek.GetWeekOfYear(currentDate);
+            // TODO: week logic, 1-52?
+
+            var weekStart = ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
+            var weekEnd = ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday);
+
+            var userId = userManager.GetUserId(User);
+
+            var assignmentTypeId = await _context.Activities.AsNoTracking()
+                .Where(a => a.ActivityType.Name == "Assignment")
+                .Select(a => a.ActivityTypeId)
+                .FirstOrDefaultAsync();
+
+            var activities2 = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .Include(m => m.Activities.Where(a => a.StartDate > weekStart))
+                .SelectMany(m => m.Activities)
+                .ToListAsync();
+
+            var activities = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .SelectMany(m => m.Activities.Where(a => a.StartDate > weekStart))
+                .ToListAsync();
+
+            // Select all activities within selected week that ain't assignments
+            var studentActivities = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .SelectMany(m => m.Activities)
+                .Where(a => a.StartDate > weekStart && !a.ActivityTypeId.Equals(assignmentTypeId))
+                .Select(a => new StudentActivityViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate,
+                    HasDocument = a.Documents.Any()
+                })
+                .ToListAsync();
+
+            // TODO: get current module from parameter or not?
+            //var currentModule = await _context.Students.Where(s => s.Id == userId)
+            //    .Select(s => s.Course.Modules.Where(m => m.StartDate < currentDate && m.EndDate > currentDate).SingleOrDefault()).FirstOrDefaultAsync();
+
+            // TODO: add current module to ViewModel
+            var timeTable = new StudentTimeTableViewModel
+            {
+                Year = year,
+                Week = week,
+                Activities = studentActivities
+            };
+
+            return PartialView("AssignmentModal", timeTable);
         }
 
         public async Task<ActionResult> ModulesList()
