@@ -157,30 +157,52 @@ function switchActiveTab() {
             a.classList.remove('active')
         }
     });
-        
-
 }
 
 allTab.addEventListener('click', allAssignemnts)
 function allAssignemnts() {
     switchActiveTab();
     this.classList.add('active');
+    listItems.forEach(li => {
+        li.classList.remove('not-shown')
+    })
 }
 
 overdueTab.addEventListener('click', overdue)
 function overdue() {
     switchActiveTab();
     this.classList.add('active');
+    listItems.forEach(li => {
+        if (!li.classList.contains('overdue-assignment')) {
+            li.classList.add('not-shown')
+        }
+        else
+            li.classList.remove('not-shown')
+    })
 }
 
 submittedTab.addEventListener('click', submitted)
 function submitted() {
     switchActiveTab();
     this.classList.add('active');
+    listItems.forEach(li => {
+        if (!li.classList.contains('submitted-assignment')) {
+            li.classList.add('not-shown')
+        }
+        else
+            li.classList.remove('not-shown')
+    })
 }
 
 upcomingTab.addEventListener('click', upcoming)
 function upcoming() {
     switchActiveTab();
     this.classList.add('active');
+    listItems.forEach(li => {
+        if (!li.classList.contains('upcoming-assignment')) {
+            li.classList.add('not-shown')
+        }
+        else
+            li.classList.remove('not-shown')
+    })
 }

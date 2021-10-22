@@ -49,7 +49,15 @@
                 @{ bool current = false;}
                 @foreach (var a in Model.CurrentModule.Assignments)
                 {
-                    <li class="list-group-item justify-content-between assignment-list-item" id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
+                    <li class=
+                        "list-group-item justify-content-between assignment-list-item
+
+                        @((a.IsSubmitted) ? "submitted-assignment" : "") 
+                        @((a.IsOverdue) ? "overdue-assignment" : "")
+                        @((!a.IsOverdue && !a.IsSubmitted) ? "upcoming-assignment" :"")" 
+
+                        id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
+
                         @if (a.IsCurrent && !current) { current = true; }
                         <div class="row">
                             <div class="col-6">
