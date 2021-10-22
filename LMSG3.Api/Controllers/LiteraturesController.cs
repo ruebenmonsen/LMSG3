@@ -81,12 +81,7 @@ namespace LMSG3.Api.Controllers
             //}
                 
             // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
-            foreach (var item in literaDto)
-            {
-               item.LevelName = ModelsJoinHelper.GetLevelName(item.LiteraLevelId, _context);
-               item.LiteraTypeName = ModelsJoinHelper.GetTypeName(item.LiteraTypeId, _context);
-               item.SubjectName = ModelsJoinHelper.GetSubjectName(item.SubId, _context);
-            }
+            
 
             return Ok(literaDto);
         }
@@ -130,7 +125,7 @@ namespace LMSG3.Api.Controllers
         public ActionResult<Literature> CreateLiterature2(Literature literature)
         {
             LiteraturesResourceParameters literatureResourceParameters = new LiteraturesResourceParameters();
-            literatureResourceParameters.titleStr = literature.Title;
+            literatureResourceParameters.searchString = literature.Title;
 
 
             if (uow.LiteratureRepository.LiteratureExist(literatureResourceParameters) == true)

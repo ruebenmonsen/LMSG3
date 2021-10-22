@@ -65,6 +65,12 @@ namespace LMSG3.Api.Services.Repositories
             var currentFilter = literaturesResourceParameters.levelFilter;
             var sortOrder = literaturesResourceParameters.sortOrder;
             var literaDto =  mapper.Map<IEnumerable<LiteratureDto>>(literature);
+            foreach (var item in literaDto)
+            {
+                item.LevelName = ModelsJoinHelper.GetLevelName(item.LiteraLevelId, _context);
+                item.LiteraTypeName = ModelsJoinHelper.GetTypeName(item.LiteraTypeId, _context);
+                item.SubjectName = ModelsJoinHelper.GetSubjectName(item.SubId, _context);
+            }
             if (literaturesResourceParameters == null)
             {
                 return literaDto;
@@ -74,11 +80,21 @@ namespace LMSG3.Api.Services.Repositories
                 literaDto = literaDto.Where(s => s.LiteraLevelId.Equals(currentFilter));
 
             }
-            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
+            //if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.searchString))
+            //{
+            //    var searchStr = literaturesResourceParameters.searchString;
+            //    literature = literature.Where(l => l.Title.Contains(searchStr));
+            //}
+            if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.searchString))
             {
-                var searchStr = literaturesResourceParameters.titleStr;
-                literature = literature.Where(l => l.Title.Contains(searchStr));
+
+                literaDto = literaDto.Where(l => l.Title.ToLower()
+                                 .Contains(literaturesResourceParameters.searchString.ToLower())
+                                  || l.SubjectName.ToLower().Contains(literaturesResourceParameters.searchString.ToLower())
+                                   ||l.Description.ToLower().Contains(literaturesResourceParameters.searchString.ToLower()));
+
             }
+
             if (literaturesResourceParameters.includeAllInfo)
             {
                 literature = literature.Include(e => e.Authors);
@@ -138,7 +154,7 @@ namespace LMSG3.Api.Services.Repositories
         public bool LiteratureExist(LiteraturesResourceParameters literaturesResourceParameters)
         {
             var literature = _context.Literatures.AsQueryable();
-            var searchStr = literaturesResourceParameters.titleStr;
+            var searchStr = literaturesResourceParameters.searchString;
             bool exist = false;
             if (!string.IsNullOrWhiteSpace(searchStr))
             {

@@ -48,7 +48,7 @@ namespace LMSG3.Web.Controllers
 
             LiteraturesResourceParameters literaturesResourceParameters = new LiteraturesResourceParameters();
             literaturesResourceParameters.sortOrder = sortOrder;
-            literaturesResourceParameters.titleStr = searchString;
+            literaturesResourceParameters.searchString = searchString;
             if (currentFilter == null)
             {
                 literaturesResourceParameters.levelFilter = 0;
@@ -74,7 +74,7 @@ namespace LMSG3.Web.Controllers
         {
             var queryString = $"includeAllInfo={literaturesResourceParameters.includeAllInfo}";
             queryString += $"&levelFilter={literaturesResourceParameters.levelFilter}";
-            queryString += $"&titleStr={literaturesResourceParameters.titleStr}";
+            queryString += $"&searchString={literaturesResourceParameters.searchString}";
             queryString += $"&sortOrder={literaturesResourceParameters.sortOrder}";
             var apiUrl = $"api/literatures?{queryString}";
             var response = await httpClient.GetAsync(apiUrl);
