@@ -94,6 +94,22 @@ namespace LMSG3.Web.Controllers
 
         //}
         //[HttpPost]
+        public async Task<ActionResult> CreateCoursejs(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
+        {
+            //need to add validation 
+           
+                var courseexist = await _context.Courses.Where(c => c.Name == coursevm.Name).FirstOrDefaultAsync();
+                if (courseexist != null)
+                {
+                    //create viewbag to send the msg 
+                    ViewBag.Message = "Course already exists.";
+                    return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+                }
+                else
+                {
+                    var course = mapper.Map<Course>(coursevm);
+                    uow.CourseRepository.Add(course);
+                    await uow.CompleteAsync();
         public async Task<ActionResult> CreateCourse(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
         {
             var course = mapper.Map<Course>(coursevm);
