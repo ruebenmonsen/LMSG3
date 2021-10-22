@@ -94,8 +94,8 @@ namespace LMSG3.Web.Controllers
 
         //}
         [HttpPost]
-        //public async Task<ActionResult> CreateCoursejs(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
-        public async Task<ActionResult> Create(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
+       // public async Task<ActionResult> CreateCoursejs(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
+        public async Task<IActionResult> Create(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
         {
             //need to add validation 
             if (ModelState.IsValid) { 
@@ -132,7 +132,8 @@ namespace LMSG3.Web.Controllers
 
             }
             }
-            return Json(new { redirectToUrl = Url.Action("Create", "Courses",coursevm) });
+            //return RedirectToAction("Create");
+            return View();
         }
 
 
