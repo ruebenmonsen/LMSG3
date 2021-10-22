@@ -16,14 +16,17 @@ namespace LMSG3.Data.Configuration
         private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
+        public StudentRepository StudentRepository { get; }
+
         private ICourseRepository courseRepository;
         private IRepository<Module> moduleRepository;
         private IRepository<Activity> activityRepository;
-
+       
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             this.context = context;
             this.logger = loggerFactory.CreateLogger("logs");
+            StudentRepository = new StudentRepository(context);
         }
         public ICourseRepository CourseRepository
         {
@@ -55,6 +58,8 @@ namespace LMSG3.Data.Configuration
                 return activityRepository;
             }
         }
+
+        IStudentRepository IUnitOfWork.StudentRepository => throw new NotImplementedException();
 
         public async Task CompleteAsync()
         {

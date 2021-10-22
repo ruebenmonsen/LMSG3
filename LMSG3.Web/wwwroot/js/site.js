@@ -55,25 +55,25 @@ $("body").on("click", "img[src*='up.jpg']", function () {
     $(this).closest("tr").next().remove();
 });
 
-// plus module Click event 
-$("#addModules").click(function () {
-    var html = '';
-    html += ' <div id="inputFormRow">';
-    html += ' <input type="text" name="ModuleName[]" placeholder="Name" autocomplete="off" /> &nbsp;';
-    html += '<input type="text" name="ModuleDescription[]"  placeholder="Description" autocomplete="off"> &nbsp;';
-    html += '<input type="date" name="ModuleStartDate[]"  placeholder="Start Date" autocomplete="off"> &nbsp;';
-    html += '<input type="date" name="ModuleEnddate[]"  placeholder="End Date" autocomplete="off"> &nbsp;';
+//// plus module Click event 
+//$("#addModules").click(function () {
+//    var html = '';
+//    html += ' <div id="inputFormRow">';
+//    html += ' <input type="text" name="ModuleName[]" placeholder="Name" autocomplete="off" /> &nbsp;';
+//    html += '<input type="text" name="ModuleDescription[]"  placeholder="Description" autocomplete="off"> &nbsp;';
+//    html += '<input type="date" name="ModuleStartDate[]"  placeholder="Start Date" autocomplete="off"> &nbsp;';
+//    html += '<input type="date" name="ModuleEnddate[]"  placeholder="End Date" autocomplete="off"> &nbsp;';
    
-    html += '  <button id="removeModules" type="button" class="btn btn-danger"> - </button> <br><br>';
-    html += '</div> ';
+//    html += '  <button id="removeModules" type="button" class="btn btn-danger"> - </button> <br><br>';
+//    html += '</div> ';
 
-    $('#newRow').append(html);
-});
+//    $('#newRow').append(html);
+//});
 
 // remove modules
-$(document).on('click', '#removeModules', function () {
-    $(this).closest('#inputFormRow').remove();
-});
+//$(document).on('click', '#removeModules', function () {
+//    $(this).closest('#inputFormRow').remove();
+//});
 
 //test
 $(document).on('click', '#Btn_AddModuleset', function (e) {
