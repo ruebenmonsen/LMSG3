@@ -17,6 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
@@ -25,6 +26,10 @@
     <ProjectReference Include="..\LMSG3.Api\LMSG3.Api.csproj" />
     <ProjectReference Include="..\LMSG3.Core\LMSG3.Core.csproj" />
     <ProjectReference Include="..\LMSG3.Data\LMSG3.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\jquery-ajax-unobtrusive\" />
   </ItemGroup>
 
 </Project>
