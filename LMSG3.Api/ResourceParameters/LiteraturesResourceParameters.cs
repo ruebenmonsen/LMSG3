@@ -17,9 +17,6 @@ namespace LMSG3.Api.ResourceParameters
         public string sortOrder { get; set; }
         public bool includeAllInfo { get; set; }
         public bool includeAuthor { get; set; }
-        public bool includeSubject { get; set; }
-        public bool includeLevel { get; set; }
-        public bool includeType { get; set; }
-         
+               
     }
 }
