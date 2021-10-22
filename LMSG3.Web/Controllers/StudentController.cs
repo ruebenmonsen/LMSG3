@@ -148,7 +148,7 @@ namespace LMSG3.Web.Controllers
             // need to be adjusted to the selected startdate, but if
             // the selected module is the current then the date should be Now.
             var currentDate = DateTime.Now;
-            if (week < 1 || year < 1971 || week > ISOWeek.GetWeeksInYear(year))
+            if (week < 1 || year < 1971 || year > 2100|| week > ISOWeek.GetWeeksInYear(year))
             {
                 week = ISOWeek.GetWeekOfYear(currentDate);
                 year = currentDate.Year;
@@ -168,7 +168,6 @@ namespace LMSG3.Web.Controllers
 
             var weekNext = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
             var weekPrevious = week == 1 ? ISOWeek.GetWeeksInYear(year - 1) : week - 1;
-
 
             var weekStart = ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
             var weekEnd = ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday);
@@ -191,7 +190,7 @@ namespace LMSG3.Web.Controllers
                 }).SingleOrDefaultAsync();
 
             // Select all activities within selected week that ain't assignments
-            // Bug: Activities streching over to next week will not be taken
+            // Bug: Activities stretching over to next week will not be taken
             var studentActivities = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
