@@ -75,10 +75,38 @@ namespace LMSG3.Api.Services.Repositories
 
             if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
             {
-                literature = literature.Where(l => l.Title.Contains(literaturesResourceParameters.titleStr.ToLower()));
+                var searchStr = literaturesResourceParameters.titleStr;
+                literature = literature.Where(l => l.Title.Contains(searchStr));
             }
 
             return await literature.ToListAsync();
+
+
+        }
+
+        public bool LiteratureExist(LiteraturesResourceParameters literaturesResourceParameters)
+        {
+            var literature = _context.Literatures.AsQueryable();
+            var searchStr = literaturesResourceParameters.titleStr;
+            bool exist = false;
+            if (!string.IsNullOrWhiteSpace(searchStr))
+            {
+                //literature = literature.Where(l => l.Title.ToLower().Equals(literaturesResourceParameters.titleStr.ToLower()));
+                foreach (var item in literature)
+                {
+                   
+                    exist = String.Equals(item.Title.ToString(), searchStr, StringComparison.OrdinalIgnoreCase);
+                    if (exist)
+                    {
+                        break;
+                    }
+                }
+               
+                
+            }
+
+            return exist;
+
 
 
         }
@@ -111,7 +139,7 @@ namespace LMSG3.Api.Services.Repositories
             throw new NotImplementedException();
         }
 
-        public bool Save()
+        public bool CompleteAsync()
         {
             return (_context.SaveChanges() >= 0);
         }
@@ -120,5 +148,7 @@ namespace LMSG3.Api.Services.Repositories
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

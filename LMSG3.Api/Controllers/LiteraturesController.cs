@@ -75,7 +75,7 @@ namespace LMSG3.Api.Controllers
                                        ||l.Description.ToLower().Contains(literatureResourceParameters.discriptionStr.ToLower()));
 
             }
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && literatureResourceParameters.levelFilter > 0)
             {
                 literaDto = literaDto.Where(l=>l.LiteraLevelId.Equals(literatureResourceParameters.levelFilter));
             }
@@ -126,45 +126,33 @@ namespace LMSG3.Api.Controllers
 
         // POST: api/Literatures
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public ActionResult<Literature> CreateLiterature2(Literature literature)
-        //{
-        //    var authorEntity = mapper.Map<Literature>(literature);
-        //    uow.LiteratureRepository.AddLiterature(literature);
-        //    uow.LiteratureRepository.Save();
-
-        //    return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
-        //}
-
         [HttpPost]
-        public async Task<ActionResult<LiteratureDto>> CreateLiterature(LiteratureDto literatureDto)
+        public ActionResult<Literature> CreateLiterature2(Literature literature)
         {
-            
             LiteraturesResourceParameters literatureResourceParameters = new LiteraturesResourceParameters();
-            literatureResourceParameters.titleStr = literatureDto.Title;
+            literatureResourceParameters.titleStr = literature.Title;
 
 
-            if (await uow.LiteratureRepository.FindAsync(literatureResourceParameters) != null)
+            if (uow.LiteratureRepository.LiteratureExist(literatureResourceParameters) == true)
             {
                 ModelState.AddModelError("Title", "Title is in use");
                 return BadRequest(ModelState);
             }
-
-            var literature = mapper.Map<Literature>(literatureDto);
+            var authorEntity = mapper.Map<Literature>(literature);
             uow.LiteratureRepository.AddLiterature(literature);
-
-            if (uow.LiteratureRepository.Save())
+           
+            if (uow.LiteratureRepository.CompleteAsync())
             {
-                var model = mapper.Map<LiteratureDto>(literature);
-                return CreatedAtAction(nameof(literature), new { name = model.Title }, model);
+                return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
             }
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+            
         }
 
-
+        
 
         // DELETE: api/Literatures/5
         [HttpDelete("{id}")]
@@ -179,7 +167,7 @@ namespace LMSG3.Api.Controllers
 
             uow.LiteratureRepository.DeliteLiterature(literature);
             //await _context.SaveChangesAsync();
-            uow.LiteratureRepository.Save();
+            uow.LiteratureRepository.CompleteAsync();
             return NoContent();
         }
 

@@ -13,11 +13,12 @@ namespace LMSG3.Api.Services.Repositories
         Task<IEnumerable<Literature>> GetAsync(bool includeAllInfo); // bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
         Task<IEnumerable<Literature>> FindAsync(LiteraturesResourceParameters literatureResourceParameters);
         Task<Literature> GetAsync(int id, bool includeAllInfo);
-        bool Save();
+        bool CompleteAsync();
         void Update(Literature literature);
         //void Remove(Literature literature);
         Task<bool> AnyAsync(int id);
         void AddLiterature(Literature literature);
         void DeliteLiterature(Literature literature);
+        bool LiteratureExist(LiteraturesResourceParameters literatureResourceParameters);
     }
 }
