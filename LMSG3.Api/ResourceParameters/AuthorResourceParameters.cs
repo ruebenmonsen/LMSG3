@@ -11,6 +11,7 @@ namespace LMSG3.Api.ResourceParameters
         public string titleStr { get; set; }
         public string ageStr { get; set; }
         public bool includeAllInfo { get; set; }
-        
+       
+
     }
 }

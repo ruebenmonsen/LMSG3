@@ -1,4 +1,5 @@
-﻿using LMSG3.Core.Models.Dtos;
+﻿using LMSG3.Api.ResourceParameters;
+using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -36,99 +37,47 @@ namespace LMSG3.Web.Controllers
         }
 
 
-        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
+        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter)
         {
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
 
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
-            ViewData["DescriptionSortParm"] = sortOrder == "FullName" ? "description_desc" : "Description";
             ViewData["ReleaseDateSortParm"] = sortOrder == "ReleaseDate" ? "releaseDate_desc" : "ReleaseDate";
             ViewData["SubjectSortParm"] = sortOrder == "Subject" ? "subject_desc" : "Subject";
             ViewData["LevelSortParm"] = sortOrder == "Level" ? "level_desc" : "Level";
             ViewData["TypeSortParm"] = sortOrder == "Type" ? "type_desc" : "Type";
 
+            LiteraturesResourceParameters literaturesResourceParameters = new LiteraturesResourceParameters();
+            literaturesResourceParameters.sortOrder = sortOrder;
+            literaturesResourceParameters.titleStr = searchString;
+            if (currentFilter == null)
+            {
+                literaturesResourceParameters.levelFilter = 0;
+
+            }
+            else
+            {
+                literaturesResourceParameters.levelFilter = int.Parse(currentFilter);
+            }
+            
+            
+
             var cancellation = new CancellationTokenSource();
-            var litratureModel = await SimpleGet();
+            
+            var litratureModel = await SimpleGet(literaturesResourceParameters);
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                litratureModel = litratureModel.Where(s => s.Title.ToLower().Contains(searchString.ToLower().Trim())
-                                                    || s.SubjectName.ToLower().Contains(searchString.ToLower().Trim())
-                                                    || s.Description.ToLower().Contains(searchString.ToLower().Trim())
-                                                    || s.ReleaseDate.ToString().Contains(searchString.ToLower().Trim())
-                                                    || s.LevelName.ToLower().Contains(searchString.ToLower().Trim())
-                                                    //|| s.LiteraLevelId.Equals(currentFilter)
-                                                    || s.LiteraTypeName.ToLower().Contains(searchString.ToLower().Trim()));
-
-
-                //Todo Add countfor each creteria result
-            }
-            // var authors = litratureModel.Where(d => d.Authors.FirstOrDefault);
-            //  var authors = from s in litratureModel.Where(a => a.Authors != null) select s.Authors;
-
-            if (!String.IsNullOrEmpty(currentFilter))
-            {
-                litratureModel = litratureModel.Where(s => s.LiteraLevelId.Equals(Int16.Parse(currentFilter)));
-
-            }
-            switch (sortOrder)
-            {
-                case "title_desc":
-                    litratureModel = litratureModel.OrderByDescending(s => s.Title).ToList();
-                    break;
-                case "Description":
-                    litratureModel = litratureModel.OrderBy(s => s.Description).ToList();
-                    break;
-                case "description_desc":
-                    litratureModel = litratureModel.OrderByDescending(s => s.Description).ToList();
-                    break;
-                case "ReleaseDate":
-                    litratureModel = litratureModel.OrderBy(s => s.ReleaseDate).ToList();
-                    break;
-                case "releaseDate_desc":
-                    litratureModel = litratureModel.OrderByDescending(s => s.ReleaseDate).ToList();
-                    break;
-                case "Subject":
-                    litratureModel = litratureModel.OrderBy(s => s.SubjectName).ToList();
-                    break;
-                case "subject_desc":
-                    litratureModel = litratureModel.OrderByDescending(s => s.SubjectName).ToList();
-                    break;
-                case "Level":
-                    litratureModel = litratureModel.OrderBy(s => s.LevelName).ToList();
-                    break;
-                case "level_desc":
-                    litratureModel = litratureModel.OrderByDescending(s => s.LevelName).ToList();
-                    break;
-                case "Type":
-                    litratureModel = litratureModel.OrderBy(s => s.LiteraTypeName).ToList();
-                    break;
-                case "type_desc":
-                    litratureModel = litratureModel.OrderByDescending(s => s.LiteraTypeName).ToList();
-                    break;
-                default:
-                    litratureModel = litratureModel.OrderBy(s => s.Title).ToList();
-                    break;
-            }
-            // IEnumerable<SelectListItem> lieratureLevelSlectItems = await GetVehicleLevelSelectListItems();
-
-            // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
-
-            //return View(litratureModel);
-
-            // int pageSize = 10;
-            //return View(await PaginatedList<LiteratureDto>.CreateAsync(litratureModel.AsNoTracking(), pageNumber ?? 1, pageSize));
+            
 
             return View(litratureModel);
         }
 
-        private async Task<IEnumerable<LiteratureDto>> SimpleGet()
+        private async Task<IEnumerable<LiteratureDto>> SimpleGet(LiteraturesResourceParameters literaturesResourceParameters)
         {
-            
-            var response = await httpClient.GetAsync("api/literatures?includeAllInfo=true");
+            var queryString = $"includeAllInfo={literaturesResourceParameters.includeAllInfo}";
+            queryString += $"&levelFilter={literaturesResourceParameters.levelFilter}";
+            queryString += $"&titleStr={literaturesResourceParameters.titleStr}";
+            queryString += $"&sortOrder={literaturesResourceParameters.sortOrder}";
+            var apiUrl = $"api/literatures?{queryString}";
+            var response = await httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

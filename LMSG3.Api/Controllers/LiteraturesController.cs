@@ -57,28 +57,28 @@ namespace LMSG3.Api.Controllers
         [HttpHead]    //authorsResourceParameters.
         public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures([FromQuery] LiteraturesResourceParameters literatureResourceParameters)
         {
-            var literature = await uow.LiteratureRepository.FindAsync(literatureResourceParameters);
+            var literaDto = await uow.LiteratureRepository.FindAsync(literatureResourceParameters);
 
-            if (literature == null)
+            if (literaDto == null)
             {
                 return NotFound();
             }
-            var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
-            if (!string.IsNullOrWhiteSpace(literatureResourceParameters.titleStr) 
-                || !string.IsNullOrWhiteSpace(literatureResourceParameters.subjectStr)
-                || !string.IsNullOrWhiteSpace(literatureResourceParameters.discriptionStr))
-            {
+           // var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
+            //if (!string.IsNullOrWhiteSpace(literatureResourceParameters.titleStr) 
+            //    || !string.IsNullOrWhiteSpace(literatureResourceParameters.subjectStr)
+            //    || !string.IsNullOrWhiteSpace(literatureResourceParameters.discriptionStr))
+            //{
                 
-                literaDto = literaDto.Where(l => l.Title.ToLower()
-                                       .Contains(literatureResourceParameters.titleStr.ToLower())
-                                       || l.SubjectName.ToLower().Contains(literatureResourceParameters.subjectStr.ToLower())
-                                       ||l.Description.ToLower().Contains(literatureResourceParameters.discriptionStr.ToLower()));
+                //literaDto = literaDto.Where(l => l.Title.ToLower()
+                //                       .Contains(literatureResourceParameters.titleStr.ToLower())
+                //                       || l.SubjectName.ToLower().Contains(literatureResourceParameters.subjectStr.ToLower())
+                //                       ||l.Description.ToLower().Contains(literatureResourceParameters.discriptionStr.ToLower()));
 
-            }
-            if (ModelState.IsValid && literatureResourceParameters.levelFilter > 0)
-            {
-                literaDto = literaDto.Where(l=>l.LiteraLevelId.Equals(literatureResourceParameters.levelFilter));
-            }
+            //}
+            //if (ModelState.IsValid && literatureResourceParameters.levelFilter > 0)
+            //{
+            //    literaDto = literaDto.Where(l=>l.LiteraLevelId.Equals(literatureResourceParameters.levelFilter));
+            //}
                 
             // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
             foreach (var item in literaDto)

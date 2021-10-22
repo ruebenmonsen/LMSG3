@@ -7,16 +7,20 @@ using System.Linq;
 using LMSG3.Data;
 using LMSG3.Core.Models.Entities;
 using LMSG3.Api.ResourceParameters;
+using AutoMapper;
+using LMSG3.Core.Models.Dtos;
 
 namespace LMSG3.Api.Services.Repositories
 {
     public class LitertureRepository : ILiteratureRepository
     {
         private readonly ApiDbContext _context;
+        private readonly IMapper mapper;
 
-        public LitertureRepository(ApiDbContext context, ILogger logger)
+        public LitertureRepository(ApiDbContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<Literature>> GetAsync(bool includeAllInfo) //bool includeAuthor, bool includeSubject, bool includeLevel, bool includeType
@@ -55,31 +59,78 @@ namespace LMSG3.Api.Services.Repositories
         }
 
 
-        public async Task<IEnumerable<Literature>> FindAsync(LiteraturesResourceParameters literaturesResourceParameters)
+        public async Task<IEnumerable<LiteratureDto>> FindAsync(LiteraturesResourceParameters literaturesResourceParameters)
         {
             var literature = _context.Literatures.AsQueryable();
+            var currentFilter = literaturesResourceParameters.levelFilter;
+            var sortOrder = literaturesResourceParameters.sortOrder;
+            var literaDto =  mapper.Map<IEnumerable<LiteratureDto>>(literature);
             if (literaturesResourceParameters == null)
             {
-                return await literature.ToListAsync();
+                return literaDto;
             }
-
-            
-
-            if (literaturesResourceParameters.includeAllInfo)
+            if (currentFilter > 0)
             {
-                literature = literature.Include(e => e.Authors);
-                            //.Include(e => e.Subject);
-                           // .Include(e => e.LiteratureType)
-                            //.Include(e => e.LiteratureLevel);
-            }
+                literaDto = literaDto.Where(s => s.LiteraLevelId.Equals(currentFilter));
 
+            }
             if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.titleStr))
             {
                 var searchStr = literaturesResourceParameters.titleStr;
                 literature = literature.Where(l => l.Title.Contains(searchStr));
             }
+            if (literaturesResourceParameters.includeAllInfo)
+            {
+                literature = literature.Include(e => e.Authors);
+                //.Include(e => e.Subject);
+                // .Include(e => e.LiteratureType)
+                //.Include(e => e.LiteratureLevel);
+            }
 
-            return await literature.ToListAsync();
+            
+           
+
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    literaDto = literaDto.OrderByDescending(s => s.Title);
+                    break;
+                case "Description":
+                    literaDto = literaDto.OrderBy(s => s.Description);
+                    break;
+                case "description_desc":
+                    literaDto = literaDto.OrderByDescending(s => s.Description);
+                    break;
+                case "ReleaseDate":
+                    literaDto = literaDto.OrderBy(s => s.ReleaseDate);
+                    break;
+                case "releaseDate_desc":
+                    literaDto = literaDto.OrderByDescending(s => s.ReleaseDate);
+                    break;
+                case "Subject":
+                    literaDto = literaDto.OrderBy(s => s.SubjectName);
+                    break;
+                case "subject_desc":
+                    literaDto = literaDto.OrderByDescending(s => s.SubjectName);
+                    break;
+                case "Level":
+                    literaDto = literaDto.OrderBy(s => s.LevelName);
+                    break;
+                case "level_desc":
+                    literaDto = literaDto.OrderByDescending(s => s.LevelName);
+                    break;
+                case "Type":
+                    literaDto = literaDto.OrderBy(s => s.LiteraTypeName);
+                    break;
+                case "type_desc":
+                    literaDto = literaDto.OrderByDescending(s => s.LiteraTypeName);
+                    break;
+                default:
+                    literaDto = literaDto.OrderBy(s => s.Title);
+                    break;
+            }
+
+            return literaDto;
 
 
         }

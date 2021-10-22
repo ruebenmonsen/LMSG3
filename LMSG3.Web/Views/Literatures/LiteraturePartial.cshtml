@@ -1,52 +1,30 @@
 ﻿@model IEnumerable<LMSG3.Core.Models.Dtos.LiteratureDto>
 
-<table data-toggle="table"
-       data-classes="table table-hover table-condensed"
-       data-striped="true"
-       data-sort-order="desc"
-       data-sort-name="StartTime"
-       data-pagination="true"
-       data-page-list="[5,10, 20, ALL]"
-       data-page-size="20">
-    <thead class="thead-dark">
-    <thead class="thead-dark">
+<table class="table">
+    <thead>
         <tr>
-            <th data-sortable="true">
-                @Html.DisplayNameFor(model => model.Title)
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>
             </th>
-            <th data-sortable="true">
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+            @*<th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
+            </th>*@
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">ReleaseDate</a>
             </th>
-            <th data-sortable="true">
-                @Html.DisplayNameFor(model => model.SubjectName)
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SubjectSortParm"]">Subject</a>
             </th>
-            <th data-sortable="true">
-                @Html.DisplayNameFor(model => model.LevelName)
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LevelSortParm"]">Level</a>
             </th>
-            <th data-sortable="true">
-                @Html.DisplayNameFor(model => model.LiteraTypeName)
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]">Type</a>
             </th>
-            <th>said</th>
-            @*<th data-sortable="true">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData[" TitleSortParm"]"></a>
-            </th>
-            <th data-sortable="true">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData[" ReleaseDateSortParm"]"></a>
-            </th>
-            <th data-sortable="true">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData[" SubjectSortParm"]"></a>
-            </th>
-            <th data-sortable="true">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData[" LevelSortParm"]"></a>
-            </th>
-            <th data-sortable="true">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData[" TypeSortParm"]"></a>
-            </th>
-            <th></th>*@
+            <th></th>
         </tr>
-
-    </thead>
-    <tbody>
+        
+<tbody>
         @foreach (var item in Model)
         {
             <tr>
