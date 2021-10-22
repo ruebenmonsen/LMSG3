@@ -97,9 +97,7 @@ $(document).on('click', '#BtnCreate', function (e) {
 
     $.ajax({
         type: 'POST',
-       // url: '@Url.Action("Create", "Courses")',
-       // url: "https://localhost:44314/Courses/CreateCoursejs",
-        url: "https://localhost:44314/Courses/Create",
+              url: "https://localhost:44314/Courses/Create",
        
         data: { "coursevm": course, "modulesetsvm":moduleSets },
         success: function (response) {
@@ -116,7 +114,7 @@ $(document).on('click', '#BtnCreate', function (e) {
 
 function fixvalidation() {
     console.log('Create Form loaded');
-    const form = target.querySelector('#createForm');
+    const form = document.querySelector('#createForm');
     $.validator.unobtrusive.parse(form);
 }
 
