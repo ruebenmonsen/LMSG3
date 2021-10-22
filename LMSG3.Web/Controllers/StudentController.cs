@@ -140,7 +140,7 @@ namespace LMSG3.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<PartialViewResult> TimeTable(int year, int week)
+        public async Task<PartialViewResult> TimeTable(int year, int week, int step)
         {
             // Bugs: logic between weeks and years.
 
@@ -148,24 +148,47 @@ namespace LMSG3.Web.Controllers
             // need to be adjusted to the selected startdate, but if
             // the selected module is the current then the date should be Now.
             var currentDate = DateTime.Now;
-            if (week == 0 || year == 0) // TODO: logic
+            if (week < 1 || year < 1971 || week > ISOWeek.GetWeeksInYear(year))
             {
                 week = ISOWeek.GetWeekOfYear(currentDate);
                 year = currentDate.Year;
             }
 
-            // week ??= ISOWeek.GetWeekOfYear(currentDate);
-            // TODO: week logic, 1-52?
+            // TODO: write tests
+            if (step > 0)
+            {
+                week = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
+                year = week == 1 ? year + 1 : year;
+            }
+            else if (step < 0)
+            {
+                year = week == 1 ? year - 1 : year;
+                week = week == 1 ? ISOWeek.GetWeeksInYear(year) : week - 1;
+            }
+
+            var weekNext = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
+            var weekPrevious = week == 1 ? ISOWeek.GetWeeksInYear(year - 1) : week - 1;
+
 
             var weekStart = ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
             var weekEnd = ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday);
 
             var userId = userManager.GetUserId(User);
 
-            var assignmentTypeId = await _context.Activities.AsNoTracking()
-                .Where(a => a.ActivityType.Name == "Assignment")
-                .Select(a => a.ActivityTypeId)
-                .FirstOrDefaultAsync();
+            var assignmentTypeId = await _context.ActivityTypes.AsNoTracking()
+                .Where(a => a.Name == "Assignment")
+                .Select(a => a.Id)
+                .SingleOrDefaultAsync();
+
+            var currentModuleDate = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .Where(m => m.StartDate < currentDate && m.EndDate > currentDate)
+                .Select(m => new
+                {
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate
+                }).SingleOrDefaultAsync();
 
             // Select all activities within selected week that ain't assignments
             // Bug: Activities streching over to next week will not be taken
@@ -181,22 +204,23 @@ namespace LMSG3.Web.Controllers
                     Id = a.Id,
                     Name = a.Name,
                     Description = a.Description,
+                    ActivityTypeId = a.ActivityTypeId,
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
-                    HasDocument = a.Documents.Any()
+                    HasDocument = a.Documents.Any(),
+                    InCurrentModule = a.StartDate > currentModuleDate.StartDate 
+                                     && a.EndDate < currentModuleDate.EndDate
                 })
                 .OrderBy(a => a.StartDate)
                 .ToListAsync();
 
-            // TODO: get current module from parameter or not?
-            //var currentModule = await _context.Students.Where(s => s.Id == userId)
-            //    .Select(s => s.Course.Modules.Where(m => m.StartDate < currentDate && m.EndDate > currentDate).SingleOrDefault()).FirstOrDefaultAsync();
-
-            // TODO: add current module to ViewModel
+            // TODO: decide how to send Activity info.
             var timeTable = new StudentTimeTableViewModel
             {
                 Year = year,
                 Week = week,
+                WeekPrevious = weekPrevious,
+                WeekNext = weekNext,
                 Activities = studentActivities
             };
 

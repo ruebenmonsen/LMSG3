@@ -8,6 +8,7 @@ namespace LMSG3.Core.Models.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int ActivityTypeId { get; set; }
 
         //[DisplayFormat(DataFormatString = "{0:MMMM dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
@@ -15,5 +16,6 @@ namespace LMSG3.Core.Models.ViewModels
         //[DisplayFormat(DataFormatString = "{0:MMMM dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
         public bool HasDocument { get; set; }
+        public bool  InCurrentModule { get; set; }
     }
 }

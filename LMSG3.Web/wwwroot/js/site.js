@@ -21,12 +21,12 @@ function OpenAssignmentModal(id) {
 }
 
 
-//document.addEventListener('DOMContentLoaded', loadPTT(2021, 42));
+document.addEventListener('DOMContentLoaded', loadPTT(0, 0, 0));
 
 
 
-function loadPTT(year, week) {
-    var data = { year: year, week: week };
+function loadPTT(year, week, step) {
+    var data = { year: year, week: week, step: step };
     $.ajax(
         {
             type: 'GET',
@@ -35,13 +35,13 @@ function loadPTT(year, week) {
             data: data,
             success: function (result) {
                 $('#pttContent').html(result);
-                $('#pttModal').modal('show');
+                //$('#pttModal').modal('show');
             },
             error: function (er) {
                 alert(er);
             }
         });
-});
+}
 
 document.addEventListener('DOMContentLoaded', initScrollPostion);
 
