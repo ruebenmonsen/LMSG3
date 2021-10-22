@@ -90,7 +90,7 @@ namespace LMSG3.Data
             {
                 Name = "Fullstack in C# and JavaScript",
                 Description = fake.Lorem.Paragraph(),
-                StartDate = currentModuleStart
+                StartDate = previousModuleStart
             };
             await db.AddAsync(defaultCourse);
 
