@@ -11,7 +11,6 @@ namespace LMSG3.Api.ResourceParameters
     {
         public string searchString { get; set; }
        
-
         [Range(0, 4, ErrorMessage = "Can only be between 0 .. 4")]
         public int levelFilter { get; set; }
         public string sortOrder { get; set; }

@@ -61,7 +61,7 @@ namespace LMSG3.Api.Services.Repositories
 
         public async Task<IEnumerable<LiteratureDto>> FindAsync(LiteraturesResourceParameters literaturesResourceParameters)
         {
-            var literature = _context.Literatures.AsQueryable();
+            var literature =  _context.Literatures.AsQueryable();
             var currentFilter = literaturesResourceParameters.levelFilter;
             var sortOrder = literaturesResourceParameters.sortOrder;
             if (literaturesResourceParameters.includeAllInfo)

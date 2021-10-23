@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using LMSG3.Api.Repositories;
-using LMSG3.Api.Services;
+using LMSG3.Api.Service.Repositories;
 using LMSG3.Api.Services.Repositories;
 using LMSG3.Data;
 using Microsoft.Extensions.Logging;
@@ -33,7 +32,7 @@ namespace LMSG3.Api.Configuration
             _logger = loggerFactory.CreateLogger("logs");
 
             LiteratureRepository = new LitertureRepository(context, _logger, mapper);
-            LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger);
+            LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger, mapper);
         }
 
         public async Task CompleteAsync()

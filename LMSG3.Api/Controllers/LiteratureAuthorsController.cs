@@ -46,7 +46,7 @@ namespace LMSG3.Api.Controllers
 
         [HttpGet()]
         [HttpHead]   
-        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthors([FromQuery] AuthorResourceParameters authorResourceParameters)
+        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthors([FromQuery] AuthorResourcesParameters authorResourceParameters)
         {
             var author = await uow.LiteratureAuthorRepository.FindAsync(authorResourceParameters);
 

@@ -8,14 +8,17 @@
             @*<th>
             <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
         </th>*@
-            <th>
+            @*<th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["DateOfBirthSortParm"]">Date of birth</a>
-            </th>
+            </th>*@
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["AgeSortParm"]">Age</a>
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["CountLiteraturesSortParm"]">Number of works</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LatestWorkSortParm"]">Latest works</a>
             </th>
             <th></th>
         </tr>
@@ -28,17 +31,14 @@
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.FullName)</a>
             </td>
-            @*<td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Age)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Literatures.Count)
+                @Html.DisplayFor(modelItem => item.AmoutWorks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestWork)
             </td>
             @*<td>
             @Html.DisplayFor(modelItem => item.LevelName)
