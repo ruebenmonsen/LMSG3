@@ -147,6 +147,8 @@ namespace LMSG3.Web.Controllers
             // TODO: If we want to be able to select module, currentDate
             // need to be adjusted to the selected startdate, but if
             // the selected module is the current then the date should be Now.
+
+            // TODO: Set limits after Course
             var currentDate = DateTime.Now;
             if (week < 1 || year < 1971 || year > 2100|| week > ISOWeek.GetWeeksInYear(year))
             {
@@ -179,6 +181,17 @@ namespace LMSG3.Web.Controllers
                 .Select(a => a.Id)
                 .SingleOrDefaultAsync();
 
+
+            var courseInfo = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .Select(s => s.Course)
+                .Select(c => new
+                {
+                    //Name = c.Name,
+                    StartDate = c.StartDate,
+                    EndDate = c.Modules.Max(m => m.EndDate)
+                }).SingleOrDefaultAsync();
+
             var currentModuleDate = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
@@ -191,6 +204,8 @@ namespace LMSG3.Web.Controllers
 
             // Select all activities within selected week that ain't assignments
             // Bug: Activities stretching over to next week will not be taken
+            // TODO: Add module name?
+            // TODO: split into days?
             var studentActivities = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
@@ -207,20 +222,31 @@ namespace LMSG3.Web.Controllers
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
                     HasDocument = a.Documents.Any(),
+                    IsCurrent = a.StartDate > currentDate
+                                && a.EndDate < currentDate,
                     InCurrentModule = a.StartDate > currentModuleDate.StartDate 
-                                     && a.EndDate < currentModuleDate.EndDate
+                                    && a.EndDate < currentModuleDate.EndDate
                 })
                 .OrderBy(a => a.StartDate)
                 .ToListAsync();
 
+            var sad = studentActivities
+                .GroupBy(sa => sa.StartDate.DayOfWeek)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+
             // TODO: decide how to send Activity info.
+            // TODO: first/last week
+            // TODO: prev/next module
             var timeTable = new StudentTimeTableViewModel
             {
                 Year = year,
                 Week = week,
                 WeekPrevious = weekPrevious,
                 WeekNext = weekNext,
-                Activities = studentActivities
+                HasWeekPrevious = courseInfo.StartDate < ISOWeek.ToDateTime(year, week, DayOfWeek.Monday),
+                HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1),
+                Activities = sad
             };
 
             return PartialView("_TimeTablePartial", timeTable);

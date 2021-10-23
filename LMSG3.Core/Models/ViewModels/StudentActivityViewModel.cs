@@ -16,6 +16,7 @@ namespace LMSG3.Core.Models.ViewModels
         //[DisplayFormat(DataFormatString = "{0:MMMM dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
         public bool HasDocument { get; set; }
+        public bool IsCurrent { get; set; }
         public bool  InCurrentModule { get; set; }
     }
 }

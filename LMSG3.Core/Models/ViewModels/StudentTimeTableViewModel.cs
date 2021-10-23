@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LMSG3.Core.Models.ViewModels
 {
@@ -8,6 +9,8 @@ namespace LMSG3.Core.Models.ViewModels
         public int Week { get; set; }
         public int WeekPrevious { get; set; }
         public int WeekNext { get; set; }
-        public ICollection<StudentActivityViewModel> Activities { get; set; }
+        public bool HasWeekPrevious { get; set; }
+        public bool HasWeekNext { get; set; }
+        public IDictionary<DayOfWeek, List<StudentActivityViewModel>> Activities { get; set; }
     }
 }
