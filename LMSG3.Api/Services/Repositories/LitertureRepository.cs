@@ -64,6 +64,11 @@ namespace LMSG3.Api.Services.Repositories
             var literature = _context.Literatures.AsQueryable();
             var currentFilter = literaturesResourceParameters.levelFilter;
             var sortOrder = literaturesResourceParameters.sortOrder;
+            if (literaturesResourceParameters.includeAllInfo)
+            {
+                literature = literature.Include(e => e.Authors);
+
+            }
             var literaDto =  mapper.Map<IEnumerable<LiteratureDto>>(literature);
             foreach (var item in literaDto)
             {
@@ -80,31 +85,18 @@ namespace LMSG3.Api.Services.Repositories
                 literaDto = literaDto.Where(s => s.LiteraLevelId.Equals(currentFilter));
 
             }
-            //if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.searchString))
-            //{
-            //    var searchStr = literaturesResourceParameters.searchString;
-            //    literature = literature.Where(l => l.Title.Contains(searchStr));
-            //}
+           
             if (!string.IsNullOrWhiteSpace(literaturesResourceParameters.searchString))
             {
 
                 literaDto = literaDto.Where(l => l.Title.ToLower()
                                  .Contains(literaturesResourceParameters.searchString.ToLower())
                                   || l.SubjectName.ToLower().Contains(literaturesResourceParameters.searchString.ToLower())
-                                   ||l.Description.ToLower().Contains(literaturesResourceParameters.searchString.ToLower()));
+                                  || l.Description.ToLower().Contains(literaturesResourceParameters.searchString.ToLower())
+                                  || l.Authors.Any(a => a.FirstName.Contains(literaturesResourceParameters.searchString))
+                                  || l.Authors.Any(a => a.LastName.Contains(literaturesResourceParameters.searchString)));
 
             }
-
-            if (literaturesResourceParameters.includeAllInfo)
-            {
-                literature = literature.Include(e => e.Authors);
-                //.Include(e => e.Subject);
-                // .Include(e => e.LiteratureType)
-                //.Include(e => e.LiteratureLevel);
-            }
-
-            
-           
 
             switch (sortOrder)
             {
@@ -168,14 +160,17 @@ namespace LMSG3.Api.Services.Repositories
                         break;
                     }
                 }
-               
-                
+              
             }
 
             return exist;
 
+        }
 
-
+        public bool LiteratureExist(int id)
+        {
+            return _context.Literatures.Any(l => l.Id == id);
+          
         }
 
 
@@ -187,7 +182,6 @@ namespace LMSG3.Api.Services.Repositories
         public void AddLiterature(Literature literature)
         {
             _context.Literatures.Add(literature);
-
 
         }
 

@@ -21,5 +21,6 @@ namespace LMSG3.Api.Services.Repositories
         void AddLiterature(Literature literature);
         void DeliteLiterature(Literature literature);
         bool LiteratureExist(LiteraturesResourceParameters literatureResourceParameters);
+        bool LiteratureExist(int id);
     }
 }

@@ -49,6 +49,7 @@ namespace LMSG3.Web.Controllers
             LiteraturesResourceParameters literaturesResourceParameters = new LiteraturesResourceParameters();
             literaturesResourceParameters.sortOrder = sortOrder;
             literaturesResourceParameters.searchString = searchString;
+            literaturesResourceParameters.includeAllInfo = true;
             if (currentFilter == null)
             {
                 literaturesResourceParameters.levelFilter = 0;

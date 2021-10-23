@@ -12,6 +12,7 @@ using AutoMapper;
 using LMSG3.Api.ResourceParameters;
 using LMSG3.Api.Configuration;
 using LMSG3.Api.Services;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace LMSG3.Api.Controllers
 {
@@ -26,9 +27,9 @@ namespace LMSG3.Api.Controllers
 
         public LiteraturesController(ApiDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
-            uow = unitOfWork;
-            this.mapper = mapper;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
 
@@ -63,26 +64,7 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
-           // var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
-            //if (!string.IsNullOrWhiteSpace(literatureResourceParameters.titleStr) 
-            //    || !string.IsNullOrWhiteSpace(literatureResourceParameters.subjectStr)
-            //    || !string.IsNullOrWhiteSpace(literatureResourceParameters.discriptionStr))
-            //{
-                
-                //literaDto = literaDto.Where(l => l.Title.ToLower()
-                //                       .Contains(literatureResourceParameters.titleStr.ToLower())
-                //                       || l.SubjectName.ToLower().Contains(literatureResourceParameters.subjectStr.ToLower())
-                //                       ||l.Description.ToLower().Contains(literatureResourceParameters.discriptionStr.ToLower()));
-
-            //}
-            //if (ModelState.IsValid && literatureResourceParameters.levelFilter > 0)
-            //{
-            //    literaDto = literaDto.Where(l=>l.LiteraLevelId.Equals(literatureResourceParameters.levelFilter));
-            //}
-                
-            // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
-            
-
+           
             return Ok(literaDto);
         }
 
@@ -91,32 +73,48 @@ namespace LMSG3.Api.Controllers
         // PUT: api/Literatures/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{Id}")]
-        public async Task<IActionResult> PutLiterature(int id, Literature literature)
+        public async Task<IActionResult> PutLiterature(int id, LiteratureDto literatureDto)
         {
-            if (id != literature.Id)
+           
+            var literature = await uow.LiteratureRepository.GetAsync(id, true);
+            if (literature is null) return StatusCode(StatusCodes.Status404NotFound);
+
+            mapper.Map(literatureDto, literature);
+
+            // _context.Entry(literatureDto).State = EntityState.Modified;
+
+            if (uow.LiteratureRepository.CompleteAsync())
             {
-                return BadRequest();
+                return Ok(mapper.Map<LiteratureDto>(literature));
+            }
+            else
+            {
+                return StatusCode(500);
             }
 
-            _context.Entry(literature).State = EntityState.Modified;
+            
+        }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LiteratureExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        [HttpPatch("{Id}")]
+        public async Task<ActionResult<LiteratureDto>> PatchEvent(int id, JsonPatchDocument<LiteratureDto> patchDocument)
+        {
+            
+            var codeEvent = await uow.LiteratureRepository.GetAsync(id, true);
 
-            return NoContent();
+            if (codeEvent is null) return NotFound();
+
+            var dto = mapper.Map<LiteratureDto>(codeEvent);
+
+            patchDocument.ApplyTo(dto, ModelState);
+
+            if (!TryValidateModel(dto)) return BadRequest(ModelState);
+
+            mapper.Map(dto, codeEvent);
+
+            if (uow.LiteratureRepository.CompleteAsync())
+                return Ok(mapper.Map<LiteratureDto>(codeEvent));
+            else
+                return StatusCode(500);
         }
 
         // POST: api/Literatures
