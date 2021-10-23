@@ -157,6 +157,7 @@ namespace LMSG3.Web.Controllers
             }
 
             // TODO: write tests
+            // TODO: move to class or extension method
             if (step > 0)
             {
                 week = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
