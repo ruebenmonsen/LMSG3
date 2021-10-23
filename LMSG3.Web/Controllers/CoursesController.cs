@@ -104,8 +104,10 @@ namespace LMSG3.Web.Controllers
             {
                 //create viewbag to send the msg 
                 ViewBag.Message = "Course already exists.";
-                return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
-            }
+                    // return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+                    Response.StatusCode=500;
+                    return View(coursevm);
+                }
             else
             {
                 var course = mapper.Map<Course>(coursevm);
@@ -133,7 +135,8 @@ namespace LMSG3.Web.Controllers
             }
             }
             //return RedirectToAction("Create");
-            return View();
+            Response.StatusCode=500;
+            return View(coursevm);
         }
 
 
