@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static LMSG3.Web.Controllers.LiteraturesController;
+using static LMSG3.Web.Services.LiteraturesController;
 
 namespace LMSG3.Web.Controllers
 {

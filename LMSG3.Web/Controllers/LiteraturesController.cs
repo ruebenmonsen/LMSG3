@@ -2,7 +2,6 @@
 using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,10 +12,11 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using static LMSG3.Web.Services.LiteraturesController;
 
 namespace LMSG3.Web.Controllers
 {
-    public class LiteraturesController : Controller
+    public partial class LiteraturesController : Controller
     {
         private HttpClient httpClient;
         private const string json = "application/json";
@@ -90,20 +90,6 @@ namespace LMSG3.Web.Controllers
 
             return literatures;
 
-        }
-
-        public static class ConfigurationHelper
-        {
-            public static string GetByName(string configKeyName)
-            {
-                var config = new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-
-                IConfigurationSection section = config.GetSection(configKeyName);
-
-                return section.Value;
-            }
         }
 
 
