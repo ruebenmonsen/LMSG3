@@ -1,0 +1,64 @@
+﻿@model LMSG3.Core.Models.Dtos.LiteratureDto
+@inject LMSG3.Web.Services.ILiteratureSelectService service
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Literature</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditLiterature">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReleaseDate" class="control-label">Release date</label>
+                <input asp-for="ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubId" class="control-label">Subject</label>
+                <select asp-items="@await service.GetLiteraturesSubjects()" asp-for="SubId" class="custom-select mr-sm-2" name="SubId">
+                </select>
+                @*<input asp-for="SubId" type="hidden" class="form-control" />
+        <input asp-for="SubjectName" class="form-control" />*@
+                <span asp-validation-for="SubId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LiteraLevelId" class="control-label">Level</label>
+                <select asp-items="@await service.GetLiteratureLeves()" asp-for="LiteraLevelId" class="custom-select mr-sm-2" name="LiteraLevelId">
+                </select>
+                <span asp-validation-for="LiteraLevelId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LiteraTypeId" class="control-label">Type</label>
+                @*<input asp-for="LiteraTypeId" type="hidden" class="form-control" />
+        <input asp-for="LiteraTypeName" class="form-control" />*@
+                <select asp-items="@await service.GetLiteraturesTypes()" asp-for="LiteraTypeId" class="custom-select mr-sm-2" name="LiteraTypeId">
+                </select>
+                <span asp-validation-for="LiteraTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -161,16 +162,43 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: LiteraturesController1/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync($"api/literatures/{id}?includeAllInfo=true");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var literatureDto = System.Text.Json.JsonSerializer.Deserialize<LiteratureDto>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+
+            return View(literatureDto);
+            
+        }
+
+        public async Task<ActionResult> EditLiterature(LiteratureDto literatureDto)
+        {
+           
+            var literarure = System.Text.Json.JsonSerializer.Serialize(literatureDto);
+            var requestContent = new StringContent(literarure, Encoding.UTF8, "application/json");
+           // var uri = Path.Combine("companies", "fc12c11e-33a3-45e2-f11e-08d8bdb38ded");
+            var response = await httpClient.PutAsync($"api/literatures/{literatureDto.Id}", requestContent);
+            response.EnsureSuccessStatusCode();
+
+            return RedirectToAction(nameof(Index));
+
+
         }
 
         // POST: LiteraturesController1/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
-        {
+        { 
             try
             {
                 return RedirectToAction(nameof(Index));

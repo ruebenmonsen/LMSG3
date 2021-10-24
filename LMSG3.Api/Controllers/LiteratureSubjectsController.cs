@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using LMSG3.Core.Models.Dtos;
 using LMSG3.Core.Models.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,25 +9,24 @@ using System.Threading.Tasks;
 
 namespace LMSG3.Api.Controllers
 {
-    [Route("api/literatureLevels")]
+    [Route("api/LiteratureSubjects")]
     [ApiController]
-    public class LiteratureLevelsController : ControllerBase
+    public class LiteratureSubjectsController : ControllerBase
     {
         private readonly ApiDbContext context;
         private readonly IMapper mapper;
 
-        public LiteratureLevelsController(ApiDbContext context, IMapper mapper)
+        public LiteratureSubjectsController(ApiDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LiteratureLevel>>> GetLiteratureLevels()
+        public async Task<ActionResult<IEnumerable<Subject>>> GetLiteratureSubjects()
         {
-            var levels = await context.literatureLevels.ToListAsync();
-           
-            return Ok(levels);
+            var subjects = await context.LiteratureSubjects.ToListAsync();
+
+            return Ok(subjects);
         }
     }
 }
