@@ -1,10 +1,12 @@
 ﻿using LMSG3.Api.ResourceParameters;
 using LMSG3.Core.Models.Dtos;
+using LMSG3.Core.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -180,18 +182,65 @@ namespace LMSG3.Web.Controllers
             
         }
 
-        public async Task<ActionResult> EditLiterature(LiteratureDto literatureDto)
+        public async Task<ActionResult> EditLiterature(IFormCollection form, Literature literatureDto)
         {
-           
-            var literarure = System.Text.Json.JsonSerializer.Serialize(literatureDto);
-            var requestContent = new StringContent(literarure, Encoding.UTF8, "application/json");
-           // var uri = Path.Combine("companies", "fc12c11e-33a3-45e2-f11e-08d8bdb38ded");
-            var response = await httpClient.PutAsync($"api/literatures/{literatureDto.Id}", requestContent);
-            response.EnsureSuccessStatusCode();
+            foreach (var item in form)
+            {
 
+
+            }
+            foreach (string key in form.Keys)
+            {
+                var Key = form[key];
+
+            }
+            var AuthorIds = form["authorId"];
+            var AuthorFirstName = form["FirstName"];
+            var AuthorLastName = form["LastName"];
+            var AuthorBirthDay = form["DateOfBirth"];
+
+
+            List<LiteratureAuthor> authorsList = new List<LiteratureAuthor>();
+
+            for (int i = 0; i < AuthorIds.Count; i++)
+            {
+                var author = new LiteratureAuthor();
+               
+                //author = new LiteratureAuthor {
+                //author.Id = int.Parse(AuthorIds[i]);
+                author.FirstName = AuthorFirstName[i];
+                author.LastName = AuthorLastName[i];
+                author.DateOfBirth = new DateTime(1995, 12, 31);
+                authorsList.Add(author);
+                //literatureDto.Authors.Add(author);
+
+            }
+            literatureDto.Authors = authorsList;
+            var literarure = System.Text.Json.JsonSerializer.Serialize(literatureDto);
+            
+            var requestContent = new StringContent(literarure, Encoding.UTF8, "application/json");
+            // var uri = Path.Combine("companies", "fc12c11e-33a3-45e2-f11e-08d8bdb38ded");
+            
+             var response = await httpClient.PutAsync($"api/literatures/{literatureDto.Id}", requestContent);
+            response.EnsureSuccessStatusCode();
+            //UpdateAuthor(id, authorId, FirstName,LastName, DateOfBirth);
             return RedirectToAction(nameof(Index));
 
 
+        }
+
+        private void UpdateAuthor(int id, int authorId, string firstName, string lastName, DateTime dateOfBirth)
+        {
+            var authorLiterature = new LiteratureAuthor();
+            authorLiterature.Id = authorId;
+            authorLiterature.FirstName = firstName;
+            authorLiterature.LastName = lastName;
+            authorLiterature.DateOfBirth = dateOfBirth;
+           
+            var author = System.Text.Json.JsonSerializer.Serialize(authorLiterature);
+            var requestContent = new StringContent(author, Encoding.UTF8, "application/json");
+            var response = httpClient.PutAsync($"api/literatureAuthors/{authorId}", requestContent);
+            //response.EnsureSuccessStatusCode();
         }
 
         // POST: LiteraturesController1/Edit/5

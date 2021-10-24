@@ -40,19 +40,13 @@ namespace LMSG3.Api.Services.Repositories
         public async Task<Literature> GetAsync(int id, bool includeAllInfo)
         {
 
-            var literature = _context.Literatures.AsQueryable();
-            var literLevel = _context.literatureLevels.AsQueryable();
+            var literature = _context.Literatures.Include(e => e.Authors).AsQueryable();
+            //var literLevel = _context.literatureLevels.AsQueryable();
 
             if (includeAllInfo)
             {
-                literature = literature.Include(e => e.Authors);
+                //literature = literature.Include(e => e.Authors).AsQueryable();
 
-                 //.Include(a => a.li)
-                 //.Where(t => t.LiteraLevelId == literLevel.i).ToList();
-                 //.Include(e => e.LiteratureType)
-                 //.Include(e => e.LiteratureLevel);
-
-              
             }
 
             return await literature.FirstOrDefaultAsync(e => e.Id == id);
@@ -202,7 +196,16 @@ namespace LMSG3.Api.Services.Repositories
 
         public bool CompleteAsync()
         {
-            return (_context.SaveChanges() >= 0);
+            try
+            {
+                return (_context.SaveChanges() >= 0);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+           
         }
 
         public void Remove(Literature literature)

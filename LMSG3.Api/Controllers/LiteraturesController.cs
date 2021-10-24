@@ -43,6 +43,7 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
+            
             //var somId = literature.LiteraLevelId;
             var literaDto = mapper.Map<LiteratureDto>(literature);
             
@@ -105,7 +106,7 @@ namespace LMSG3.Api.Controllers
 
             var dto = mapper.Map<LiteratureDto>(codeEvent);
 
-            patchDocument.ApplyTo(dto, ModelState);
+          // patchDocument.ApplyTo(dto, ModelState);
 
             if (!TryValidateModel(dto)) return BadRequest(ModelState);
 

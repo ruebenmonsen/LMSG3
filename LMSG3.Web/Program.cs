@@ -18,11 +18,11 @@ namespace LMSG3.Web
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicationDbContext>();
-                context.Database.EnsureDeleted();
-                context.Database.Migrate();
+               // context.Database.EnsureDeleted();
+               // context.Database.Migrate();
                 try
                 {
-                    SeedData.InitAsync(services).Wait();
+                   // SeedData.InitAsync(services).Wait();
                 }
                 catch (Exception e)
                 {
