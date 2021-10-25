@@ -402,32 +402,29 @@ namespace LMSG3.Data
             DateTime startDay = module.StartDate;
             DateTime startDate;
             DateTime endDate;
-            int startHour = 8; // TODO: maybe some logic here
+            int startHour = 0; // TODO: maybe some logic here
             int days = (int) (module.EndDate - module.StartDate).TotalDays; // could fail
 
             for (int day = 0; day < days; day++)
             {
                 startDate = startDay.AddDays(day).AddHours(startHour);
-                if (fake.PickRandom(new List<int> { 1, 1, 1, 1, 0}) == 1)
+                for (int i = 0; i < fake.Random.Int(amountPerDay -1, amountPerDay +1); i++)
                 {
-                    for (int i = 0; i < amountPerDay; i++)
+                    startDate = startDate.AddMinutes(fake.PickRandom(new List<int> { 0, 0, 0, 0, 0, 0, 15, 30 }));
+                    endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: logic
+                    // Comment out to remove minutes
+                    endDate = endDate.AddMinutes(fake.PickRandom(new List<int> { 0, 0, 0, 0, 15, 30 }));
+                    var e = new Activity
                     {
-                        startDate = startDate.AddMinutes(fake.PickRandom(new List<int> { 0, 0, 0, 0, 0, 0, 15, 30 }));
-                        endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: logic
-                                                                             // Comment out to remove minutes
-                        endDate = endDate.AddMinutes(fake.PickRandom(new List<int> { 0, 0, 0, 0, 15, 30 }));
-                        var e = new Activity
-                        {
-                            Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.IngVerb()),
-                            Description = fake.Lorem.Sentence(),
-                            StartDate = startDate,
-                            EndDate = endDate,
-                            Module = module,
-                            ActivityType = fake.PickRandom(types)
-                        };
-                        activities.Add(e);
-                        startDate = endDate;
-                    }
+                        Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.IngVerb()),
+                        Description = fake.Lorem.Sentence(),
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        Module = module,
+                        ActivityType = fake.PickRandom(types)
+                    };
+                    activities.Add(e);
+                    startDate = endDate;
                 }
             }
             return activities;
