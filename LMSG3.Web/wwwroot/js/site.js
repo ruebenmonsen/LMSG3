@@ -20,6 +20,27 @@ function OpenAssignmentModal(id) {
         });
 }
 
+function OpenDocumentModal(id, entityName) {
+    var data = { id: id , entityName: entityName };
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/Documents/Upload',
+            contentType: 'application/json; charset=utf=8',
+            data: data,
+            success: function (result) {
+                $('#DocumentModalContent').html(result);
+                $('#DocumentModal').modal('show');
+            },
+            error: function (er) {
+                alert(er);
+            }
+        });
+}
+
+
+
+
 document.addEventListener('DOMContentLoaded', initScrollPostion);
 
 function initScrollPostion() {

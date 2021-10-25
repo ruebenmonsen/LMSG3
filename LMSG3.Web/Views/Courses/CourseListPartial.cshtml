@@ -4,12 +4,11 @@
     <tr>
         <td>
             <img src="~/img/down.jpg" width="20" height="20" />
-            
+
             <div style="display:none">
                 <table>
 
                     <partial name="CourseModulePartial" model="@item.Modelslist" />
-
 
                 </table>
 
@@ -25,11 +24,21 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            <a class="btn-sm btn-primary m-1" asp-controller="Modules" asp-action="Create" asp-route-CourseId="@item.Id">Add Module</a>
+            <a class="btn-sm btn-outline-primary" asp-controller="Modules" asp-action="Create" asp-route-CourseId="@item.Id">Add Module</a>
 
-            <a class="btn-sm btn-primary m-1" asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
+            <a class="btn-sm btn-outline-primary" asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
 
-            <a class="btn-sm btn-primary m-1" asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+            <a class="btn-sm btn-outline-primary" asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+
+            <button class="btn btn-sm btn-outline-primary border border-0"   onclick="OpenDocumentModal(@item.Id,'Courses')"><i class="bi bi-upload"></i></button>
         </td>
     </tr>
-}
+}   
+ <div class="modal fade" id="DocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id='DocumentModalContent'>
+            </div>
+        </div>
+    </div>
+</div>

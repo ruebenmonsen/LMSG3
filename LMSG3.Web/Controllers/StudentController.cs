@@ -119,7 +119,7 @@ namespace LMSG3.Web.Controllers
             }).FirstOrDefaultAsync();
 
             long size = model.SubmittedFile.Length;
-            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/";
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments/";
 
             if (!Directory.Exists(fileDirectory))
             {

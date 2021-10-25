@@ -6,8 +6,10 @@ using LMSG3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -222,6 +224,62 @@ namespace LMSG3.Web.Controllers
                     return false;
                 }
                 return true;
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> Upload(int? id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+
+            var model = new DocumentUploadViewModel
+            {
+                Id = course.Id,
+                Name = course.Name
+            };
+            return PartialView("AssignmentModal", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
+            var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
+            {
+                Activity = a.Name,
+                Module = a.Module.Name,
+                Course = a.Module.Course.Name
+
+            }).FirstOrDefaultAsync();
+
+            long size = model.SubmittedFile.Length;
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments/";
+
+            if (!Directory.Exists(fileDirectory))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
+            }
+            var filePath = fileDirectory + model.SubmittedFile.FileName;
+
+            var document = new Document()
+            {
+                UploadDate = DateTime.Now,
+                DocumentTypeId = 2,
+                ActivityId = model.ActivityId,
+                ApplicationUserId = userManager.GetUserId(User),
+                Path = filePath
+            };
+
+            if (size > 0)
+            {
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await model.SubmittedFile.CopyToAsync(stream);
+
+                _context.Add(document);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

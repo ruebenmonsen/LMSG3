@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<ModelListViewModel>
-@*<table class="table">*@
 <thead>
     <tr>
         <th class="col-1"></th>
@@ -28,7 +27,14 @@
             <td>
                 <img src="~/img/down.jpg" width="20" height="20" />
                 <div style="display:none">
-                    <table>
+                    <table data-toggle="table"
+       data-classes="table table-hover table-condensed"
+       data-striped="true"
+       data-sort-order="desc"
+       data-sort-name="Name"
+       data-pagination="true"
+       data-page-list="[5,10,20,ALL]"
+       data-page-size="20">
 
                         <partial name="CourseActivitiesPartial" model="@item.ActivitiesList" />
 
@@ -50,11 +56,19 @@
             </td>
 
             <td>
-                <a class="btn-sm btn-primary m-1" asp-controller="Activities" asp-action="Create" asp-route-ModuleId="@item.Id">Add Activity</a>
-                <a class="btn-sm btn-primary m-1" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
-                <a class="btn-sm btn-primary m-1" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Activities" asp-action="Create" asp-route-ModuleId="@item.Id">Add Activity</a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+                <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenDocumentModal(@item.Id,'Modules')"><i class="bi bi-upload"></i></button>
             </td>
         </tr>
     }
 </tbody>
-@*</table>*@
+<div class="modal fade" id="DocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id='DocumentModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
