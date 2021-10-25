@@ -7,19 +7,31 @@
     <div class="card">
         <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <a onclick="toggleFunc()">
                    Show participants
-                </button>
+                </a>
             </h5>
         </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
+        
+        <div class="card-body">
+            <div id="myDIV" style="display:none">
                 @foreach (var item in Model)
                 {
                     @item.FName @item.LName <br />
                 }
             </div>
-        </div>
+         </div>
+
     </div>
    
 </div>
+<script>
+    function toggleFunc() {
+        var x = document.getElementById("myDIV");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
