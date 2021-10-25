@@ -402,7 +402,7 @@ namespace LMSG3.Data
             DateTime startDay = module.StartDate;
             DateTime startDate;
             DateTime endDate;
-            int startHour = 8; // TODO: maybe some logic here
+            int startHour = 0; // TODO: maybe some logic here
             int days = (int) (module.EndDate - module.StartDate).TotalDays; // could fail
 
             for (int day = 0; day < days; day++)

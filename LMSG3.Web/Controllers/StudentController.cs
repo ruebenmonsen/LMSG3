@@ -235,7 +235,12 @@ namespace LMSG3.Web.Controllers
             var studentActivitiesDictionary = studentActivities
                 .GroupBy(sa => sa.StartDate.DayOfWeek)
                 .ToDictionary(g => g.Key, g => g.ToList());
-            
+            int? activityStartHourMin2 = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null;
+
+            int? activityEndHourMax2 = studentActivities.Any() ?
+                    (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
+                    24 : studentActivities.Max(sa => sa.EndDate.Hour))
+                    : null;
             var timeTable = new StudentTimeTableViewModel
             {
                 Year = year,
@@ -248,7 +253,7 @@ namespace LMSG3.Web.Controllers
                 activityStartHourMin = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null,
                 activityEndHourMax = studentActivities.Any() ?
                     (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
-                    studentActivities.Max(sa => sa.EndDate.Hour) : 24)
+                    24 : studentActivities.Max(sa => sa.EndDate.Hour))
                     : null,
                 Activities = studentActivitiesDictionary
             };
