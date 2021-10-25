@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Core.Repositories;
+using LMSG3.Data;
+using LMSG3.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
-using LMSG3.Data;
-using LMSG3.Core.Repositories;
-using LMSG3.Data.Repositories;
 using Microsoft.Extensions.Logging;
-using System.Collections;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LMSG3.Web.Controllers
 {
@@ -19,11 +21,18 @@ namespace LMSG3.Web.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly IRepository<Module> ModuleRepo = null;
-        private readonly ILogger logger=null;
-        public ModulesController(ApplicationDbContext context) 
+        private readonly IRepository<Activity> ActivityRepo = null;
+        private readonly ILogger logger = null;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMapper mapper;
+
+        public ModulesController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMapper mapper)
         {
             db = context;
-            this.ModuleRepo = new GenericRepository<Module>(context,   logger);
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.mapper = mapper;
+            ModuleRepo = new GenericRepository<Module>(context, logger);
+            ActivityRepo = new GenericRepository<Activity>(context, logger);
         }
 
         // GET: Modules
@@ -45,6 +54,7 @@ namespace LMSG3.Web.Controllers
 
             var module = await db.Modules
                 .Include(m => m.Course)
+                .Include(m => m.Documents).ThenInclude(m => m.DocumentType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (module == null)
             {
@@ -56,9 +66,9 @@ namespace LMSG3.Web.Controllers
 
         // GET: Modules/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult Create(int? CourseId)
         {
-            ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id");
+            //ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id");
             return View();
         }
 
@@ -71,11 +81,11 @@ namespace LMSG3.Web.Controllers
         public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,CourseId,Activities")] Module module)
         {
             CheckDate(module);
-            if (ModelState.IsValid )
+            if (ModelState.IsValid)
             {
                 ModuleRepo.Add(module);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Courses");
             }
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(module);
@@ -130,7 +140,7 @@ namespace LMSG3.Web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Courses");
             }
             ViewData["CourseId"] = new SelectList(db.Courses, "Id", "Id", module.CourseId);
             return View(module);
@@ -165,29 +175,94 @@ namespace LMSG3.Web.Controllers
             var module = await ModuleRepo.FindAsync(id);
             ModuleRepo.Remove(module);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Courses");
         }
 
         private bool ModuleExists(int id)
         {
             return db.Modules.Any(e => e.Id == id);
         }
-        private void CheckDate(Module module)
+        private bool CheckDate(Module module)
         {
-            var course = db.Courses.Find (module.CourseId);
+            var course = db.Courses.Find(module.CourseId);
+            var LastModuleEndDate = db.Modules.Select(m => m.EndDate).Max();
             if (course != null)
             {
                 if (module.StartDate < course.StartDate)
                 {
-                    ModelState.AddModelError("StartDate",
-                                             "Module  StartDate must be less than Course StartDate");
+                    //ModelState.AddModelError("StartDate",
+                    //                         "Module  StartDate must be less than Course StartDate");
+                    return false;
                 }
-                else if (module.EndDate < course.StartDate)
+                if (module.EndDate < course.StartDate)
                 {
-                    ModelState.AddModelError("EndDate",
-                                             "Module  EndDate must be less than Course StartDate");
+                    // ModelState.AddModelError("EndDate",
+                    //                          "Module  EndDate must be less than Course StartDate");
+                    return false;
+                }
+                if (module.StartDate < LastModuleEndDate)
+                {
+                    return false;
+                }
+                return true;
+            }
+            else
+                return false;
+        }
+        private bool CheckDate(Activity activity, DateTime Module_StartDate, DateTime Module_EndDate)
+        {
+            if (Module_StartDate > activity.StartDate || Module_StartDate < activity.StartDate)
+            {
+                //ModelState.AddModelError("StartDate",
+                //                         "Activity  StartDate must be within  Module Interval");
+                return false;
+            }
+            if (Module_EndDate > activity.EndDate || Module_EndDate < activity.EndDate)
+            {
+                //ModelState.AddModelError("EndDate",
+                //                         "Activity  EndDate must be within  Module Interval");
+                return false;
+            }
+            return true;
+        }
+
+        public ActionResult DisplayNewActivitySet()
+        {
+            return PartialView("CreateActivityPartial");
+        }
+        //[HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public async Task<ActionResult> CreateModule(CreateModuleViewModel Modulevm, List<CreateActivityListViewModel> activitysetsvm)
+        {
+
+            var Module = mapper.Map<Module>(Modulevm);
+            if (CheckDate(Module))
+            {
+                ModuleRepo.Add(Module);
+                await db.SaveChangesAsync();
+
+                foreach (var activityvm in activitysetsvm)
+                {
+                    var activity = new Activity
+                    {
+                        Name = activityvm.Name,
+                        Description = activityvm.Description,
+                        StartDate = activityvm.StartDate,
+                        EndDate = activityvm.EndDate,
+                        ActivityTypeId = activityvm.ActivityTypeId,
+                        ModuleId = Module.Id
+                    };
+                    if (CheckDate(activity, Module.StartDate, Module.EndDate))
+                    {
+                        ActivityRepo.Add(activity);
+                        await db.SaveChangesAsync();
+                    }
                 }
             }
+          //  return RedirectToAction("Index", "Courses");
+            return Json(new { redirectToUrl = Url.Action("Index", "Courses") });
+
         }
+      
     }
 }

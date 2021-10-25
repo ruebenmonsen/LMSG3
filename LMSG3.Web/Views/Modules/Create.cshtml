@@ -1,7 +1,5 @@
 ﻿@inject LMSG3.Web.Services.IActivityTypeSelectListService ActivityTypeListservice
-@inject LMSG3.Web.Services.ICourseSelectListService CourseListservice
-@using LMSG3.Core.Models.Entities;
-@model LMSG3.Core.Models.Entities.Module
+@model LMSG3.Core.Models.ViewModels.CreateModuleViewModel
 @{
     ViewData["Title"] = "Create";
 }
@@ -12,219 +10,73 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" id="frm">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control"  />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Course" class="control-label"></label>
-                <select asp-for="CourseId" asp-items="@await CourseListservice.GetCourseAsync()" class="form-control">
-                    <option value="">Please select</option>
-                </select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a href="#popupModel" role="button" id="ShowPopup" data-toggle="modal" class="btn btn-primary">Add Activity</a>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CourseId" id="ModuleCourseId"/>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input asp-for="StartDate" class="form-control text-box single-line" data-val="true" id="ModuleStartDate" autocomplete="off" style="width:70%" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate" class="control-label"></label>
+            <input asp-for="EndDate" class="form-control text-box single-line" data-val="true" id="ModuleEndDate" autocomplete="off" style="width:70%" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control text-box single-line" data-val="true" id="ModuleDescription" autocomplete="off" style="width:70%" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="form-content">
+        _____ Add Activities_____
+        <div class="form-content">
+            <br /><button id="Btn_AddActivityset" class="btn-info"> + </button>
+        </div>
+        <div class="panel panel-default">
+
+
+
+            <div class="container ">
+
+
+                <div class="ActivitiesListSet">
+
+                </div>
+
             </div>
 
-            <div id="popupModel" class="modal fade " role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Add New Activity</h3>
-                            <button type="button" class="close" data-dismiss="modal">×</button>
-                        </div>
-                        <div class="p-5">
-                            <div role="alert" class="alert alert-danger alert-dismissible" id="divError" hidden="hidden">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                <strong>Error!</strong>  <label class="control-label  text-danger" id="errorMsg"></label>
-                            </div>
-                            <div class="row mb-3">
-                                <label class="control-label col-md-4 ">Name :</label>
-                                <input id="ActivityName" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Name Here')"
-                                       oninput="this.setCustomValidity('')" />
-                            </div>
-                            <div class="row mb-3">
-                                <label class="control-label col-md-4 ">Description :</label>
-                                <input id="ActivityDescription" class="form-control-sm col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Description Here')"
-                                       oninput="this.setCustomValidity('')" />
-                            </div>
-                            <div class="row mb-3">
-                                <label class="control-label col-md-4 ">Start Date :</label>
-                                <input type="datetime-local" id="ActivityStartDate" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Start Date Here')"
-                                       oninput="this.setCustomValidity('')" />
-                            </div>
-                            <div class="row mb-3">
-                                <label class="control-label col-md-4 ">End Date :</label>
-                                <input type="datetime-local" id="ActivityEndDate" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity End Date Here')"
-                                       oninput="this.setCustomValidity('')" />
-                            </div>
-                            <div class="row mb-3" >
-                                <label class="control-label col-md-4 ">Activity Type :</label>
-                                <select id="ActivityTypeId" asp-items="@await ActivityTypeListservice.GetActivityTypeAsync()" class="form-control-sm  col-md-6" required oninvalid="this.setCustomValidity('Enter Activity Type Here')"
-                                        oninput="this.setCustomValidity('')">
-                                    <option value=""> Please select</option>
-                                </select>
-                            </div>
-                            <br />
-                            <div class="text-center">
-                                <input type="button" class="bg-opacity-10 btn-primary" onclick="addLi()" value="Add"  />
-                                <button type="button" class="bg-opacity-10 btn-primary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div> 
-                <div  class=" border border-3 border-dark text-center p-0" id="ActList" style="background-color:lightgrey" hidden="hidden">
-                    <strong>  <label class="control-label  text-dark">Activities List</label></strong>
-                </div>
-                <ul id="list" class="list-group list-group-numbered">
-                    @Html.EditorFor(x => x.Activities)
-                </ul>
-            </div>
-        </form>
+
+
+        </div>
+    </div>
+
+    <br />
+
+    <div class="col-sm-12 text-right">
+
+
+        <input type="button" id="BtnCreateModule" class="btn btn-primary" value="Create Module" /> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="btn btn-danger" asp-action="Index" asp-area="" asp-controller="Courses">Cancel</a>
 
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-<script>
 
-    function addLi() {
 
-        if (!$("#ActivityName")[0].checkValidity()) {
-            $("#ActivityName")[0].reportValidity();
-            return;
-        }
-        if (!$("#ActivityDescription")[0].checkValidity()) {
-            $("#ActivityDescription")[0].reportValidity();
-            return;
-        }
-        if (!$("#ActivityStartDate")[0].checkValidity()) {
-            $("#ActivityStartDate")[0].reportValidity();
-            return;
-        }
-        if (!$("#ActivityEndDate")[0].checkValidity()) {
-            $("#ActivityEndDate")[0].reportValidity();
-            return;
-        }
-        if (!$("#ActivityTypeId")[0].checkValidity()) {
-            $("#ActivityTypeId")[0].reportValidity();
-            return;
-         }
-        if (document.getElementById('ActivityName').value != "") {
-            var ActivityName = document.getElementById('ActivityName').value,
-                listNode = document.getElementById('list'),
-                liNode = document.createElement("LI"),
-                txtNode = document.createTextNode("-  "+ActivityName+".   "),
-                itemIndex = listNode.children.length;
+    <div>
 
-            var ActivityDescription = document.getElementById('ActivityDescription');
-            var ActivityStartDate = document.getElementById('ActivityStartDate').value;
-            var ActivityEndDate = document.getElementById('ActivityEndDate').value;
-            var ActivityTypeId = document.getElementById('ActivityTypeId').value;
+    </div>
+ 
 
-            if (checkDate(ActivityStartDate, ActivityEndDate))
-                return;
-            var btn = document.createElement("button");
-            btn.innerHTML = "X";
-            btn.style = "border:none;background-color:white;color:red;font-size:small;margin-left:10px";
-
-            liNode.appendChild(txtNode);
-            liNode.appendChild(btn);
-            liNode.className = "list-group-item p-0";
-            addHidden(liNode, itemIndex, 'Name', ActivityName);
-            addHidden(liNode, itemIndex, 'Description', ActivityDescription);
-            addHidden(liNode, itemIndex, 'StartDate', ActivityStartDate);
-            addHidden(liNode, itemIndex, 'EndDate', ActivityEndDate);
-            addHidden(liNode, itemIndex, 'ActivityTypeId', ActivityTypeId);
-
-            btn.addEventListener('click', function () {
-                this.parentNode.remove();
-
-                var Act_List = document.getElementById('ActList');
-                if (listNode.children.length > 0)
-                    Act_List.hidden = false;
-                else
-                    Act_List.hidden = true;
-            });
-
-            listNode.appendChild(liNode);
-
-            document.getElementById('ActivityName').value = "";
-            document.getElementById('ActivityDescription').value = "";
-            document.getElementById('ActivityStartDate').value = "";
-            document.getElementById('ActivityEndDate').value = "";
-            document.getElementById('ActivityTypeId').value = "";
-
-            var Act_List = document.getElementById('ActList');
-            if (listNode.children.length > 0)
-                Act_List.hidden = false;
-            else
-                Act_List.hidden = true;
-        }
-
-        function addHidden(theLi, itemIndex, key, value) {
-            // Create a hidden input element, and append it to the li:
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.id = "Activities_" + itemIndex + "__" + key;
-            input.name = "Activities[" + itemIndex + "]." + key;
-            input.value = value;
-            theLi.appendChild(input);
-        }
-        function checkDate(startDate, endDate) {
-            
-            var End_Date = document.getElementById('EndDate').value;
-            var Start_Date = document.getElementById('StartDate').value;
-            var div_Error = document.getElementById('divError');
-            var error_Msg = document.getElementById('errorMsg');
-
-            if (startDate > endDate) {
-                div_Error.hidden = false;
-                error_Msg.innerText = "EndDate must be greater than StartDate";
-                return true;
-            }
-            else if (Start_Date > startDate || End_Date < startDate){
-                div_Error.hidden = false;
-                error_Msg.innerText = "Activity  StartDate must be less than Module EndDate";
-                return true;
-            }
-            else if (Start_Date > endDate || End_Date < endDate){
-                div_Error.hidden = false;
-                error_Msg.innerText = "Activity  EndDate must be less than Module EndDate";
-                return true;
-            }
-            else {
-                div_Error.hidden = true;
-                error_Msg.innerText = "";
-                return false;
-            }
-            }
-        }
-</script>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

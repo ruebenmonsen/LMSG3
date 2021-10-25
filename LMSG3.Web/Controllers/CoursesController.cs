@@ -1,18 +1,15 @@
-﻿using System;
+﻿using AutoMapper;
+using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
-
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using LMSG3.Core.Models.ViewModels;
-using AutoMapper;
 
 namespace LMSG3.Web.Controllers
 {
@@ -43,8 +40,6 @@ namespace LMSG3.Web.Controllers
 
         }
 
-
-
         // GET: Courses/Details/5
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
@@ -61,7 +56,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            return PartialView("Details",course);
+            return View(course);
         }
 
         // GET: Courses/Create
@@ -110,8 +105,11 @@ namespace LMSG3.Web.Controllers
                 EndDate=modulevm.EndDate,
                 CourseId=course.Id
                 };
+                if(CheckDate(modules,course.StartDate))
+                { 
                 uow.ModuleRepository.Add(modules);
                 await uow.CompleteAsync();
+                }
             }
             
             //return RedirectToAction(nameof(Index));
@@ -119,12 +117,11 @@ namespace LMSG3.Web.Controllers
 
         }
 
-
-
         public ActionResult DisplayNewModuleSet()
         {
             return PartialView("CreateModulePartial");
         }
+
 
         public async Task<IActionResult> Edit(int? id)
         {
@@ -202,6 +199,29 @@ namespace LMSG3.Web.Controllers
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
+        }
+
+        private bool CheckDate(Module module ,DateTime Course_StartDate)
+        {
+            var LastModuleEndDate = _context.Modules.Select(m => m.EndDate).Max();
+
+                if (module.StartDate < Course_StartDate)
+                {
+                    //ModelState.AddModelError("StartDate",
+                    //                         "Module  StartDate must be less than Course StartDate");
+                    return false;
+                }
+                if (module.EndDate < Course_StartDate)
+                {
+                    // ModelState.AddModelError("EndDate",
+                    //                          "Module  EndDate must be less than Course StartDate");
+                    return false;
+                }
+                if (module.StartDate < LastModuleEndDate)
+                {
+                    return false;
+                }
+                return true;
         }
     }
 }

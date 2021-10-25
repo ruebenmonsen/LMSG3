@@ -138,4 +138,73 @@ function getModulesets() {
     }
     return moduleSets;
 }
+///////////////////////////Create Module///////////////////////////////////
+$(document).on('click', '#Btn_AddActivityset', function (e) {
+    $.ajax({
+        url: '/Modules/DisplayNewActivitySet',
+        success: function (partialView) {
+            $('.ActivitiesListSet').append(partialView);
+        }
+    });
+});
+
+
+$(document).on('click', '#Btn_DeleteActivityset', function () {
+    $(this).parent().parent().remove();
+});
+
+$(document).on('click', '#BtnCreateModule', function (e) {
+    var module = getModule();
+    var activitySets = getActivitysets();
+
+    $.ajax({
+        type: 'POST',
+        // url: '@Url.Action("CreateCourse", "Courses")',
+        url: "https://localhost:44314/Modules/CreateModule",
+
+        data: { "Modulevm": module, "activitysetsvm": activitySets },
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
+            alert('successfully module created');
+        }
+        ,
+        error: function (err) {
+            alert('error');
+        }
+    });
+});
+
+function getModule() {
+    var module = {
+        Name: $("#ModuleName").val(),
+        Description: $("#ModuleDescription").val(),
+        StartDate: $("#ModuleStartDate").val(),
+        EndDate: $("#ModuleEndDate").val(),
+        CourseId: $("#ModuleCourseId").val()
+    };
+    return module;
+}
+
+
+function getActivitysets() {
+    activitySets = [];
+    var ActivityName = document.querySelectorAll('#ActivityName');
+    var ActivityDescription = document.querySelectorAll('#ActivityDescription');
+    var ActivityStartDate = document.querySelectorAll('#ActivityStartDate');
+    var ActivityEndDate = document.querySelectorAll('#ActivityEndDate');
+    var ActivityTypeId = document.querySelectorAll('#Activity_TypeId');
+    for (var i = 0; i < ActivityName.length; i++) {
+        /* if (!ModuleStartDate[i].value >= cou.StartDate)*/
+        if (ActivityName[i].value != '') {
+            activitySets.push({
+                Name: ActivityName[i].value,
+                Description: ActivityDescription[i].value,
+                StartDate: ActivityStartDate[i].value,
+                EndDate: ActivityEndDate[i].value,
+                ActivityTypeId: ActivityTypeId[i].value
+            });
+        }
+    }
+    return activitySets;
+}
 

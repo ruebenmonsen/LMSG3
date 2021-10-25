@@ -65,7 +65,13 @@ namespace LMSG3.Data
 
             CreateMap<Course, CreateCourseViewModel>()
                 .ReverseMap();
-            CreateMap<Module, CreateModelListViewModel>().ReverseMap();
+            CreateMap<Module, CreateModelListViewModel>()
+                .ReverseMap();
+
+            CreateMap<Module, CreateModuleViewModel>()
+                .ReverseMap();
+            CreateMap<Activity, CreateActivityListViewModel>()
+                .ReverseMap();
         }
 
 

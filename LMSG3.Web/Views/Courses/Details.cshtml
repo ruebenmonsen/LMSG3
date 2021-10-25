@@ -1,8 +1,9 @@
 ﻿@model LMSG3.Core.Models.Entities.Course
+@{
+    ViewData["Title"] = "Details";
+}
 
-
-
-
+<h1>Details</h1>
 <div>
     <h4>Course</h4>
     <hr />
@@ -13,7 +14,7 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        @*<dt class="col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
         <dd class="col-sm-10">
@@ -24,19 +25,68 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
-        </dd>*@
+        </dd>
     </dl>
-    <h5>  Modules--- </h5>
-    @if (Model.Modules.Count > 0)
-    {
-        <partial name="CourseModulePartial" model="@Model.Modules"/>
-    }
-    else
-    {
-        <span>No Modules Added</span>
-    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
+</div>
+<br />
+<br />
+<div class="form-content ">
+    <h4 class="text-center"> _____ Course Documents_____</h4>
+
+    <table data-toggle="table"
+           data-classes="table table-hover table-condensed"
+           data-striped="true"
+           data-sort-order="desc"
+           data-sort-name="UploadDate"
+           data-pagination="true"
+           data-page-list="[5,10,20,ALL]"
+           data-page-size="20">
+        <thead class="thead-dark">
+            <tr>
+                <th class="col-2" data-sortable="true">
+                    Name
+                </th>
+                <th class="col-3" data-sortable="true">
+                    Description
+                </th>
+                <th class="col-2" data-sortable="true">
+                    UploadDate
+                </th>
+                <th class="col-2" data-sortable="true">
+                    Type
+                </th>
+                <th class="col-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Documents)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UploadDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DocumentType.Name)
+                    </td>
+                    <td>
+                        <a class="btn-sm btn-primary m-1" asp-controller="Documents" asp-action="" asp-route-id="@item.Id">Download</a>
+
+                        <a class="btn-sm btn-primary m-1" asp-controller="Documents" asp-action="Edit"  asp-route-id="@item.Id"> Edit </a>
+
+                        <a class="btn-sm btn-primary m-1" asp-controller="Documents" asp-action="Delete"  asp-route-id="@item.Id"> Delete </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

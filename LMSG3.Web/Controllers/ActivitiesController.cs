@@ -44,6 +44,7 @@ namespace LMSG3.Web.Controllers
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
+                .Include(a => a.Documents).ThenInclude(a => a.DocumentType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {
@@ -55,7 +56,7 @@ namespace LMSG3.Web.Controllers
 
         // GET: Activities/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult Create(int? ModuleId)
         {
             ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id");
             ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id");
@@ -75,7 +76,7 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityRepo.Add(activity);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Courses");
             }
             ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
             ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
@@ -132,7 +133,7 @@ namespace LMSG3.Web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Courses");
             }
             ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
             ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
@@ -169,7 +170,7 @@ namespace LMSG3.Web.Controllers
             var activity = await ActivityRepo.FindAsync(id);
             ActivityRepo.Remove(activity);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Courses");
         }
 
         private bool ActivityExists(int id)

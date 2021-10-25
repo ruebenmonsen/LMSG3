@@ -1,21 +1,14 @@
 ﻿@model IndexCourseViewModel
 
 <p>
-    <div class="row">
-        <div class="col-md-3">
-            <a asp-action="Create" asp-controller="Courses">Add New Course</a>
-        </div>
-        @*<div class="col-md-3">
-            <a asp-action="Create" asp-controller="Modules">Add New Module</a>
-        </div>*@
-        </div>
+
+<a asp-action="Create" asp-controller="Courses" class="m-2">Add New Course</a>
         
 </p>
 <table class="table table-striped table-hover">
     <thead>
         <tr>
-            <th class="col-1">
-               
+            <th class="col-1">    
             </th>
             <th class="col-2">
                 @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().Name)
@@ -23,10 +16,10 @@
             <th class="col-2">
                 @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().StartDate)
             </th>
-            <th class="col-5">
+            <th class="col-4">
                 @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().Description)
             </th >
-            <th class="col-2"></th>
+            <th class="col-3"></th>
         </tr>
     </thead>
     <tbody>

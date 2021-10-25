@@ -1,35 +1,34 @@
 ﻿@model IEnumerable<ModelListViewModel>
-
-
 @*<table class="table">*@
-    <thead>
-        <tr>
-            <th class="col-1"></th>
-           
-            <th class="col-2">
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th class="col-3">
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-           
-            <th class="col-2">
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th class="col-2">
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-           
-            <th class="col-2"></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
+<thead>
+    <tr>
+        <th class="col-1"></th>
+
+        <th class="col-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th class="col-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+
+        <th class="col-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th class="col-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+
+        <th class="col-3"></th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 <img src="~/img/down.jpg" width="20" height="20" />
                 <div style="display:none">
-                    <table >
+                    <table>
 
                         <partial name="CourseActivitiesPartial" model="@item.ActivitiesList" />
 
@@ -38,7 +37,10 @@
                 </div>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
@@ -48,11 +50,11 @@
             </td>
 
             <td>
-               
-                <a class="btn btn-primary" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
-                <a class="btn btn-primary" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
+                <a class="btn-sm btn-primary m-1" asp-controller="Activities" asp-action="Create" asp-route-ModuleId="@item.Id">Add Activity</a>
+                <a class="btn-sm btn-primary m-1" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
+                <a class="btn-sm btn-primary m-1" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
             </td>
         </tr>
-}
-    </tbody>
+    }
+</tbody>
 @*</table>*@

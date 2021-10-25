@@ -32,7 +32,7 @@ namespace LMSG3.Data.Repositories
         {
             var query = context.Courses.AsQueryable();
             if (includemodules)
-                query = query.Include(c => c.Modules);
+                query = query.Include(c => c.Modules).Include(c => c.Documents).ThenInclude(c=>c.DocumentType);
 
             return await query.FirstOrDefaultAsync(c => c.Id == id);
         }

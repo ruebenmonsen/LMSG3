@@ -3,18 +3,20 @@
 {
     <tr>
         <td>
-            <img src="~/img/down.jpg" width="20" height="20"/>
+            <img src="~/img/down.jpg" width="20" height="20" />
+            
             <div style="display:none">
-                <table cellpadding="0" cellspacing="0" class="ChildGrid">
+                <table>
 
                     <partial name="CourseModulePartial" model="@item.Modelslist" />
 
+
                 </table>
-               
+
             </div>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Name)</a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StartDate)
@@ -23,8 +25,11 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
-            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+            <a class="btn-sm btn-primary m-1" asp-controller="Modules" asp-action="Create" asp-route-CourseId="@item.Id">Add Module</a>
+
+            <a class="btn-sm btn-primary m-1" asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
+
+            <a class="btn-sm btn-primary m-1" asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
         </td>
     </tr>
 }
