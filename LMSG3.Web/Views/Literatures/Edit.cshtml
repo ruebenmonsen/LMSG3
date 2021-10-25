@@ -5,27 +5,37 @@
     ViewData["Title"] = "Edit";
 }
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-    }
 
-    section {
-        display: flex;
+    .box {
+        float: left;
+        width: 50%;
         padding: 20px;
-        width: 1000px;
-        flex-direction: row;
+        height: 700px;
     }
 
-      
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+    hr.rounded {
+        
+        
+        border-top: 8px solid #bbb;
+        border-radius: 5px;
+    }
 </style>
-<h1>Edit</h1>
+<h2>Edit</h2>
 
-<h4>Literature</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditLiterature">
+
+<div class="clearfix">
+    <form asp-action="EditLiterature">
+
+
+        
+        <div class="box" style="background-color:#fff">
+            <p>Literature</p>
+            <hr class="rounded">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -35,7 +45,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea class="form-control" asp-for="Description" rows="3"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -47,8 +57,6 @@
                 <label asp-for="SubId" class="control-label">Subject</label>
                 <select asp-items="@await service.GetLiteraturesSubjects()" asp-for="SubId" class="custom-select mr-sm-2" name="SubId">
                 </select>
-                @*<input asp-for="SubId" type="hidden" class="form-control" />
-            <input asp-for="SubjectName" class="form-control" />*@
                 <span asp-validation-for="SubId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -59,8 +67,6 @@
             </div>
             <div class="form-group">
                 <label asp-for="LiteraTypeId" class="control-label">Type</label>
-                @*<input asp-for="LiteraTypeId" type="hidden" class="form-control" />
-            <input asp-for="LiteraTypeName" class="form-control" />*@
                 <select asp-items="@await service.GetLiteraturesTypes()" asp-for="LiteraTypeId" class="custom-select mr-sm-2" name="LiteraTypeId">
                 </select>
                 <span asp-validation-for="LiteraTypeId" class="text-danger"></span>
@@ -68,30 +74,35 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-            <div class="col-md-4">
-                <section>
-                    @foreach (var item in Model.Authors)
-                    {
-                        <div>
-                            <input type="hidden" asp-for="Id" value="@item.Id" name="authorId" />
-                            <label class="control-label">First Name</label>
-                            <input asp-for="@item." name="FirstName" class="form-control" value="@item.FirstName" />
-                            <span asp-validation-for="@item.FirstName" class="text-danger"></span>
-                            <label class="control-label">Last tName</label>
-                            <input asp-for="@item.LastName" name="LastName" value="@item.LastName" class="form-control" />
-                            <span asp-validation-for="@item.LastName" class="text-danger"></span>
-                            <label class="control-label">Date of birth</label>
-                            <input asp-for="@item.DateOfBirth" name="DateOfBirth" value="@item.DateOfBirth" class="form-control" />
-                            <span asp-validation-for="@item.DateOfBirth" class="text-danger"></span>
-                        </div>
-                    }
+        </div>
+       
+        <div class="box" style="background-color:#fff">
+            <p>Authors</p>
+            <hr class="rounded">
+            @foreach (var item in Model.Authors)
+            {
 
+                <input type="hidden" asp-for="Id" value="@item.Id" name="authorId" />
+                <label class="control-label">First Name</label>
+                <input asp-for="@item." name="FirstName" class="form-control" value="@item.FirstName" />
+                <span asp-validation-for="@item.FirstName" class="text-danger"></span>
+                <label class="control-label">Last tName</label>
+                <input asp-for="@item.LastName" name="LastName" value="@item.LastName" class="form-control" />
+                <span asp-validation-for="@item.LastName" class="text-danger"></span>
+                <label class="control-label">Date of birth</label>
+                <input asp-for="@item.DateOfBirth" name="DateOfBirth" class="form-control" />
+                <span asp-validation-for="@item.DateOfBirth" class="text-danger"></span>
+                <hr class="rounded">
+            }
 
-                </section>
-            </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
+
+
+       
+    
+
 
 <div>
     <a asp-action="Index">Back to List</a>
