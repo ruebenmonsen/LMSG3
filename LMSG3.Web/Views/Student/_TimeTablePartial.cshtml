@@ -1,8 +1,11 @@
 ﻿@model LMSG3.Core.Models.ViewModels.StudentTimeTableViewModel
 <style>
+    .day-off {
+        background: repeating-linear-gradient( 45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 5px, rgba(0, 0, 0, 0.3) 5px, rgba(0, 0, 0, 0.3) 10px )
+    }
     /* Time Table */
     .day {
-/*        width: 18%;
+        /*        width: 18%;
         height: 50vh;
         float: left;*/
         background-color: #fff;
@@ -168,41 +171,83 @@
         }
 </style>
 
-<div class="d-flex flex-row overflow-auto justify-content-center align-items-center bg-dark text-light" style="height: 10%">
+@{var times = new List<string> { "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00" };}
+
+@{var days = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday};}
+
+<div class="d-flex flex-row overflow-auto justify-content-center align-items-center bg-dark text-light" style="height: 8%">
     <div class="" style="overflow: hidden; display: block;">
         <span>Current Module: @Model.CurrentModuleName</span>
     </div>
     <div class="" style="overflow: hidden; display: block">
-        <button type="button" class="btn-sm btn-outline-secondary @(Model.HasWeekPrevious ? "btn-success" : "btn-danger")" id="button1" onclick="@(Model.HasWeekPrevious ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", - 1)" : "")"><i class="bi bi-chevron-left"></i></button>
+        <button type="button" class="btn-sm btn-outline-secondary @(Model.HasWeekPrevious ? "btn-success" : "btn-danger")" onclick="@(Model.HasWeekPrevious ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", - 1)" : "")"><i class="bi bi-chevron-left"></i></button>
     </div>
     <div class="badge-pill bg-danger align-items-center" style="overflow: hidden; display: block">
         <span>Week @Model.Week</span>
     </div>
     <div class="" style="overflow: hidden; display: block">
-        <button type="button" id="button1" class="btn-sm btn-outline-secondary @(Model.HasWeekNext ? "btn-success" : "btn-danger")" onclick="@(Model.HasWeekNext ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", + 1)" : "")"><i class="bi bi-chevron-right"></i></button>
+        <button type="button" class="btn-sm btn-outline-secondary @(Model.HasWeekNext ? "btn-success" : "btn-danger")" onclick="@(Model.HasWeekNext ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", + 1)" : "")"><i class="bi bi-chevron-right"></i></button>
     </div>
 </div>
-<div class="d-flex justify-content-around bg-secondary day" style="height: 90%">
+<div class="d-flex justify-content-around bg-secondary day" style="height: 8%">
     <div class="h-100" style="width: 14%">
-        <div class="" style="overflow: hidden; display: block; height: 10%;">Time</div>
-        @{var times = new List<string> { "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00" };}
-        @foreach (var t in times)
+        <div class="" style="overflow: hidden; display: block; height: 100%;">Time</div>
+    </div>
+    @foreach (var day in days)
+    {
+        // width auto?
+        <div class="h-100" style="width: 16%">
+            <div class="" style="overflow: hidden; display: block; height: 100%;">
+                <span>@day.ToString()</span>
+            </div>
+        </div>
+    }
+</div>
+<div class="d-flex justify-content-around bg-secondary day overflow-auto" style="height: 84%">
+    @{ 
+        int blockSize = 15; //In minutes and divisible by 60
+        var startHour = 8;
+        var endHour = 18;
+        startHour = Math.Min(startHour, Model.activityStartHourMin ?? startHour);
+        endHour = Math.Max(endHour, Model.activityEndHourMax ?? endHour);
+    }
+    <div class="h-100" style="width: 14%">
+        @for (int h = startHour; h < endHour; h++)
         {
+            var blockTimeSpan = h.ToString("D2") + ":00 - " + (h + 1).ToString("D2") + ":00";
             <div class="badge bg-primary w-100 justify-content-center align-items-center" style="overflow: hidden; display: block; height: 10%;" data-tooltip="English Literature">
-                <span class="bg-warning">@Html.DisplayFor(modelA => t)</span>
+                <span class="bg-warning">@blockTimeSpan</span>
             </div>
         }
     </div>
-    @{var days = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };}
     @foreach (var day in days)
     {
         @if (Model.Activities.ContainsKey(day))
         {
             <div class="h-100" style="width: 16%">
-                <div class="" style="overflow: hidden; display: block; height: 10%;">@day.ToString()</div>
+                @{double prevBlock = 0;}
                 @foreach (var a in Model.Activities[day])
                 {
-                    <div class="badge bg-primary w-100" style="overflow: hidden; display: block; height: 10%" data-tooltip="English Literature">
+                    int startBlock = a.StartDate.Hour * 60 / blockSize + a.StartDate.Minute / blockSize; // Gives floor
+                    int endBlock;
+                    if (a.StartDate.Day == a.EndDate.Day)
+                    {
+                        endBlock = a.EndDate.Hour * 60 / blockSize + a.EndDate.Minute / blockSize;
+                    }
+                    else
+                    {
+                        endBlock = 24 * 4;
+                    }
+
+                    var breakBlockSize = (startBlock - prevBlock) * 2.5;
+                    prevBlock = endBlock;
+                    @if(breakBlockSize != 0)
+                    {
+                        <div class="badge w-100" style="overflow: hidden; display: block; height: @(breakBlockSize)%">
+                        </div>
+                    }
+                    var activityBlockSize = (endBlock - startBlock) * 2.5;
+                    <div class="badge w-100 @(a.InCurrentModule ? "bg-primary" : "bg-secondary")" style="overflow: hidden; display: block; height: @activityBlockSize%" data-tooltip="English Literature">
                         <div>@Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
                         <div>@a.StartDate.ToString("t") - @a.EndDate.ToString("t")</div>
                     </div>
@@ -212,8 +257,7 @@
         else
         {
             <div class="h-100" style="width: 16%">
-                <div class="" style="overflow: hidden; display: block; height: 10%;">@day.ToString()</div>
-                <div class="bg-danger" style="overflow: hidden; display: block; height: 90%;"></div>
+                <div class="bg-danger day-off" style="overflow: hidden; display: block; height: 100%;"></div>
             </div>
         }
     }

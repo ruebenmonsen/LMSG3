@@ -232,14 +232,10 @@ namespace LMSG3.Web.Controllers
                 .OrderBy(a => a.StartDate)
                 .ToListAsync();
 
-            var sad = studentActivities
+            var studentActivitiesDictionary = studentActivities
                 .GroupBy(sa => sa.StartDate.DayOfWeek)
                 .ToDictionary(g => g.Key, g => g.ToList());
-
-
-            // TODO: decide how to send Activity info.
-            // TODO: first/last week
-            // TODO: prev/next module
+            
             var timeTable = new StudentTimeTableViewModel
             {
                 Year = year,
@@ -249,8 +245,14 @@ namespace LMSG3.Web.Controllers
                 HasWeekPrevious = courseInfo.StartDate < ISOWeek.ToDateTime(year, week, DayOfWeek.Monday),
                 HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1),
                 CurrentModuleName = currentModuleInfo.Name,
-                Activities = sad
+                activityStartHourMin = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null,
+                activityEndHourMax = studentActivities.Any() ?
+                    (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
+                    studentActivities.Max(sa => sa.EndDate.Hour) : 24)
+                    : null,
+                Activities = studentActivitiesDictionary
             };
+
 
             return PartialView("_TimeTablePartial", timeTable);
         }
