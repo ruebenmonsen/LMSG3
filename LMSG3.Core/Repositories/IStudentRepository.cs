@@ -7,6 +7,7 @@ namespace LMSG3.Core.Repositories
 {
     public interface IStudentRepository
     {
-        Task<IEnumerable<Student>> Getparticipants(int id);
+        Task<IEnumerable<Student>> Getparticipants(int? id);
+        int GetCourseId(string studentId);
     }
 }

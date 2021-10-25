@@ -123,13 +123,14 @@ namespace LMSG3.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public ActionResult ShowParticipants(Course id)
+     
+        public async Task<ActionResult> ShowParticipants()
         {
-            if (id == null)
-                return NotFound();
-            else
-                var studentslist = await uow.StudentRepository.Getparticipants(id);
+            var studentId = userManager.GetUserId(User);
+            int courseId = uow.StudentRepository.GetCourseId(studentId);
+            var studentslist =await uow.StudentRepository.Getparticipants(courseId);
+                 return View(studentslist);
+            
         }
         public async Task<ActionResult> ModulesList()
         {

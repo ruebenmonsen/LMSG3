@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Student>
+
+
+
+<div id="accordion">
+   
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                   Show participants
+                </button>
+            </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+                @foreach (var item in Model)
+                {
+                    @item.FName @item.LName <br />
+                }
+            </div>
+        </div>
+    </div>
+   
+</div>

@@ -16,7 +16,7 @@ namespace LMSG3.Data.Configuration
         private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
-        public StudentRepository StudentRepository { get; }
+        public IStudentRepository StudentRepository { get; private set; }
 
         private ICourseRepository courseRepository;
         private IRepository<Module> moduleRepository;
@@ -59,8 +59,7 @@ namespace LMSG3.Data.Configuration
             }
         }
 
-        IStudentRepository IUnitOfWork.StudentRepository => throw new NotImplementedException();
-
+       
         public async Task CompleteAsync()
         {
             await context.SaveChangesAsync();

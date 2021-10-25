@@ -20,10 +20,18 @@ namespace LMSG3.Data.Repositories
         {
             this.context = context;
         }
-        public async Task<IEnumerable<Student>> Getparticipants(int id)
+
+        public int GetCourseId(string studentId)
         {
-            var course = await context.Students.Where(s => s.CourseId == id).ToListAsync();
-            return course;
+            var st = context.Students.Where(s => s.Id == studentId).FirstOrDefault();
+           
+            return st.CourseId;
+        }
+
+        public async Task<IEnumerable<Student>> Getparticipants(int? id)
+        {
+            var participants = await context.Students.Where(s => s.CourseId == id).ToListAsync();
+            return participants;
         }
     }
 }
