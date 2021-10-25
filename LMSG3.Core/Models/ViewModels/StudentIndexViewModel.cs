@@ -25,6 +25,7 @@ namespace LMSG3.Core.Models.ViewModels
 
         
         public CourseInfoViewModel CourseInfo { get; set; }
+
         public CurrentModuleViewModel CurrentModule { get; set; }
         
     }

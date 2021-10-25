@@ -67,6 +67,7 @@ namespace LMSG3.Web.Controllers
 
             var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
             {
+                
                 Name = s.Course.Name,
                 Description = s.Course.Description,
                 StartDate = s.Course.StartDate
