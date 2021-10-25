@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
-
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using LMSG3.Core.Models.ViewModels;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LMSG3.Web.Controllers
 {
@@ -58,7 +58,7 @@ namespace LMSG3.Web.Controllers
                     IsCurrent = currentDate < a.EndDate && !isSubmitted
 
                 };
-             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
+            }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
             var moduleModel = new CurrentModuleViewModel
             {
@@ -99,30 +99,53 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityId = activity.Id,
                 ActivityName = activity.Name,
-                EndDate = activity.EndDate              
+                EndDate = activity.EndDate
             };
             return PartialView("AssignmentModal", model);
         }
 
         [HttpPost]
-        public ActionResult Upload(AssignmentUploadViewModel model)
+        public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
         {
-            var uploadedDocument = new Document
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
+            var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
             {
-                Name = model.DocumentName,
-                Description = model.DocumentDescription,
+                Activity = a.Name,
+                Module = a.Module.Name,
+                Course = a.Module.Course.Name
+
+            }).FirstOrDefaultAsync();
+
+            long size = model.SubmittedFile.Length;
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/";
+
+            if (!Directory.Exists(fileDirectory))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
+            }
+            var filePath = fileDirectory + model.SubmittedFile.FileName;
+
+            var document = new Document()
+            {
                 UploadDate = DateTime.Now,
-                ApplicationUserId = userManager.GetUserId(User),
+                DocumentTypeId = 2,
                 ActivityId = model.ActivityId,
-                DocumentTypeId = _context.Documents.Where(d => d.DocumentType.Name.Equals("Assignment")).FirstOrDefault().DocumentTypeId
+                ApplicationUserId = userManager.GetUserId(User),
+                Path = filePath
             };
 
-            _context.Add(uploadedDocument);
-            _context.SaveChanges();
+            if (size > 0)
+            {
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await model.SubmittedFile.CopyToAsync(stream);
 
-            return RedirectToAction("Index");
+                _context.Add(document);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
-
         public async Task<ActionResult> ModulesList()
         {
 
