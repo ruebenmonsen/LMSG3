@@ -107,6 +107,9 @@ namespace LMSG3.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
         {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
             var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
             {
                 Activity = a.Name,
@@ -141,7 +144,7 @@ namespace LMSG3.Web.Controllers
                 _context.Add(document);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
         public async Task<ActionResult> ModulesList()
         {
