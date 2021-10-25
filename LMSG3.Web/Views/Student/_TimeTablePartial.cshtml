@@ -2,9 +2,9 @@
 <style>
     /* Time Table */
     .day {
-        width: 18%;
+/*        width: 18%;
         height: 50vh;
-        float: left;
+        float: left;*/
         background-color: #fff;
         background-image: linear-gradient(rgba(0,0,0,.08) 50%, transparent 50%);
         background-size: 1px 20%;
@@ -167,67 +167,29 @@
             bottom: 90%;
         }
 </style>
-@*<div class="row">
-        <div class="col-6">
-            <h4>TimeTable</h4>
-            <button type="button" id="button1" onclick="@(Model.HasWeekPrevious ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", - 1)" : "")">@Model.WeekPrevious</button>
-            @Model.Week
-            <button type="button" id="button1" class="@(Model.HasWeekNext ? "btn-danger" : "btn-success")" onclick="loadPTT(@Model.Year, @Model.Week, + 1)">@Model.WeekNext</button>
-            <ul class="list-group overflow-auto assignment-list">
-                @{var days = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday }; }
-                @foreach (var day in days)
-                {
-                    <li class="list-group-item justify-content-between">
-                        <div>@day.ToString()</div>
-                    </li>
-                    @if (Model.Activities.ContainsKey(day))
-                    {
-                        @foreach (var a in Model.Activities[day])
-                        {
-                            <li class="list-group-item justify-content-between">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div>@Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
-                                        <div class="@(a.InCurrentModule ? "bg-success" : "")"><p class="small mb-0">@Html.DisplayFor(_ => a.StartDate) <br /> @Html.DisplayFor(_ => a.EndDate)</p></div>
-                                    </div>
-                                    <div class="col-3">
-                                    </div>
-                                    <div class="col-3">
-                                        @if (a.HasDocument)
-                                        {
-                                            <a class="btn btn-outline-primary btn-sm" onclick=""><i class="bi bi-download"></i></a>
-                                        }
-                                    </div>
-                                </div>
-                            </li>
-                        }
-                    }
-                }
-            </ul>
-        </div>
-    </div>*@
-<div class="d-flex flex-row overflow-auto justify-content-center align-items-center bg-dark" style="height: 10%">
-    <div class="" style="overflow: hidden; display: block; height: 90%;">
+
+<div class="d-flex flex-row overflow-auto justify-content-center align-items-center bg-dark text-light" style="height: 10%">
+    <div class="" style="overflow: hidden; display: block;">
         <span>Current Module: @Model.CurrentModuleName</span>
     </div>
-    <div class="" style="overflow: hidden; display: block; height: 90%;">
+    <div class="" style="overflow: hidden; display: block">
         <button type="button" class="btn-sm btn-outline-secondary @(Model.HasWeekPrevious ? "btn-success" : "btn-danger")" id="button1" onclick="@(Model.HasWeekPrevious ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", - 1)" : "")"><i class="bi bi-chevron-left"></i></button>
     </div>
-    <div class="badge-pill bg-danger align-items-center" style="overflow: hidden; display: block; height: 90%;">
+    <div class="badge-pill bg-danger align-items-center" style="overflow: hidden; display: block">
         <span>Week @Model.Week</span>
     </div>
-    <div class="" style="overflow: hidden; display: block; height: 90%;">
+    <div class="" style="overflow: hidden; display: block">
         <button type="button" id="button1" class="btn-sm btn-outline-secondary @(Model.HasWeekNext ? "btn-success" : "btn-danger")" onclick="@(Model.HasWeekNext ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", + 1)" : "")"><i class="bi bi-chevron-right"></i></button>
     </div>
 </div>
-<div class="d-flex justify-content-around bg-secondary" style="height: 90%">
+<div class="d-flex justify-content-around bg-secondary day" style="height: 90%">
     <div class="h-100" style="width: 14%">
         <div class="" style="overflow: hidden; display: block; height: 10%;">Time</div>
         @{var times = new List<string> { "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00" };}
         @foreach (var t in times)
         {
-            <div class="badge bg-primary w-100" style="overflow: hidden; display: block; height: 10%;" data-tooltip="English Literature">
-                <div>@Html.DisplayFor(modelA => t)</div>
+            <div class="badge bg-primary w-100 justify-content-center align-items-center" style="overflow: hidden; display: block; height: 10%;" data-tooltip="English Literature">
+                <span class="bg-warning">@Html.DisplayFor(modelA => t)</span>
             </div>
         }
     </div>
