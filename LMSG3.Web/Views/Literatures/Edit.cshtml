@@ -4,35 +4,13 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<style>
 
-    .box {
-        float: left;
-        width: 50%;
-        padding: 20px;
-        height: 700px;
-    }
-
-    .clearfix::after {
-        content: "";
-        clear: both;
-        display: table;
-    }
-    hr.rounded {
-        
-        
-        border-top: 8px solid #bbb;
-        border-radius: 5px;
-    }
-</style>
 <h2>Edit</h2>
 
 
 <div class="clearfix">
     <form asp-action="EditLiterature">
-
-
-        
+ 
         <div class="box" style="background-color:#fff">
             <p>Literature</p>
             <hr class="rounded">
@@ -72,7 +50,7 @@
                 <span asp-validation-for="LiteraTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-secondaryy" />
             </div>
         </div>
        
@@ -99,12 +77,8 @@
     </form>
 </div>
 
-
-       
-    
-
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<link href="~/css/literature.css" rel="stylesheet" />
 

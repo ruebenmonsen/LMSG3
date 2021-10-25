@@ -94,7 +94,7 @@ namespace LMSG3.Api
             {
                 var subjectObj = new Subject 
                 {
-                    Name = fake.Lorem.Sentence()
+                    Name = fake.Lorem.Sentence(5)
                 };
                 subjectsList.Add(subjectObj);
             }
@@ -114,7 +114,7 @@ namespace LMSG3.Api
                
                 var leterature = new Literature
                 {
-                    Title = fake.Lorem.Sentence(4),
+                    Title = fake.Lorem.Sentence(3),
                     Description = fake.Lorem.Paragraph(),
                     ReleaseDate = fake.Date.Between(dt2, DateTime.Now).Date,
                     LiteraLevelId = fake.Random.Number(1, 3),

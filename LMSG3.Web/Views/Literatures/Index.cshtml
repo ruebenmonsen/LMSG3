@@ -8,25 +8,28 @@
 
 <form asp-action="Index" method="Get">
     <div class="form-row align-items-center">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <input type="text" name="searchString" class="form-control" placeholder="Search literature..." aria-describedby="button-addon2">
         </div>
-        <div class="col-auto">
+        <div class="col-md-3">
             <select asp-items="@await service.GetLiteratureLeves()" class="custom-select mr-sm-2" name="currentFilter">
                 <option selected="selected" value="">Please select</option>
             </select>
         </div>
         @*<div class="col-md-4">
-            <select asp-items="@await service.GetLevelAsync()" class="form-control" name="currentFilter">
-                <option selected="selected" value="">Please select</option>
-            </select>
-        </div>*@
-        <div class="col-auto">
+                <select asp-items="@await service.GetLevelAsync()" class="form-control" name="currentFilter">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+            </div>*@
+        <div class="col-md-3">
             <input type="submit" value="Filter" id="button-addon2" class="btn btn-secondary mb-auto" />
         </div>
     </div>
 </form>
-<partial name="LiteraturePartial" />
-@*<script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/js/literature.js"></script>
-    <link href="~/css/literature.css" rel="stylesheet" />*@
+<div class="form-row align-items-center col-md-12">
+    <partial name="LiteraturePartial" />
+    
+</div>
+    @*<script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/js/literature.js"></script>
+        <link href="~/css/literature.css" rel="stylesheet" />*@

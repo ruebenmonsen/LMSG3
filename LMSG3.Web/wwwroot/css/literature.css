@@ -54,3 +54,25 @@
 }
 
 
+
+.box {
+    float: left;
+    width: 50%;
+    padding: 20px;
+    height: 900px;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+hr.rounded {
+    border-top: 8px solid #bbb;
+    border-radius: 5px;
+}
+
+
+
+

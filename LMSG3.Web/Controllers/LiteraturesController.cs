@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -70,7 +71,6 @@ namespace LMSG3.Web.Controllers
             var litratureModel = await SimpleGet(literaturesResourceParameters);
 
             
-
             return View(litratureModel);
         }
 
@@ -163,6 +163,35 @@ namespace LMSG3.Web.Controllers
             }
         }
 
+        public async Task<ActionResult> CreateLiterature(LiteratureDto literatureDto)
+        {
+            var said = "wow";
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:44301/api/literatures");
+
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
+
+            //var authors = new LiteratureAuthor
+            //{
+            //    FirstName = "Create from client",
+            //    LastName = "Bouazza",
+            //    DateOfBirth = new DateTime(1940, 12, 31)
+            //};
+
+            request.Content = JsonContent.Create(literatureDto, typeof(LiteratureDto), new MediaTypeHeaderValue(json));
+
+            var response = await httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var codeEvents = System.Text.Json.JsonSerializer.Deserialize<Literature>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            //return codeEvents;
+            return RedirectToAction(nameof(Index));
+
+
+        }
+
         // GET: LiteraturesController1/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
@@ -184,11 +213,7 @@ namespace LMSG3.Web.Controllers
 
         public async Task<ActionResult> EditLiterature(IFormCollection form, Literature literatureDto)
         {
-            foreach (var item in form)
-            {
-
-
-            }
+            
             foreach (string key in form.Keys)
             {
                 var Key = form[key];

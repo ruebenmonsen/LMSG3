@@ -5,26 +5,28 @@
         <tr>
             <th>
                 @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-                    Open modal
-                </button>*@
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>
+            Open modal
+        </button>*@
+                <!--<a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>-->
+                <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>
             </th>
             @*<th>
                     <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
                 </th>*@
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">ReleaseDate</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["SubjectSortParm"]">Subject</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["LevelSortParm"]">Level</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]">Type</a>
-            </th>
-            <th></th>
+        <th>
+            <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">ReleaseDate</a>
+        </th>
+        <th>
+         
+            <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["SubjectSortParm"]">Subject</a>
+        </th>
+        <th>
+            <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["LevelSortParm"]">Level</a>
+        </th>
+        <th>
+            <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["TypeSortParm"]">Type</a>
+        </th>
+            <th><a asp-action="Create" class="btn btn-outline-secondary btn-sm" role="button" aria-pressed="true">Create New</a></th>
         </tr>
 
     <tbody>
@@ -32,7 +34,8 @@
         {
             <tr>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+                    @*<a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>*@
+                    <a asp-action="Details" title="Click to view literature details"  class="link-secondary" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ReleaseDate)
@@ -47,10 +50,13 @@
                     @Html.DisplayFor(modelItem => item.LiteraTypeName)
                 </td>
                 <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
+                    <!--<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>-->
+
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm" role="button" aria-pressed="true">Edit</a>
+                    <!--<a asp-action="Details" asp-route-id="@item.Id">Details</a> |-->
+                    <!--<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>-->
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm" role="button" aria-pressed="true">Delete</a>
+                </td>
             </tr>
         }
     </tbody>
