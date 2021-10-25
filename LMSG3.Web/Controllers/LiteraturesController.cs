@@ -1,4 +1,5 @@
-﻿using LMSG3.Api.ResourceParameters;
+﻿using Azure.Core;
+using LMSG3.Api.ResourceParameters;
 using LMSG3.Core.Models.Dtos;
 using LMSG3.Core.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -97,34 +98,6 @@ namespace LMSG3.Web.Controllers
 
 
 
-        private async Task<IEnumerable<LiteratureDto>> GetWithStream()
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "api/literatures?includeAllInfos=false");
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
-
-            IEnumerable<LiteratureDto> literatureDtos;
-
-
-            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            {
-                response.EnsureSuccessStatusCode();
-
-                using (var streamReader = new StreamReader(stream))
-                {
-                    using (var jsonReader = new JsonTextReader(streamReader))
-                    {
-                        var serializer = new Newtonsoft.Json.JsonSerializer();
-                        literatureDtos = serializer.Deserialize<IEnumerable<LiteratureDto>>(jsonReader);
-                    }
-                }
-            }
-
-            return literatureDtos;
-
-        }
-
         // GET: LiteraturesController1/Details/5
         public async Task<ActionResult> Details(int id)
         {
@@ -163,20 +136,69 @@ namespace LMSG3.Web.Controllers
             }
         }
 
-        public async Task<ActionResult> CreateLiterature(LiteratureDto literatureDto)
+        public async Task<ActionResult> CreateLiterature(IFormCollection form, LiteratureDto literatureDto)
         {
-            var said = "wow";
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:44301/api/literatures");
+            
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/literatures");
 
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
 
-            //var authors = new LiteratureAuthor
-            //{
-            //    FirstName = "Create from client",
-            //    LastName = "Bouazza",
-            //    DateOfBirth = new DateTime(1940, 12, 31)
-            //};
+            //var AuthorIds = form["authorId"];
+            var AuthorFirstName = form["FirstName"];
+            var AuthorLastName = form["LastName"];
+            var AuthorBirthDay = form["DateOfBirth"];
+            var authorBirthDay1 = new DateTime();
+            var authorBirthDay2 = new DateTime();
+            var authorBirthDay3 = new DateTime();
+            for (int d = 0; d < AuthorBirthDay.Count; d++)
+            {
+                
+                if (d == 0)
+                {
+                    var dateArray = AuthorBirthDay[d].Split("-");
+                    authorBirthDay1 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+                }
+                if (d == 1)
+                {
+                    var dateArray = AuthorBirthDay[d].Split("-");
+                    authorBirthDay2 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+                }
+                if (d == 2)
+                {
+                    var dateArray = AuthorBirthDay[d].Split("-");
+                    authorBirthDay3 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+                }
+              
+            }
+            
+            List<LiteratureAuthorDto> authorsList = new List<LiteratureAuthorDto>();
 
+            for (int i = 0; i < AuthorFirstName.Count; i++)
+            {
+                var author = new LiteratureAuthorDto();
+
+                //author = new LiteratureAuthor {
+                //author.Id = int.Parse(AuthorIds[i]);
+                author.FirstName = AuthorFirstName[i];
+                author.LastName = AuthorLastName[i];
+                if (i == 0)
+                {
+                    author.DateOfBirth = authorBirthDay1;
+                }
+                if (i == 1)
+                {
+                    author.DateOfBirth = authorBirthDay2;
+                }
+                if (i == 2)
+                {
+                    author.DateOfBirth = authorBirthDay3;
+                }
+
+                authorsList.Add(author);
+                //literatureDto.Authors.Add(author);
+
+            }
+            literatureDto.Authors = authorsList;
             request.Content = JsonContent.Create(literatureDto, typeof(LiteratureDto), new MediaTypeHeaderValue(json));
 
             var response = await httpClient.SendAsync(request);
@@ -214,11 +236,6 @@ namespace LMSG3.Web.Controllers
         public async Task<ActionResult> EditLiterature(IFormCollection form, Literature literatureDto)
         {
             
-            foreach (string key in form.Keys)
-            {
-                var Key = form[key];
-
-            }
             var AuthorIds = form["authorId"];
             var AuthorFirstName = form["FirstName"];
             var AuthorLastName = form["LastName"];
@@ -284,18 +301,32 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: LiteraturesController1/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync($"api/literatures/{id}?includeAllInfo=true");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var literatureDto = System.Text.Json.JsonSerializer.Deserialize<LiteratureDto>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+
+            return View(literatureDto);
+            
         }
 
         // POST: LiteraturesController1/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult DeleteLiterature(int id, IFormCollection collection)
         {
             try
             {
+                var response = httpClient.DeleteAsync($"api/literatures/{id}");
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -53,7 +53,7 @@
                 <span asp-validation-for="LiteraTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-secondaryy" />
+                <button type="submit" class="btn btn-secondary">Save</button>
             </div>
         </div>
         <div class="box" style="background-color:#fff">
@@ -67,7 +67,7 @@
                 <input name="LastName" class="form-control" />
                 <span class="text-danger"></span>
                 <label class="control-label">Date of birth</label>
-                <input name="DateOfBirth" class="form-control" />
+                <input name="DateOfBirth" type="datetime" class="form-control" />
                 <span class="text-danger"></span>
             </div>
             <button type="button" class="btn btn-outline-Dark" id="firstPlusIcon" style="visibility:visible" onclick="showHideAuthors(1)"><i class="bi bi-plus-square-fill"></i></button>
@@ -81,7 +81,7 @@
                 <input name="LastName" class="form-control" />
                 <span class="text-danger"></span>
                 <label class="control-label">Date of birth</label>
-                <input name="DateOfBirth" class="form-control" />
+                <input name="DateOfBirth" type="datetime" class="form-control" />
                 <span class="text-danger"></span>
 
             </div>
@@ -96,13 +96,15 @@
                 <input name="LastName" class="form-control" />
                 <span class="text-danger"></span>
                 <label class="control-label">Date of birth</label>
-                <input name="DateOfBirth" class="form-control" />
+                <input name="DateOfBirth" type="datetime" class="form-control" />
                 <span class="text-danger"></span>
             </div>
             <button type="button" class="btn btn-outline-Dark" id="secondMinusIcon" style="visibility:hidden" onclick="showHideAuthors(-2)"> <i class="bi bi-file-minus-fill"></i></button>
         </div>
     </form>
-</div>
+
+    </div>
+
 
 
 <div>
@@ -110,32 +112,4 @@
 </div>
 
 <link href="~/css/literature.css" rel="stylesheet" />
-<script>
-    function showHideAuthors(x) {
-       
-        if (x == 1) {
-            document.getElementById("secondAuthor").style.visibility = "visible";
-            document.getElementById("firstPlusIcon").style.visibility = "hidden";
-            document.getElementById("secondPlusIcon").style.visibility = "visible";
-            document.getElementById("firstMinusIcon").style.visibility = "visible";
-        } else if (x == 2) {
-            document.getElementById("thirdAuthor").style.visibility = "visible";
-            document.getElementById("secondPlusIcon").style.visibility = "hidden";
-            document.getElementById("firstMinusIcon").style.visibility = "hidden";
-            document.getElementById("secondMinusIcon").style.visibility = "visible";
-        }
-        if (x == -1) {
-            document.getElementById("secondAuthor").style.visibility = "hidden";
-            document.getElementById("firstPlusIcon").style.visibility = "visible";
-            document.getElementById("secondPlusIcon").style.visibility = "hidden";
-            document.getElementById("firstMinusIcon").style.visibility = "hidden";
-            document.getElementById("secondMinusIcon").style.visibility = "hidden";
-        } else if (x == -2) {
-            document.getElementById("thirdAuthor").style.visibility = "hidden";
-            document.getElementById("secondPlusIcon").style.visibility = "visible";
-            document.getElementById("secondMinusIcon").style.visibility = "hidden";
-            document.getElementById("firstMinusIcon").style.visibility = "visible";
-        }
-       
-    }
-</script>
+<script src="~/js/literature.js"></script>
