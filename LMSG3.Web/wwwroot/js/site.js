@@ -139,3 +139,19 @@ function getModulesets() {
     return moduleSets;
 }
 
+function checkCoursedate() {
+    //const input = document.querySelector('input');
+  
+    var courseStartdate = $("#CourseStartDate").val();
+    var moduleStartDate = this.$('#ModuleStartDate').val();
+    var popup = document.getElementById("myPopup");
+    
+    if (moduleStartDate < courseStartdate) {
+        popup.show;
+       
+    }
+    else
+     popup.classList("hide");
+    
+}
+

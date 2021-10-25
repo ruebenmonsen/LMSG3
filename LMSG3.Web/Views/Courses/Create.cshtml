@@ -16,18 +16,18 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="Name" class="control-label"></label>
-            <input  asp-for="Name" class="form-control text-box single-line" data-val="true" id="CourseName" autocomplete="off" style="width:70%">
+            <input  asp-for="Name" class="form-control text-box single-line"  id="CourseName" >
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="StartDate" class="control-label"></label>
-            <input  asp-for="StartDate" class="form-control text-box single-line" data-val="true" id="CourseStartDate" autocomplete="off" style="width:70%">
+            <input  asp-for="StartDate" class="form-control text-box single-line"  id="CourseStartDate"  >
             <span asp-validation-for="StartDate" class="text-danger"></span>
            
         </div>
         <div class="form-group">
             <label asp-for="Description" class="control-label"></label>
-            <input asp-for="Description" class="form-control text-box single-line" data-val="true" id="CourseDescription"  autocomplete="off" style="width:70%">
+            <input asp-for="Description" class="form-control text-box single-line" id="CourseDescription" >
             <span asp-validation-for="Description" class="text-danger"></span>
            
         </div>
@@ -89,68 +89,7 @@
 <div>
     
 </div>
-<script>
-    var i = 0;
-    var currentModuleId = '';
-    function addLi() {
 
-        var txtVal = document.getElementById('txtVal').value,
-            listNode = document.getElementById('list'),
-            liNode = document.createElement("LI"),
-            txtNode = document.createTextNode(txtVal);
-        liNode.id = "li" + i++;
-     
-
-        var btn = document.createElement("button");
-        btn.innerHTML = "X";
-        btn.style ="border:none;background-color:white;color:red;font-size:small";
-
-        var a = document.createElement("a");
-        a.innerHTML = "add activity";
-        a.href = "#popupModel1";
-        a.setAttribute("id", "li" + i++);
-        a.addEventListener('click', function () {
-            currentModuleId = this.parentNode.id;
-        });
-        a.setAttribute("data-toggle","modal");
-
-
-        liNode.appendChild(txtNode);
-        liNode.appendChild(btn);
-        liNode.appendChild(a);
-        btn.addEventListener('click', function () {
-            this.parentNode.remove();
-        });
-
-        listNode.appendChild(liNode);
-        document.getElementById('txtVal').value = "";
-    }
-
-    function addUl() {
-
-        var txtVal = document.getElementById('txtVal1').value;
-        var parentLi = document.getElementById(currentModuleId);
-            listNode = document.createElement("ul");
-            parentLi.appendChild(listNode);
-            liNode = document.createElement("LI"),
-            txtNode = document.createTextNode(txtVal);
-            liNode.id = "li" + i++;
-
-        var btn = document.createElement("button");
-        btn.innerHTML = "X";
-        btn.style = "border:none;background-color:white;color:red;font-size:small";
-
-
-        liNode.appendChild(txtNode);
-        liNode.appendChild(btn);
-        btn.addEventListener('click', function () {
-            this.parentNode.remove();
-        });
-
-        listNode.appendChild(liNode);
-        document.getElementById('txtVal1').value = "";
-    }
-</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
