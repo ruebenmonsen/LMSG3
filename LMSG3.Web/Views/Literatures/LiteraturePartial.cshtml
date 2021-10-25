@@ -7,12 +7,8 @@
                 @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
             Open modal
         </button>*@
-                <!--<a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>-->
                 <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a>
             </th>
-            @*<th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">Description</a>
-                </th>*@
         <th>
             <a asp-action="Index" class="link-secondary" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">ReleaseDate</a>
         </th>
