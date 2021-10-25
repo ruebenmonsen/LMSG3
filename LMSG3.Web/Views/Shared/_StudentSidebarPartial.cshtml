@@ -1,0 +1,23 @@
+﻿@model CourseInfoViewModel
+<nav id="sidebar">
+    <ul class="list-unstyled components">
+        <li>
+            <p>My course</p>
+            <p>
+                @Model.Name
+                <br /><a data-toggle="collapse" data-target="#course-info" aria-expanded="false" aria-controls="course-info">
+                    <small>More info</small>
+                </a>
+            </p>
+            <div class="collapse" id="course-info">
+                <div class="card card-body">
+                    <p class="small">@Model.Description</p>
+                    <p class="small">Start date: @Model.StartDate</p>
+                </div>
+            </div>
+        </li>
+
+        @*list of modules here*@
+    </ul>
+
+</nav>

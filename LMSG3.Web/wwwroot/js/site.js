@@ -139,3 +139,11 @@ function getModulesets() {
     return moduleSets;
 }
 
+/*Student sidebar toggle function*/
+$(document).ready(function () {
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+
+});
