@@ -16,14 +16,17 @@ namespace LMSG3.Data.Configuration
         private readonly ApplicationDbContext context;
         private readonly ILogger logger;
 
+        public IStudentRepository StudentRepository { get; private set; }
+
         private ICourseRepository courseRepository;
         private IRepository<Module> moduleRepository;
         private IRepository<Activity> activityRepository;
-
+       
         public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
         {
             this.context = context;
             this.logger = loggerFactory.CreateLogger("logs");
+            StudentRepository = new StudentRepository(context);
         }
         public ICourseRepository CourseRepository
         {
@@ -56,6 +59,7 @@ namespace LMSG3.Data.Configuration
             }
         }
 
+       
         public async Task CompleteAsync()
         {
             await context.SaveChangesAsync();

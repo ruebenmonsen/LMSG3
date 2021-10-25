@@ -124,6 +124,15 @@ namespace LMSG3.Web.Controllers
             return RedirectToAction("Index");
         }
 
+     
+        public async Task<ActionResult> ShowParticipants()
+        {
+            var studentId = userManager.GetUserId(User);
+            int courseId = uow.StudentRepository.GetCourseId(studentId);
+            var studentslist =await uow.StudentRepository.Getparticipants(courseId);
+                 return View(studentslist);
+            
+        }
         public async Task<ActionResult> ModulesList()
         {
 
