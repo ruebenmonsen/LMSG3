@@ -11,6 +11,7 @@ namespace LMSG3.Core.Models.ViewModels
         public int WeekNext { get; set; }
         public bool HasWeekPrevious { get; set; }
         public bool HasWeekNext { get; set; }
+        public string CurrentModuleName { get; set; }
         public IDictionary<DayOfWeek, List<StudentActivityViewModel>> Activities { get; set; }
     }
 }

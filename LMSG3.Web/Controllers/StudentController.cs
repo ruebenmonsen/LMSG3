@@ -193,12 +193,13 @@ namespace LMSG3.Web.Controllers
                     EndDate = c.Modules.Max(m => m.EndDate)
                 }).SingleOrDefaultAsync();
 
-            var currentModuleDate = await _context.Students.AsNoTracking()
+            var currentModuleInfo = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
                 .Where(m => m.StartDate < currentDate && m.EndDate > currentDate)
                 .Select(m => new
                 {
+                    Name = m.Name,
                     StartDate = m.StartDate,
                     EndDate = m.EndDate
                 }).SingleOrDefaultAsync();
@@ -225,8 +226,8 @@ namespace LMSG3.Web.Controllers
                     HasDocument = a.Documents.Any(),
                     IsCurrent = a.StartDate > currentDate
                                 && a.EndDate < currentDate,
-                    InCurrentModule = a.StartDate > currentModuleDate.StartDate 
-                                    && a.EndDate < currentModuleDate.EndDate
+                    InCurrentModule = a.StartDate > currentModuleInfo.StartDate 
+                                    && a.EndDate < currentModuleInfo.EndDate
                 })
                 .OrderBy(a => a.StartDate)
                 .ToListAsync();
@@ -247,6 +248,7 @@ namespace LMSG3.Web.Controllers
                 WeekNext = weekNext,
                 HasWeekPrevious = courseInfo.StartDate < ISOWeek.ToDateTime(year, week, DayOfWeek.Monday),
                 HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1),
+                CurrentModuleName = currentModuleInfo.Name,
                 Activities = sad
             };
 

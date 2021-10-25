@@ -132,7 +132,7 @@ namespace LMSG3.Data
             var activities = new List<Activity>();
             foreach (var module in modules)
             {
-                activities.AddRange(GetActivities(module, activityTypes, 3));
+                activities.AddRange(GetActivities(module, activityTypes, 5));
             }
             await db.AddRangeAsync(activities);
 
