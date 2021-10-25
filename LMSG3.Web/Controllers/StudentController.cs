@@ -41,7 +41,9 @@ namespace LMSG3.Web.Controllers
             var currentModule = await _context.Students.Where(s => s.Id == userId).Select(s => s.Course.Modules
                 .Where(m => m.StartDate < currentDate && m.EndDate > currentDate).FirstOrDefault()).FirstOrDefaultAsync();
             // Include Activities for one single module.
+            // TODO: fix bug with there not being a current module. Use nullable vars?
             await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
+  
             var documents = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
