@@ -1,12 +1,14 @@
 ﻿using LMSG3.Core.Models.Entities;
 using LMSG3.Core.Models.ViewModels;
+using LMSG3.Core.Repositories;
 using LMSG3.Data;
+using LMSG3.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,21 +19,25 @@ namespace LMSG3.Web.Controllers
 {
     public class DocumentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> userManager;
         private object model;
+   
+        private readonly IRepository<Document> DocumentRepo = null;
+        private readonly ILogger logger = null;
 
         public DocumentsController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment _environment)
         {
-            _context = context;
+            db = context;
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.DocumentRepo = new GenericRepository<Document>(context, logger);
 
         }
 
         // GET: Documents
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Documents.Include(d => d.Activity).Include(d => d.ApplicationUser).Include(d => d.Course).Include(d => d.DocumentType).Include(d => d.Module);
+            var applicationDbContext = db.Documents.Include(d => d.Activity).Include(d => d.ApplicationUser).Include(d => d.Course).Include(d => d.DocumentType).Include(d => d.Module);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -43,7 +49,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents
+            var document = await db.Documents
                 .Include(d => d.Activity)
                 .Include(d => d.ApplicationUser)
                 .Include(d => d.Course)
@@ -69,7 +75,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents
+            var document = await db.Documents
                                             .Include(d => d.Activity)
                                             .Include(d => d.ApplicationUser)
                                             .Include(d => d.Course)
@@ -99,15 +105,15 @@ namespace LMSG3.Web.Controllers
             {
                 try
                 {
-                    var doc = await _context.Documents.FindAsync(id);
+                    var doc = await DocumentRepo.FindAsync(id);
                     doc.Id = document.Id;
                     doc.Name = document.Name;
                     doc.Description = document.Description;
                     doc.DocumentTypeId = document.DocumentTypeId;
 
 
-                    _context.Update(doc);
-                    await _context.SaveChangesAsync();
+                    DocumentRepo.Update(doc);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -135,7 +141,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var document = await _context.Documents
+            var document = await db.Documents
                 .Include(d => d.Activity)
                 .Include(d => d.ApplicationUser)
                 .Include(d => d.Course)
@@ -156,15 +162,15 @@ namespace LMSG3.Web.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var document = await _context.Documents.FindAsync(id);
-            _context.Documents.Remove(document);
-            await _context.SaveChangesAsync();
+            var document = await DocumentRepo.FindAsync(id);
+            DocumentRepo.Remove(document);
+            await db.SaveChangesAsync();
             return RedirectToAction("Index", "Courses");
         }
 
         private bool DocumentExists(int id)
         {
-            return _context.Documents.Any(e => e.Id == id);
+            return db.Documents.Any(e => e.Id == id);
         }
 
         [HttpGet]
@@ -174,7 +180,7 @@ namespace LMSG3.Web.Controllers
 
             if (entityName == "Courses")
             {
-                var course = await _context.Courses.FindAsync(id);
+                var course = await db.Courses.FindAsync(id);
 
                 model = new DocumentUploadViewModel
                 {
@@ -185,7 +191,7 @@ namespace LMSG3.Web.Controllers
             }
             else if (entityName == "Modules")
             {
-                var module = await _context.Modules.FindAsync(id);
+                var module = await db.Modules.FindAsync(id);
 
                 model = new DocumentUploadViewModel
                 {
@@ -196,7 +202,7 @@ namespace LMSG3.Web.Controllers
             }
             else if (entityName == "Activities")
             {
-                var activity = await _context.Activities.FindAsync(id);
+                var activity = await db.Activities.FindAsync(id);
 
                 model = new DocumentUploadViewModel
                 {
@@ -221,7 +227,7 @@ namespace LMSG3.Web.Controllers
             {
                 if (model.EntityName == "Courses")
                 {
-                    var names = await _context.Courses.Where(a => a.Id == model.Id).Select(a => new
+                    var names = await db.Courses.Where(a => a.Id == model.Id).Select(a => new
                     {
                         Course = a.Id
 
@@ -253,7 +259,7 @@ namespace LMSG3.Web.Controllers
 
                 else if (model.EntityName == "Modules")
                 {
-                    var names = await _context.Modules.Where(a => a.Id == model.Id).Select(a => new
+                    var names = await db.Modules.Where(a => a.Id == model.Id).Select(a => new
                     {
                         Module = a.Id,
                         Course = a.Course.Id
@@ -285,7 +291,7 @@ namespace LMSG3.Web.Controllers
 
                 else if (model.EntityName == "Activities")
                 {
-                    var names = await _context.Activities.Where(a => a.Id == model.Id).Select(a => new
+                    var names = await db.Activities.Where(a => a.Id == model.Id).Select(a => new
                     {
                         Activity = a.Id,
                         Module = a.Module.Id,
@@ -323,8 +329,8 @@ namespace LMSG3.Web.Controllers
                         using var stream = new FileStream(filePath, FileMode.Create);
                         await model.SubmittedFile.CopyToAsync(stream);
 
-                        _context.Add(document);
-                        await _context.SaveChangesAsync();
+                        DocumentRepo.Add(document);
+                        await db.SaveChangesAsync();
                     }
                 }
             }

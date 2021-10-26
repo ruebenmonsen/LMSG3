@@ -3,11 +3,8 @@
     <tr>
         <th class="col-1"></th>
 
-        <th class="col-2">
+        <th class="col-3">
             @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th class="col-2">
-            @Html.DisplayNameFor(model => model.Description)
         </th>
 
         <th class="col-2">
@@ -17,7 +14,7 @@
             @Html.DisplayNameFor(model => model.EndDate)
         </th>
 
-        <th class="col-3"></th>
+        <th class="col-4"></th>
     </tr>
 </thead>
 <tbody>
@@ -45,9 +42,7 @@
             <td>
                 <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>

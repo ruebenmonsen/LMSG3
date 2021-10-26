@@ -1,7 +1,7 @@
 ﻿@model IndexCourseViewModel
 
 <p>
-
+    <br />
 <a asp-action="Create" asp-controller="Courses" class="m-2">Add New Course</a>
         
 </p>
@@ -18,16 +18,14 @@
         <tr>
             <th class="col-1">
             </th>
-            <th class="col-2" data-sortable="true">
+            <th class="col-3" data-sortable="true">
                 @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().Name)
             </th>
-            <th class="col-2" data-sortable="true">
+            <th class="col-3" data-sortable="true">
                 @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().StartDate)
             </th>
-            <th class="col-3" data-sortable="true">
-                @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().Description)
-            </th>
-            <th class="col-1 text-center" data-sortable="true">
+
+            <th class="col-2 text-center" data-sortable="true">
                 @Html.DisplayNameFor(model => model.CoursesList.FirstOrDefault().Participants)
             </th>
             <th class="col-3"></th>

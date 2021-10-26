@@ -46,6 +46,7 @@ namespace LMSG3.Web.Controllers
                 .Include(a => a.Module)
                 .Include(a => a.Documents).ThenInclude(a => a.DocumentType)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (activity == null)
             {
                 return NotFound();
