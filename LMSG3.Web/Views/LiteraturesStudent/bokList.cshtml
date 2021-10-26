@@ -1,0 +1,10 @@
+﻿@model IEnumerable<LMSG3.Core.Models.Dtos.LiteratureDto>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+
+        @foreach (var bok in Model)
+        {
+            @*<p>@bok.Title</p>*@
+            <partial name="_bokCard" model="bok" />
+        }
+   
