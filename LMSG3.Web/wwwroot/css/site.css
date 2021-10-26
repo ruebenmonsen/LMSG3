@@ -94,3 +94,7 @@ body {
 div.pagination {
     margin-left: auto !important;
 }
+
+.not-shown {
+    display: none;
+}
