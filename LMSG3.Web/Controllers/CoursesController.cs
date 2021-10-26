@@ -67,29 +67,7 @@ namespace LMSG3.Web.Controllers
             return View();
         }
 
-        // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(CreateCourseViewModel vm)
-        //{
 
-        //    var course = mapper.Map<Course>(vm);
-        //    var modules = mapper.Map<List<Module>>(vm.Modelslist);
-        //    uow.CourseRepository.Add(course);
-        //    await uow.CompleteAsync();
-        //    foreach (var item in modules)
-        //    {
-        //        uow.ModuleRepository.Add(item);
-        //        await uow.CompleteAsync();
-        //    }
-           
-
-        //    return RedirectToAction(nameof(Index));
-
-
-        //}
         //[HttpPost]
         public async Task<ActionResult> CreateCourse(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
         {

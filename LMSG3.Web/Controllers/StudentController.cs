@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -112,37 +113,43 @@ namespace LMSG3.Web.Controllers
 
             var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
             {
-                Activity = a.Name,
-                Module = a.Module.Name,
-                Course = a.Module.Course.Name
+                Activity = a.Id,
+                Module = a.Module.Id,
+                Course = a.Module.Course.Id,
+                Student = userManager.GetUserId(User)
 
             }).FirstOrDefaultAsync();
 
             long size = model.SubmittedFile.Length;
-            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments/";
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments//{names.Student}";
 
             if (!Directory.Exists(fileDirectory))
             {
                 DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
             }
             var filePath = fileDirectory + model.SubmittedFile.FileName;
+            if (GetContentType(filePath) == "text/csv")
+                filePath = "";
 
-            var document = new Document()
+            if (filePath == "")
             {
-                UploadDate = DateTime.Now,
-                DocumentTypeId = 2,
-                ActivityId = model.ActivityId,
-                ApplicationUserId = userManager.GetUserId(User),
-                Path = filePath
-            };
+                var document = new Document()
+                {
+                    UploadDate = DateTime.Now,
+                    DocumentTypeId = 2,
+                    ActivityId = model.ActivityId,
+                    ApplicationUserId = userManager.GetUserId(User),
+                    Path = filePath
+                };
 
-            if (size > 0)
-            {
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await model.SubmittedFile.CopyToAsync(stream);
+                if (size > 0)
+                {
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await model.SubmittedFile.CopyToAsync(stream);
 
-                _context.Add(document);
-                await _context.SaveChangesAsync();
+                    _context.Add(document);
+                    await _context.SaveChangesAsync();
+                }
             }
             return RedirectToAction(nameof(Index));
         }
@@ -155,6 +162,30 @@ namespace LMSG3.Web.Controllers
 
             return View(model);
 
+        }
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"}
+            };
         }
     }
 }

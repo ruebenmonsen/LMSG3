@@ -357,14 +357,16 @@ namespace LMSG3.Web.Controllers
                         Path = filePath
                     };
                 }
-
-                if (size > 0)
+                if (filePath == "")
                 {
-                    using var stream = new FileStream(filePath, FileMode.Create);
-                    await model.SubmittedFile.CopyToAsync(stream);
+                    if (size > 0)
+                    {
+                        using var stream = new FileStream(filePath, FileMode.Create);
+                        await model.SubmittedFile.CopyToAsync(stream);
 
-                    _context.Add(document);
-                    await _context.SaveChangesAsync();
+                        _context.Add(document);
+                        await _context.SaveChangesAsync();
+                    }
                 }
             }
             return RedirectToAction("Index", "Courses");
