@@ -1,10 +1,4 @@
-﻿$(function () {
-    $("#datepicker").datepicker({
-        changeMonth: true,
-        changeYear: true
-    });
-});
-
+﻿
 function showHideAuthors(x) {
 
     if (x == 1) {
@@ -32,3 +26,4 @@ function showHideAuthors(x) {
     }
 
 }
+
