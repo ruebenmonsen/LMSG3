@@ -20,8 +20,26 @@ function OpenAssignmentModal(id) {
         });
 }
 
+function OpenStudentsAssignmentsModal(id) {
+    var data = { id: id };
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/Documents/GetAssignments',
+            contentType: 'application/json; charset=utf=8',
+            data: data,
+            success: function (result) {
+                $('#StudentsAssignmentsModalContent').html(result);
+                $('#StudentsAssignmentsModal').modal('show');
+            },
+            error: function (er) {
+                alert(er);
+            }
+        });
+}
+
 function OpenDocumentModal(id, entityName) {
-    var data = { id: id , entityName: entityName };
+    var data = { id: id, entityName: entityName };
     $.ajax(
         {
             type: 'GET',
@@ -37,8 +55,6 @@ function OpenDocumentModal(id, entityName) {
             }
         });
 }
-
-
 
 
 document.addEventListener('DOMContentLoaded', initScrollPostion);

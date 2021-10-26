@@ -53,7 +53,7 @@ namespace LMSG3.Web.Controllers
             {
                 return NotFound();
             }
-            var documents = db.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d => d.ActivityId == id);
+            var documents = db.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d => d.ActivityId == id).OrderByDescending(d => d.UploadDate);
             List<Document> Docs = new List<Document>();
             foreach (var document in documents)
             {

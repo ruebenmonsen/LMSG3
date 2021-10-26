@@ -33,19 +33,12 @@
             </td>
 
             <td>
-
                 <a class="btn-sm btn-outline-primary" asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
                 <a class="btn-sm btn-outline-primary" asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
                 <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenDocumentModal(@item.Id,'Activities')"><i class="bi bi-upload"></i></button>
+                <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenStudentsAssignmentsModal(@item.Id)"><i class="bi bi-file-earmark-person"></i></button>
             </td>
         </tr>
     }
 </tbody>
-<div class="modal fade" id="DocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" id='DocumentModalContent'>
-            </div>
-        </div>
-    </div>
-</div>
+

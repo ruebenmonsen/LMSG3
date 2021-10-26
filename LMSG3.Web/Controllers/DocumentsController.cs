@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,6 +40,35 @@ namespace LMSG3.Web.Controllers
         {
             var applicationDbContext = db.Documents.Include(d => d.Activity).Include(d => d.ApplicationUser).Include(d => d.Course).Include(d => d.DocumentType).Include(d => d.Module);
             return View(await applicationDbContext.ToListAsync());
+        }
+        // GET: Documents
+        [HttpGet]
+        public async Task<PartialViewResult> GetAssignments(int? id)
+        {
+            var documents = db.Documents.Include(d => d.Activity).Include(d => d.DocumentType).Include(d => d.ApplicationUser)
+                                        .Where(d => d.ActivityId == id && d.DocumentTypeId==2).OrderByDescending(d=>d.UploadDate);
+            List<StudentAssignmentViewModel> model = new List<StudentAssignmentViewModel>();
+            if (documents != null)
+            {
+                foreach (var document in documents)
+                {
+                    var role = await userManager.GetRolesAsync(document.ApplicationUser);
+                    if (role[0].ToString() == "Student")
+                    {
+                        var doc = new StudentAssignmentViewModel()
+                        {
+                            Id = document.Id,
+                            AssignmentName = document.Name,
+                            StudentName = document.ApplicationUser.FName + " " + document.ApplicationUser.LName,
+                            UploadDate = document.UploadDate,
+                            Path = document.Path
+                        };
+                        model.Add(doc);
+                    }
+                }
+            }
+
+            return PartialView("StudentsAssignmentsModal", model);
         }
 
         // GET: Documents/Details/5
@@ -322,7 +352,7 @@ namespace LMSG3.Web.Controllers
                         Path = filePath
                     };
                 }
-                if (filePath == "")
+                if (filePath != "")
                 {
                     if (size > 0)
                     {
