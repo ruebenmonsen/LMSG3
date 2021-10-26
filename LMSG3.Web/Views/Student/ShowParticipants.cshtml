@@ -1,37 +1,23 @@
-﻿@model IEnumerable<Student>
-
-
-
-<div id="accordion">
+﻿@model IEnumerable<StudentsViewModel>
    
     <div class="card">
-        <div class="card-header" id="headingTwo">
+        <div class="card-header">
             <h5 class="mb-0">
-                <a onclick="toggleFunc()">
-                   Show participants
+                <a data-toggle="collapse" data-target="#myDIV" aria-expanded="false" aria-controls="myDIV">
+                    Show participants
                 </a>
             </h5>
         </div>
-        
-        <div class="card-body">
-            <div id="myDIV" style="display:none">
+        <div  class="collapse" id="myDIV" >
+            <div class="card-body">
+
                 @foreach (var item in Model)
                 {
-                    @item.FName @item.LName <br />
+                <p> @item.FName &nbsp; @item.LName </p>
                 }
             </div>
-         </div>
+        </div>
 
     </div>
    
-</div>
-<script>
-    function toggleFunc() {
-        var x = document.getElementById("myDIV");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
+

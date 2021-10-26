@@ -65,14 +65,26 @@ namespace LMSG3.Web.Controllers
                 Assignments = assignmnets
             };
 
+           
+            int courseId = uow.StudentRepository.GetCourseId(userId);
+            var studentslist = await uow.StudentRepository.Getparticipants(courseId);
+            var participants = studentslist.Select(s => new StudentsViewModel
+            {
+                FName = s.FName,
+                LName = s.LName
+            }).ToList();
+
             var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
             {
                 
                 Name = s.Course.Name,
                 Description = s.Course.Description,
-                StartDate = s.Course.StartDate
-
+                StartDate = s.Course.StartDate,
+               Participants= participants
             }).FirstOrDefaultAsync();
+                
+                
+
 
             var studentModel = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel
@@ -86,7 +98,7 @@ namespace LMSG3.Web.Controllers
                     CourseStudents = s.Course.Students,
                     CourseInfo = courseInfo
 
-                }).FirstOrDefaultAsync();
+                }).AsSingleQuery().FirstOrDefaultAsync();
 
             return View(studentModel);
         }
@@ -125,14 +137,7 @@ namespace LMSG3.Web.Controllers
         }
 
      
-        public async Task<ActionResult> ShowParticipants()
-        {
-            var studentId = userManager.GetUserId(User);
-            int courseId = uow.StudentRepository.GetCourseId(studentId);
-            var studentslist =await uow.StudentRepository.Getparticipants(courseId);
-                 return View(studentslist);
-            
-        }
+      
         public async Task<ActionResult> ModulesList()
         {
 
@@ -140,7 +145,7 @@ namespace LMSG3.Web.Controllers
             var courseId = await _context.Students.Where(s => s.Id == userId).Select(s => s.CourseId).FirstOrDefaultAsync();
             var model = await _context.Modules.Where(m => m.CourseId == courseId).ToListAsync();
 
-            return View(model);
+            return PartialView(model);
 
         }
     }
