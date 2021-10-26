@@ -58,39 +58,7 @@ namespace LMSG3.Web.Controllers
             return View(document);
         }
 
-        // GET: Documents/Create
-        [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
-        {
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Description");
-            ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUser, "Id", "Id");
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Description");
-            return View();
-        }
 
-        // POST: Documents/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,UploadDate,DocumentTypeId,ApplicationUserId,CourseId,ModuleId,ActivityId")] Document document)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(document);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Courses");
-            }
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Description", document.ActivityId);
-            ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUser, "Id", "Id", document.ApplicationUserId);
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", document.CourseId);
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Id", document.DocumentTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Description", document.ModuleId);
-            return View(document);
-        }
 
         // GET: Documents/Edit/5
         [Authorize(Roles = "Teacher")]
@@ -106,16 +74,11 @@ namespace LMSG3.Web.Controllers
                                             .Include(d => d.ApplicationUser)
                                             .Include(d => d.Course)
                                             .Include(d => d.DocumentType)
-                                            .Include(d => d.Module).FirstOrDefaultAsync(d => d.Id==id);
+                                            .Include(d => d.Module).FirstOrDefaultAsync(d => d.Id == id);
             if (document == null)
             {
                 return NotFound();
             }
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Description", document.ActivityId);
-            ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUser, "Id", "Id", document.ApplicationUserId);
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", document.CourseId);
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Id", document.DocumentTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Description", document.ModuleId);
             return View(document);
         }
 
@@ -136,10 +99,10 @@ namespace LMSG3.Web.Controllers
             {
                 try
                 {
-                    var doc = await _context.Documents.FindAsync(id) ;
-                    doc.Id=document.Id  ;
-                    doc.Name=document.Name ;
-                    doc.Description =document.Description ;
+                    var doc = await _context.Documents.FindAsync(id);
+                    doc.Id = document.Id;
+                    doc.Name = document.Name;
+                    doc.Description = document.Description;
                     doc.DocumentTypeId = document.DocumentTypeId;
 
 
@@ -159,11 +122,7 @@ namespace LMSG3.Web.Controllers
                 }
                 return RedirectToAction("Index", "Courses");
             }
-            ViewData["ActivityId"] = new SelectList(_context.Activities, "Id", "Description", document.ActivityId);
-            ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUser, "Id", "Id", document.ApplicationUserId);
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", document.CourseId);
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Id", document.DocumentTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Modules, "Id", "Description", document.ModuleId);
+
             return View(document);
         }
 
@@ -210,41 +169,41 @@ namespace LMSG3.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Teacher")]
-        public async Task<PartialViewResult> Upload(int? id,string entityName)
+        public async Task<PartialViewResult> Upload(int? id, string entityName)
         {
 
             if (entityName == "Courses")
             {
                 var course = await _context.Courses.FindAsync(id);
 
-                 model = new DocumentUploadViewModel
+                model = new DocumentUploadViewModel
                 {
                     Id = course.Id,
                     Name = course.Name,
-                    EntityName= "Courses"
-                 };
+                    EntityName = "Courses"
+                };
             }
             else if (entityName == "Modules")
             {
                 var module = await _context.Modules.FindAsync(id);
 
-                 model = new DocumentUploadViewModel
+                model = new DocumentUploadViewModel
                 {
                     Id = module.Id,
                     Name = module.Name,
-                     EntityName = "Modules"
-                 };
+                    EntityName = "Modules"
+                };
             }
             else if (entityName == "Activities")
             {
                 var activity = await _context.Activities.FindAsync(id);
 
-                 model = new DocumentUploadViewModel
+                model = new DocumentUploadViewModel
                 {
                     Id = activity.Id,
                     Name = activity.Name,
-                     EntityName = "Activities"
-                 };
+                    EntityName = "Activities"
+                };
             }
             return PartialView("DocumentModal", model);
         }
@@ -255,7 +214,7 @@ namespace LMSG3.Web.Controllers
         {
             long size = 0;
             var filePath = "";
-            Document document=new();
+            Document document = new();
 
 
             if (ModelState.IsValid)
@@ -275,7 +234,7 @@ namespace LMSG3.Web.Controllers
                     {
                         DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
                     }
-                    filePath = fileDirectory +model.SubmittedFile.FileName;
+                    filePath = fileDirectory + model.SubmittedFile.FileName;
 
                     if (GetContentType(filePath) == "text/csv")
                         filePath = "";
@@ -346,7 +305,7 @@ namespace LMSG3.Web.Controllers
                     if (GetContentType(filePath) == "text/csv")
                         filePath = "";
 
-                       document = new Document()
+                    document = new Document()
                     {
                         UploadDate = DateTime.Now,
                         DocumentTypeId = model.DocumentTypeId,
@@ -401,7 +360,7 @@ namespace LMSG3.Web.Controllers
             return types[ext];
         }
 
-        private  Dictionary<string, string> GetMimeTypes()
+        private Dictionary<string, string> GetMimeTypes()
         {
             return new Dictionary<string, string>
             {
