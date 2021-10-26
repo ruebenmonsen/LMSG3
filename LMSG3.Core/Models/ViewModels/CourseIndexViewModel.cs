@@ -18,7 +18,7 @@ namespace LMSG3.Core.Models.ViewModels
         public DateTime StartDate { get; set; }
         public string Description { get; set; }
 
-        public IEnumerable<ModelListViewModel> Modelslist { get; set; }
+        public IEnumerable<ModuleListViewModel> Modelslist { get; set; }
 
     }
 }

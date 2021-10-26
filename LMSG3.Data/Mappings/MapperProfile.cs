@@ -53,7 +53,7 @@ namespace LMSG3.Data
                 .ForMember(dest => dest.CoursesList, from => from.MapFrom(c => c.ToList()))
                 .ReverseMap();
 
-            CreateMap<Module, ModelListViewModel>()
+            CreateMap<Module, ModuleListViewModel>()
                 .ForMember(dest=>dest.ActivitiesList, frm=>frm.MapFrom(a=>a.Activities.ToList()))
                 .ReverseMap();
             CreateMap<IEnumerable<Module>, CourseIndexViewModel>()

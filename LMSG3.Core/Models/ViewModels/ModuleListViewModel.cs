@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LMSG3.Core.Models.ViewModels
 {
-    public class ModelListViewModel
+    public class ModuleListViewModel
     {
         public int Id { get; set; }
         [Display(Name = "Module Name")]

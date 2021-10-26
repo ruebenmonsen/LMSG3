@@ -1,66 +1,67 @@
-﻿@model IEnumerable<LMSG3.Core.Models.Entities.Module>
+﻿@model IEnumerable<Module>
+
+<div class="card border-0 bg-transparent">
+   
+    <div class="border-bottom border-top bg-opacity-25">
 
 
-    
-<div class="row">
-    <h5 class="mb-0 ">
-        <a data-toggle="collapse" data-target="#module-info" aria-expanded="false" aria-controls="module-info">
-            Course Modules
-        </a>
+        <h4 class="py-2">
+            <a data-toggle="collapse" data-target="#myDIV1" aria-expanded="false" aria-controls="myDIV1">
+                Show participants
+            </a>
+        </h4>
+    </div>
 
-    </h5>
+    <div class="collapse" id="myDIV1">
+        <div class="card-body mt-2">
 
-    <hr />
-    <br />
+            <table class="table ">
+                <thead>
+                    <tr>
 
-</div>   
-            <div class=" card collapse" id="module-info ">
-                <div class="card card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Name)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Description)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.StartDate)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.EndDate)
-                                </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.StartDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EndDate)
+                        </th>
 
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
 
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Description)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StartDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.EndDate)
-                                    </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StartDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EndDate)
+                            </td>
 
 
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-                </div>
-            </div>
-        
+        </div>
+    </div>
+
+</div>
+
 

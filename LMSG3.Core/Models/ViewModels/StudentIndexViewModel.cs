@@ -20,7 +20,7 @@ namespace LMSG3.Core.Models.ViewModels
         public ICollection<Activity> Activities { get; set; }
 
         public ICollection<Module> Modules { get; set; }
-
+       
         public ICollection<Student> CourseStudents { get; set; }
 
         

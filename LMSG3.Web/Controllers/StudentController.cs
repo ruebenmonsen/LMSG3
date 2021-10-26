@@ -81,11 +81,12 @@ namespace LMSG3.Web.Controllers
                 Name = s.Course.Name,
                 Description = s.Course.Description,
                 StartDate = s.Course.StartDate,
-               Participants= participants
+                Participants= participants
             }).FirstOrDefaultAsync();
-                
-                
 
+            var module = await _context.Modules.Where(m => m.CourseId == courseId).ToListAsync();
+
+          
 
             var studentModel = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel
