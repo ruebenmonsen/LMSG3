@@ -46,12 +46,12 @@
                     @Html.DisplayFor(modelItem => item.LiteraTypeName)
                 </td>
                 <td>
-                    <!--<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>-->
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="link-secondary"><i class="bi bi-pencil-square" style="font-size:24px"></i></a>
 
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm" role="button" aria-pressed="true">Edit</a>
+                    @*<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm" role="button" aria-pressed="true">Edit</a>*@
                     <!--<a asp-action="Details" asp-route-id="@item.Id">Details</a> |-->
-                    <!--<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>-->
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm" role="button" aria-pressed="true">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="link-secondary"><i class="bi bi-trash" style="font-size:24px"></i></a>
+                    @*<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm" role="button" aria-pressed="true">Delete</a>*@
                 </td>
             </tr>
         }

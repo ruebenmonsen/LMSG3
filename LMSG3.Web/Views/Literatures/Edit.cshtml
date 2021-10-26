@@ -4,11 +4,12 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-<link href="~/css/bootstrap-form-validation.css" rel="stylesheet" />
+@*<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">*@
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+<link href="~/css/bootstrap-form-validation.css" rel="stylesheet" />
 <h2>Edit literature</h2>
 
 <hr />
@@ -22,7 +23,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" required="required" data-error="Please enter a title." />
+                <input asp-for="Title" class="form-control" style="font-size:medium" required="required" data-error="Please enter a title." />
                 <div class="help-block with-errors"></div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
@@ -62,6 +63,9 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-secondary">Save</button>
             </div>
+            <div>
+                <a asp-action="Index" title="Back to List"> <i class="bi bi-arrow-return-left col-xl" style="font-size:36px;"></i></a>
+            </div>
         </div>
 
         <div class="box">
@@ -92,11 +96,9 @@
             }
 
         </div>
-</form>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 <link href="~/css/literature.css" rel="stylesheet" />
 
