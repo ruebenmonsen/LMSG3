@@ -54,12 +54,20 @@ namespace LMSG3.Web.Controllers
 
             var module = await db.Modules
                 .Include(m => m.Course)
-                .Include(m => m.Documents).ThenInclude(m => m.DocumentType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (module == null)
             {
                 return NotFound();
             }
+            var documents = db.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d => d.ModuleId == id);
+            List<Document> Docs = new List<Document>();
+            foreach (var document in documents)
+            {
+                var role = await userManager.GetRolesAsync(document.ApplicationUser);
+                if (role[0].ToString() == "Teacher")
+                    Docs.Add(document);
+            }
+            module.Documents = Docs;
 
             return View(module);
         }

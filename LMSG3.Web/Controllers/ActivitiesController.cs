@@ -11,6 +11,7 @@ using LMSG3.Core.Repositories;
 using Microsoft.Extensions.Logging;
 using LMSG3.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSG3.Web.Controllers
 {
@@ -19,11 +20,13 @@ namespace LMSG3.Web.Controllers
         private readonly ApplicationDbContext db;
         private readonly IRepository<Activity> ActivityRepo = null;
         private readonly ILogger logger = null;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             db = context;
             this.ActivityRepo = new GenericRepository<Activity>(context, logger);
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         // GET: Activities
@@ -44,13 +47,21 @@ namespace LMSG3.Web.Controllers
             var activity = await db.Activities
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
-                .Include(a => a.Documents).ThenInclude(a => a.DocumentType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (activity == null)
             {
                 return NotFound();
             }
+            var documents = db.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d => d.ActivityId == id);
+            List<Document> Docs = new List<Document>();
+            foreach (var document in documents)
+            {
+                var role = await userManager.GetRolesAsync(document.ApplicationUser);
+                if (role[0].ToString() == "Teacher")
+                    Docs.Add(document);
+            }
+            activity.Documents = Docs;
 
             return View(activity);
         }

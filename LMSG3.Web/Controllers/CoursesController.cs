@@ -57,8 +57,17 @@ namespace LMSG3.Web.Controllers
             {
                 return NotFound();
             }
+            var documents = _context.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d=>d.CourseId==id);
+            List<Document> Docs = new List<Document>();
+            foreach (var document in documents)
+            {
+                var role = await userManager.GetRolesAsync(document.ApplicationUser);
+                if (role[0].ToString() == "Teacher")
+                    Docs.Add(document);
+            }
+            course.Documents = Docs;
 
-            return View(course);
+                return View(course);
         }
 
         // GET: Courses/Create
