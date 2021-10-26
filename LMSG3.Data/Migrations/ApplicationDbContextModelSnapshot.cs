@@ -190,6 +190,9 @@ namespace LMSG3.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
 
