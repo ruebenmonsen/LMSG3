@@ -100,7 +100,7 @@ namespace LMSG3.Web.Controllers
                     CourseStudents = s.Course.Students,
                     CourseInfo = courseInfo
 
-                }).AsSingleQuery().FirstOrDefaultAsync();
+                }).AsSplitQuery().FirstOrDefaultAsync();
 
             return View(studentModel);
         }
