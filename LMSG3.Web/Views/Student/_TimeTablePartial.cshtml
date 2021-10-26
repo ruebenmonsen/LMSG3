@@ -97,11 +97,11 @@
                     prevBlock = endBlock;
                     @if(breakBlockSize != 0)
                     {
-                        <div class="badge w-100" style="overflow: hidden; display: block; height: @(breakBlockSize)%">
+                        <div class="badge w-100" style="overflow: hidden; display: block; height: @breakBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%">
                         </div>
                     }
                     var activityBlockSize = (endBlock - startBlock) * 2.5;
-                    <div class="badge w-100 @(a.InCurrentModule ? (a.IsCurrent ? "bg-success" : "bg-primary") : "bg-secondary")" style="overflow: hidden; display: block; height: @activityBlockSize%" tooltip="English Literature">
+                    <div class="badge w-100 @(a.InCurrentModule ? (a.IsCurrent ? "bg-success" : "bg-primary") : "bg-secondary")" style="overflow: hidden; display: block; height: @activityBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%" tooltip="English Literature">
                         <div><i class="bi bi-circle-fill text-danger"></i>@Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
                         <div>@a.StartDate.ToString("t") - @a.EndDate.ToString("t")</div>
                     </div>

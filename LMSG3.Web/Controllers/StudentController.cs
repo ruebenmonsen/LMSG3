@@ -144,7 +144,7 @@ namespace LMSG3.Web.Controllers
         [HttpGet]
         public async Task<PartialViewResult> TimeTable(int year, int week, int step)
         {
-            // Bugs: logic between weeks and years.
+            // Bugs: maybe logic between weeks.
 
             // TODO: If we want to be able to select module, currentDate
             // need to be adjusted to the selected startdate, but if
