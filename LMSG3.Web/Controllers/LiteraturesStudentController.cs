@@ -90,13 +90,32 @@ namespace LMSG3.Web.Controllers
             var content = await response.Content.ReadAsStringAsync();
 
             var literatures = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<LiteratureDto>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            int Min = 0;
+            int Max = 5;
 
-            //Newtonsoft json
-            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+            // this declares an integer array with 5 elements
+            // and initializes all of them to their default value
+            // which is zero
+            int[] imgArray = new int[] { 100, 400, 500 };
+            
+           
+            Random randNum = new Random();
+           
             foreach (var item in literatures)
             {
-                item.CoverMImg = "https://covers.openlibrary.org/b/id/5546156-M.jpg";
+                int index = randNum.Next(0, imgArray.Length);
+                item.CoverMImg = $"/img/Thumbnails/Medium/{imgArray[index]}-M.jpg";
+                
             }
+            
+            
+           
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+            //foreach (var item in literatures)
+            //{
+            //    item.CoverMImg = "https://covers.openlibrary.org/b/id/5546156-M.jpg";
+            //}
             return literatures;
 
         }
@@ -106,6 +125,7 @@ namespace LMSG3.Web.Controllers
         // GET: LiteraturesController1/Details/5
         public async Task<ActionResult> Details(int id)
         {
+            int imageNumber = 100;
             var response = await httpClient.GetAsync($"api/literatures/{id}?includeAllInfo=true");
             response.EnsureSuccessStatusCode();
 
@@ -115,7 +135,8 @@ namespace LMSG3.Web.Controllers
 
             //Newtonsoft json
             // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
-            literature.CoverLImg = "https://covers.openlibrary.org/b/id/5546156-L.jpg";
+            literature.CoverLImg = $"/img/Thumbnails/Large/{imageNumber}-L.jpg";
+            //literature.CoverLImg = "https://covers.openlibrary.org/b/id/5546156-L.jpg";
 
             return View(literature);
         }

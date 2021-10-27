@@ -19,6 +19,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static LMSG3.Web.Services.LiteraturesController;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LMSG3.Web.Controllers
 {
@@ -72,8 +73,9 @@ namespace LMSG3.Web.Controllers
             var cancellation = new CancellationTokenSource();
             
             var litratureModel = await SimpleGet(literaturesResourceParameters);
-
             
+           
+
             return View(litratureModel);
         }
 
@@ -103,6 +105,7 @@ namespace LMSG3.Web.Controllers
         // GET: LiteraturesController1/Details/5
         public async Task<ActionResult> Details(int id)
         {
+            var imageNumber = 100;
             var response = await httpClient.GetAsync($"api/literatures/{id}?includeAllInfo=true");
             response.EnsureSuccessStatusCode();
 
@@ -112,7 +115,9 @@ namespace LMSG3.Web.Controllers
 
             //Newtonsoft json
             // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
-            literature.CoverLImg = "https://covers.openlibrary.org/b/id/5546156-L.jpg";
+            //literature.CoverLImg = "https://covers.openlibrary.org/b/id/5546156-L.jpg";
+            //literature.CoverLImg = "~/Thumbnails/Large/10738025-L";
+            literature.CoverLImg = $"/img/Thumbnails/Large/{imageNumber}-L.jpg";
 
             return View(literature);
         }
