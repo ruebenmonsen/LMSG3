@@ -12,12 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using LMSG3.Core.Models.ViewModels;
 using System.Globalization;
 
 namespace LMSG3.Web.Controllers
