@@ -84,7 +84,7 @@ namespace LMSG3.Web.Controllers
             queryString += $"&searchString={literaturesResourceParameters.searchString}";
             queryString += $"&sortOrder={literaturesResourceParameters.sortOrder}";
             var apiUrl = $"api/literatures?{queryString}";
-            var response = await httpClient.GetAsync(apiUrl);
+            var response = await  httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -324,11 +324,11 @@ namespace LMSG3.Web.Controllers
         // POST: LiteraturesController1/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteLiterature(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteLiterature(int id, IFormCollection collection)
         {
             try
             {
-                var response = httpClient.DeleteAsync($"api/literatures/{id}");
+                var response = await httpClient.DeleteAsync($"api/literatures/{id}");
                 return RedirectToAction(nameof(Index));
             }
             catch
