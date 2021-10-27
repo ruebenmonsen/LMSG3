@@ -44,12 +44,12 @@ namespace LMSG3.Web.Controllers
 
         public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter)
         {
-
-            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
-            ViewData["ReleaseDateSortParm"] = sortOrder == "ReleaseDate" ? "releaseDate_desc" : "ReleaseDate";
-            ViewData["SubjectSortParm"] = sortOrder == "Subject" ? "subject_desc" : "Subject";
-            ViewData["LevelSortParm"] = sortOrder == "Level" ? "level_desc" : "Level";
-            ViewData["TypeSortParm"] = sortOrder == "Type" ? "type_desc" : "Type";
+            sortOrder = "releaseDate_desc";
+            //ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            //ViewData["ReleaseDateSortParm"] = sortOrder == "ReleaseDate" ? "releaseDate_desc" : "ReleaseDate";
+            //ViewData["SubjectSortParm"] = sortOrder == "Subject" ? "subject_desc" : "Subject";
+            //ViewData["LevelSortParm"] = sortOrder == "Level" ? "level_desc" : "Level";
+            //ViewData["TypeSortParm"] = sortOrder == "Type" ? "type_desc" : "Type";
 
             LiteraturesResourceParameters literaturesResourceParameters = new LiteraturesResourceParameters();
             literaturesResourceParameters.sortOrder = sortOrder;
