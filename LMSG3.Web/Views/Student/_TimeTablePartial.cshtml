@@ -27,6 +27,13 @@
 /*        background-attachment: local;
         will-change: transform;*/
     }
+    .tt-box-info {
+        height: 6%;
+        display: flex;
+        justify-content: end;
+        overflow: hidden;
+        background-color: lightgrey;
+    }
 
     .tt-title {
         height: 100%;
@@ -94,6 +101,24 @@
         background-size: 20px 20px;
         background-repeat: no-repeat;
         background-color: red;
+    }
+
+    .tt-info {
+        height: 100%;
+        font-weight: 500;
+    }
+
+    .tt-activity-color-1 {
+        color: orange;
+    }
+    .tt-activity-color-2 {
+        color: violet;
+    }
+    .tt-activity-color-3 {
+        color: seagreen;
+    }
+    .tt-activity-color-4 {
+        color: seagreen;
     }
 
 </style>
@@ -176,7 +201,7 @@
                     var activityBlockSize = (endBlock - startBlock) * 2.5;
                     <div class="d-flex flex-column badge tt-activity @(a.InCurrentModule ? (a.IsCurrent ? "now" : "active") : "inactive") lecture" style="height: @activityBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%" tooltip="English Literature">
                         <div class="h-100 w-100 d-block">
-                            <div class="">@Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
+                            <div class=""><i class="bi bi-circle-fill tt-activity-color-@a.ActivityTypeId"> </i> @Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
                             <div class="align-self-bottom">@a.StartDate.ToString("t") - @a.EndDate.ToString("t")
                             </div>
                         </div>
@@ -194,9 +219,13 @@
         }
     }
 </div>
-<div class="tt-box-title">
-    <div class="tt-title">
-        <span><i class="bi bi-circle-fill"></i> Lecture</span>
-        <span><i class="bi bi-circle-fill"></i> E-Learning</span>
+<div class="tt-box-info">
+    <div class="tt-info">
+        @{
+            foreach (var a in Model.ActivityTypes)
+            {
+                <span><i class="bi bi-circle-fill tt-activity-color-@a.Key"></i> @a.Value </span> 
+            }
+        }
     </div>
 </div>

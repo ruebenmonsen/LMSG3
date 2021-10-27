@@ -200,18 +200,6 @@ namespace LMSG3.Web.Controllers
                     EndDate = c.Modules.Any() ? c.Modules.Max(m => m.EndDate) : c.StartDate
                 }).SingleOrDefaultAsync();
 
-            //var currentModuleInfo = await _context.Students.AsNoTracking()
-            //    .Where(s => s.Id == userId)
-            //    .SelectMany(s => s.Course.Modules)
-            //    .Where(m => m.StartDate < currentDate && m.EndDate > currentDate)
-            //    .Select(m => new
-            //    {
-            //        //Id = m.Id,
-            //        Name = m.Name,
-            //        //StartDate = m.StartDate,
-            //        //EndDate = m.EndDate
-            //    }).SingleOrDefaultAsync();
-
             // Select all activities within selected week that ain't assignments
             // Bug: Activities stretching over to next week will not be taken
             // TODO: Add module name? Add acticity name?
@@ -234,11 +222,6 @@ namespace LMSG3.Web.Controllers
                     HasDocument = a.Documents.Any(),
                     IsCurrent = InDateSpan(currentDate, a.StartDate, a.EndDate),
                     InCurrentModule = InDateSpan(currentDate, a.Module.StartDate, a.Module.EndDate)
-                    //InCurrentModule = currentModuleInfo == default ? false :
-                    //                 a.ModuleId == currentModuleInfo.Id
-                    //InCurrentModule = currentModuleInfo == default ? false :
-                    //                a.StartDate >= currentModuleInfo.StartDate
-                    //                && a.EndDate <= currentModuleInfo.EndDate
                 })
                 .OrderBy(a => a.StartDate)
                 .ToListAsync();
@@ -248,6 +231,10 @@ namespace LMSG3.Web.Controllers
             var studentActivitiesDictionary = studentActivities
                 .GroupBy(sa => sa.StartDate.DayOfWeek)
                 .ToDictionary(g => g.Key, g => g.ToList());
+
+            var activityTypes = await _context.ActivityTypes.AsNoTracking()
+                .Where(at => at.Id != assignmentTypeId)
+                .ToDictionaryAsync(at => at.Id, at => at.Name);
 
             var currentModuleName = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
@@ -273,6 +260,7 @@ namespace LMSG3.Web.Controllers
                     (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
                     endHour : studentActivities.Max(sa => sa.EndDate.Hour))
                     : null,
+                ActivityTypes = activityTypes,
                 Activities = studentActivitiesDictionary
             };
 

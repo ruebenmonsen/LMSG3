@@ -15,6 +15,7 @@ namespace LMSG3.Core.Models.ViewModels
         public string CurrentModuleName { get; set; }
         public int? activityStartHourMin { get; set; }
         public int? activityEndHourMax { get; set; }
+        public IDictionary<int, string> ActivityTypes { get; set; }
         public IDictionary<DayOfWeek, List<StudentActivityViewModel>> Activities { get; set; }
     }
 }

@@ -10,8 +10,6 @@ namespace LMSG3.Core.Models.ViewModels
         public string Description { get; set; }
         public int ActivityTypeId { get; set; }
 
-        // TODO: add name
-
         //[DisplayFormat(DataFormatString = "{0:MMMM dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
