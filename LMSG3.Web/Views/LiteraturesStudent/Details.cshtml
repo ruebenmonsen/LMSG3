@@ -1,31 +1,32 @@
 ﻿@model LMSG3.Core.Models.Dtos.LiteratureDto
 
 <h2>@Model.Title</h2>
-<div class="clearfix col-md-12">
-    <div class="box col-md-4">
-        <div class="thumbnail">
+
+<div class="card mb-3" style="max-width: 100%;">
+    <div class="row no-gutters">
+        <div class="col-md-4">
             <img alt="@Model.Title" src="@Model.CoverLImg">
         </div>
-    </div>
-    <div class="box col-md-4">
-        <div class="caption-full">
-            <h3>Title</h3>
-            <p>
-                @Model.Title
-            </p>
-            <h3>Subject</h3>
-            <p>@Model.SubjectName</p>
-            <h3>Description</h3>
-            <p>@Model.Description</p>
-            <h4>Author</h4>
-            <ul>
-                @foreach (var item in Model.Authors)
-                {
-                    <li>@item.FullName </li>
-                }
-            </ul>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h3>Title</h3>
+                <p>
+                    @Model.Title
+                </p>
+                <h3>Subject</h3>
+                <p>@Model.SubjectName</p>
+                <h3>Description</h3>
+                <p>@Model.Description</p>
+                <h4>Authors</h4>
+                <ul>
+                    @foreach (var item in Model.Authors)
+                    {
+                        <li>@item.FullName </li>
+                    }
+                </ul>
+            </div>
         </div>
-     </div>
+    </div>
 </div>
 <div>
     <a asp-action="Index" title="Back to List"> <i class="bi bi-arrow-return-left col-xl" style="font-size:36px;"></i></a>
