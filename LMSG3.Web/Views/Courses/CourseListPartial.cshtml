@@ -3,28 +3,52 @@
 {
     <tr>
         <td>
-            <img src="~/img/down.jpg" width="20" height="20"/>
+            <img src="~/img/down.jpg" width="20" height="20" />
+
             <div style="display:none">
-                <table cellpadding="0" cellspacing="0" class="ChildGrid">
+                <table>
 
                     <partial name="CourseModulePartial" model="@item.Modelslist" />
 
                 </table>
-               
+
             </div>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
+            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Name)</a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StartDate)
         </td>
+
         <td>
-            @Html.DisplayFor(modelItem => item.Description)
+            @Html.DisplayFor(modelItem => item.Participants)
         </td>
         <td>
-            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"> Edit </a>
-            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+            <a class="btn-sm btn-outline-primary" asp-controller="Modules" asp-action="Create" asp-route-CourseId="@item.Id">Add Module</a>
+
+            <a class="btn-sm btn-outline-primary" asp-controller="Courses" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+
+            <a class="btn-sm btn-outline-primary" asp-controller="Courses" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+
+            <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenDocumentModal(@item.Id,'Courses')"><i class="bi bi-upload"></i></button>
         </td>
     </tr>
 }
+<div class="modal fade" id="DocumentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id='DocumentModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="StudentsAssignmentsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content  modal-lg">
+            <div class="modal-header  modal-lg" id='StudentsAssignmentsModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+

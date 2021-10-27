@@ -190,9 +190,6 @@ namespace LMSG3.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
 
@@ -223,7 +220,7 @@ namespace LMSG3.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DocumentType");
+                    b.ToTable("DocumentTypes");
                 });
 
             modelBuilder.Entity("LMSG3.Core.Models.Entities.Module", b =>

@@ -1,45 +1,44 @@
 ﻿@model IEnumerable<ActivityListViewModel>
-
-@*<table class="table">*@
 <thead>
     <tr>
 
-        <th>
+        <th class="col-4">
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        
 
-        <th>
+        <th class="col-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </th>
-        <th>
+        <th class="col-2">
             @Html.DisplayNameFor(model => model.EndDate)
         </th>
 
-        <th></th>
+        <th class="col-4"></th>
     </tr>
 </thead>
 <tbody>
     @foreach (var item in Model)
     {
-    <tr>
-       
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndDate)
-        </td>
+        <tr>
 
-        <td>
-           
-            <a class="btn btn-primary" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
-            <a class="btn btn-primary" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
-        </td>
-    </tr>
+            <td>
+                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Name)</a>
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+
+            <td>
+                <a class="btn-sm btn-outline-primary" asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+                <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenDocumentModal(@item.Id,'Activities')"><i class="bi bi-upload"></i></button>
+                <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenStudentsAssignmentsModal(@item.Id)"><i class="bi bi-file-earmark-person"></i></button>
+            </td>
+        </tr>
     }
 </tbody>
-@*</table>*@
+

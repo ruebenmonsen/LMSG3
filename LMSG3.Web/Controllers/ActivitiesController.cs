@@ -11,6 +11,7 @@ using LMSG3.Core.Repositories;
 using Microsoft.Extensions.Logging;
 using LMSG3.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSG3.Web.Controllers
 {
@@ -19,11 +20,13 @@ namespace LMSG3.Web.Controllers
         private readonly ApplicationDbContext db;
         private readonly IRepository<Activity> ActivityRepo = null;
         private readonly ILogger logger = null;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             db = context;
             this.ActivityRepo = new GenericRepository<Activity>(context, logger);
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         // GET: Activities
@@ -45,17 +48,27 @@ namespace LMSG3.Web.Controllers
                 .Include(a => a.ActivityType)
                 .Include(a => a.Module)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (activity == null)
             {
                 return NotFound();
             }
+            var documents = db.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d => d.ActivityId == id).OrderByDescending(d => d.UploadDate);
+            List<Document> Docs = new List<Document>();
+            foreach (var document in documents)
+            {
+                var role = await userManager.GetRolesAsync(document.ApplicationUser);
+                if (role[0].ToString() == "Teacher")
+                    Docs.Add(document);
+            }
+            activity.Documents = Docs;
 
             return View(activity);
         }
 
         // GET: Activities/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult Create(int? ModuleId)
         {
             ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id");
             ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id");
@@ -75,7 +88,7 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityRepo.Add(activity);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Courses");
             }
             ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
             ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
@@ -132,7 +145,7 @@ namespace LMSG3.Web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Courses");
             }
             ViewData["ActivityTypeId"] = new SelectList(db.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
             ViewData["ModuleId"] = new SelectList(db.Modules, "Id", "Id", activity.ModuleId);
@@ -169,7 +182,7 @@ namespace LMSG3.Web.Controllers
             var activity = await ActivityRepo.FindAsync(id);
             ActivityRepo.Remove(activity);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Courses");
         }
 
         private bool ActivityExists(int id)

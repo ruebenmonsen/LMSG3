@@ -1,10 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 using LMSG3.Data;
 using LMSG3.Core.Configuration;
@@ -64,23 +71,9 @@ namespace LMSG3.Web.Controllers
                 };
             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
-            var studentActivities = activities.Where(a => !a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
-            {
-                return new StudentActivityViewModel
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description,
-                    StartDate = a.StartDate,
-                    EndDate = a.EndDate,
-                    HasDocument = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).Any()
-                };
-            }).ToList();
-
             var moduleModel = new CurrentModuleViewModel
             {
-                Assignments = assignmnets,
-                StudentActivities = studentActivities
+                Assignments = assignmnets
             };
 
             var courseInfo = await _context.Students.AsNoTracking().Include(s => s.Course).Select(s => new CourseInfoViewModel
@@ -123,22 +116,52 @@ namespace LMSG3.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Upload(AssignmentUploadViewModel model)
+        public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
         {
-            var uploadedDocument = new Document
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
+            var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
             {
-                Name = model.DocumentName,
-                Description = model.DocumentDescription,
-                UploadDate = DateTime.Now,
-                ApplicationUserId = userManager.GetUserId(User),
-                ActivityId = model.ActivityId,
-                DocumentTypeId = _context.Documents.Where(d => d.DocumentType.Name.Equals("Assignment")).FirstOrDefault().DocumentTypeId
-            };
+                Activity = a.Id,
+                Module = a.Module.Id,
+                Course = a.Module.Course.Id,
+                Student = userManager.GetUserId(User)
 
-            _context.Add(uploadedDocument);
-            _context.SaveChanges();
+            }).FirstOrDefaultAsync();
 
-            return RedirectToAction("Index");
+            long size = model.SubmittedFile.Length;
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments//{names.Student}";
+
+            if (!Directory.Exists(fileDirectory))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
+            }
+            var filePath = fileDirectory + model.SubmittedFile.FileName;
+            if (GetContentType(filePath) == "text/csv")
+                filePath = "";
+
+            if (filePath == "")
+            {
+                var document = new Document()
+                {
+                    UploadDate = DateTime.Now,
+                    DocumentTypeId = 2,
+                    ActivityId = model.ActivityId,
+                    ApplicationUserId = userManager.GetUserId(User),
+                    Path = filePath
+                };
+
+                if (size > 0)
+                {
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await model.SubmittedFile.CopyToAsync(stream);
+
+                    _context.Add(document);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -281,6 +304,30 @@ namespace LMSG3.Web.Controllers
 
             return View(model);
 
+        }
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"}
+            };
         }
     }
 }

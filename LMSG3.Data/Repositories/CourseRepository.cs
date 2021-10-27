@@ -25,7 +25,7 @@ namespace LMSG3.Data.Repositories
         public async Task<IEnumerable<Course>> GetAllCourses(bool includemodules)
         {
             return includemodules ?
-                await context.Courses.Include(c => c.Modules).ThenInclude(m=>m.Activities).Take(10).ToListAsync() : await context.Courses.ToListAsync();
+                await context.Courses.Include(c => c.Students).Include(c => c.Modules).ThenInclude(m=>m.Activities).Take(10).ToListAsync() : await context.Courses.ToListAsync();
         }
 
         public async Task<Course> GetCourse(int? id, bool includemodules)
@@ -33,6 +33,7 @@ namespace LMSG3.Data.Repositories
             var query = context.Courses.AsQueryable();
             if (includemodules)
                 query = query.Include(c => c.Modules);
+
 
             return await query.FirstOrDefaultAsync(c => c.Id == id);
         }
