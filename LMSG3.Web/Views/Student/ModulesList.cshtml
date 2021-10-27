@@ -2,29 +2,27 @@
 
 <div class="card border-0 bg-transparent">
    
-    <div class="border-bottom border-top bg-opacity-25">
+    <div class="border-bottom border-top  bg-opacity-25">
 
 
         <h4 class="py-2">
-            <a data-toggle="collapse" data-target="#myDIV1" aria-expanded="false" aria-controls="myDIV1">
-                Show participants
-            </a>
+                Show Modules
         </h4>
     </div>
 
-    <div class="collapse" id="myDIV1">
+    <div id="myDIV1">
         <div class="card-body mt-2">
 
-            <table class="table ">
+            <table class="table bg-white">
                 <thead>
                     <tr>
 
                         <th>
                             @Html.DisplayNameFor(model => model.Name)
                         </th>
-                        <th>
+                        @*<th>
                             @Html.DisplayNameFor(model => model.Description)
-                        </th>
+                        </th>*@
                         <th>
                             @Html.DisplayNameFor(model => model.StartDate)
                         </th>
@@ -40,16 +38,16 @@
                     {
                         <tr>
 
-                            <td>
+                            <td >
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>
-                            <td>
+                            @*<td class="col-5">
                                 @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
+                            </td>*@
+                            <td >
                                 @Html.DisplayFor(modelItem => item.StartDate)
                             </td>
-                            <td>
+                            <td >
                                 @Html.DisplayFor(modelItem => item.EndDate)
                             </td>
 

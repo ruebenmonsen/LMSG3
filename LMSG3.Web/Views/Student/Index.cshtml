@@ -11,23 +11,27 @@
 <!-- Page Content -->
 
 <main role="main" class="mt-1 mr-2 w-75" >
-    <div class="jumbotron  ">
-        <div class="col-md-12">
-            <partial name="ModulesList" model="@Model.Modules" />
-
-        </div>
-
-
-        <br /><br />
-
+    <div class="jumbotron mr-2 row ">
 
 
         <div class="col-md-12">
             <div class="border-bottom border-top bg-opacity-25">
+                <h4 class="py-2">My Schedule</h4>
+            </div>
+            <div>
+                this div is for schedule code
+            </div>
+        </div>
+        <br /><br />
+
+
+
+        <div class="col-md-6">
+            <div class="border-bottom border-top bg-opacity-25">
                 <h4 class="py-2">Assignments</h4>
             </div>
 
-            <div class="col-md-6 mt-2">
+            <div class="col-md-12 mt-2">
                 <partial name="_StudentAssignmentTabsPartial" />
                 <ul class="list-group overflow-auto assignment-list">
                     @{ bool current = false;}
@@ -62,7 +66,10 @@
                 </ul>
             </div>
         </div>
+        <div class="col-md-6">
+            <partial name="ModulesList" model="@Model.Modules" />
 
+        </div>
 
         <br />
 
