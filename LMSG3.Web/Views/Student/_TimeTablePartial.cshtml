@@ -32,6 +32,7 @@
     }
     .tt-title.time {
         width: 14%;
+        background-image: linear-gradient(rgba(0,0,0,.08) 50%, transparent 50%);
     }
     .tt-title.day {
         width: 16%;
@@ -79,15 +80,18 @@
         /*background-color: seagreen;*/
     }
     .tt-activity.inactive {
-        background-color: dimgrey;
+        background: linear-gradient(0.46turn, rgb(96, 96, 96), rgb(128, 128, 128));
+        /*background-color: dimgrey;*/
     }
-    .tt-activity.lecture3 {
-        background-color: darkseagreen;
-        transform: rotate(-45deg);
+    .tmp {
+        background: linear-gradient(to top left,transparent 50%, darkseagreen 0) top left/24px 24px no-repeat;
     }
-    .tt-activity.lecture2 {
-        
-        background: linear-gradient( 45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 5px, rgba(0, 0, 0, 0.1) 5px, rgba(0, 0, 0, 0.1) 10px );
+    .lecture {
+        background-image: radial-gradient(#212121 37%, transparent 37%);
+        background-position: 0 0, 0px 0px;
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
+        background-color: red;
     }
 
 </style>
@@ -169,8 +173,12 @@
                     }
                     var activityBlockSize = (endBlock - startBlock) * 2.5;
                     <div class="d-flex flex-column badge tt-activity @(a.InCurrentModule ? (a.IsCurrent ? "now" : "active") : "inactive") lecture" style="height: @activityBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%" tooltip="English Literature">
-                        <span class="align-self-start position-relative"><i class="bi bi-circle-fill text-danger"></i></span><div>@Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
-                        <div class="align-self-bottom">@a.StartDate.ToString("t") - @a.EndDate.ToString("t")</div>
+                        <div class="h-100 w-100 d-block">
+                            <div class="">@Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
+                            <div class="align-self-bottom">@a.StartDate.ToString("t") - @a.EndDate.ToString("t")
+                            </div>
+                        </div>
+                        
                     </div>
                 }
             </div>
