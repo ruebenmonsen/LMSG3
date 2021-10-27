@@ -93,7 +93,10 @@ namespace LMSG3.Web.Controllers
 
             //Newtonsoft json
             // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
-
+            foreach (var item in literatures)
+            {
+                item.CoverMImg = "https://covers.openlibrary.org/b/id/5546156-M.jpg";
+            }
             return literatures;
 
         }
@@ -112,7 +115,7 @@ namespace LMSG3.Web.Controllers
 
             //Newtonsoft json
             // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
-
+            literature.CoverLImg = "https://covers.openlibrary.org/b/id/5546156-L.jpg";
 
             return View(literature);
         }

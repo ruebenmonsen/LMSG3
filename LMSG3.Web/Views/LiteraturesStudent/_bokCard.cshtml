@@ -1,20 +1,10 @@
 ﻿@model LMSG3.Core.Models.Dtos.LiteratureDto
-<!--<div class="col-sm-4 col-lg-4 col-md-4">
-    <div class="thumbnail">
-        <img src="https://covers.openlibrary.org/b/id/5546156-M.jpg"  alt="">
-        <div class="caption">-->
-@*<h3 class="pull-right">@Model.Title.ToString("c")</h3>*@
-
-<!--<p>@Model.SubjectName</p>
-        </div>
-    </div>
-</div>-->
 
 <div class="card-deck" style="width: 18rem; height: 27rem; padding: 0.1rem">
    
     <div class="card bg-outline-secondary">
         <div class="card-body text-center">
-            <img src="https://covers.openlibrary.org/b/id/5546156-M.jpg" alt="">
+            <img src="@Model.CoverMImg" alt="">
             <h5 class="card-title">@Model.Title</h5>
             <p class="card-text">@Model.ReleaseDate.Year</p>
 
@@ -25,14 +15,6 @@
     </div>
     </div>
 
-@*<div class="card-deck col-sm-4 col-lg-4 col-md-1">
-    <div class="card bg-primary">
-        <div class="card-body text-center">
-            <img src="https://covers.openlibrary.org/b/id/5546156-M.jpg" alt="">
-            <p class="card-text"><p>@Model.SubjectName</p>
-        </div>
-    </div>
-    
-</div>*@
+
 
 
