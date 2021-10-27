@@ -37,11 +37,12 @@ namespace LMSG3.Web.Controllers
             var currentDate = DateTime.Now;
 
             var assignmentTypeId = await _context.Activities.Where(a => a.ActivityType.Name == "Assignment").Select(a => a.ActivityTypeId).FirstOrDefaultAsync();
+
             var currentModule = await _context.Students.Where(s => s.Id == userId).Select(s => s.Course.Modules
                 .Where(m => m.StartDate < currentDate && m.EndDate > currentDate).FirstOrDefault()).FirstOrDefaultAsync();
             // Include Activities for one single module.
             await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
-            var documents = await _context.Students.Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
+            var documents = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
             {
@@ -66,7 +67,7 @@ namespace LMSG3.Web.Controllers
                 Assignments = assignmnets
             };
 
-            var courseInfo = await _context.Students.Include(s => s.Course).Select(s => new CourseInfoViewModel
+            var courseInfo = await _context.Students.AsNoTracking().Include(s => s.Course).Select(s => new CourseInfoViewModel
             {
                 Name = s.Course.Name,
                 Description = s.Course.Description,
@@ -74,7 +75,7 @@ namespace LMSG3.Web.Controllers
 
             }).FirstOrDefaultAsync();
 
-            var studentModel = await _context.Students.Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
+            var studentModel = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel
                 {
                     Id = s.Id,
@@ -86,7 +87,7 @@ namespace LMSG3.Web.Controllers
                     CourseStudents = s.Course.Students,
                     CourseInfo = courseInfo
 
-                }).FirstOrDefaultAsync();
+                }).AsSplitQuery().FirstOrDefaultAsync();
 
             return View(studentModel);
         }

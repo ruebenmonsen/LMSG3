@@ -67,8 +67,8 @@ $(document).ready(function () {
     $('[id*=btnDetails]').on('click', function () {
         $.ajax({
             /* url: '@Url.Action("Details", "Course")',*/
-            url:"https://localhost:44314/Courses/Details",
-           /* dataType: "html",*/
+            url: "https://localhost:44314/Courses/Details",
+            /* dataType: "html",*/
             data: { "id": $(this).attr('name') },
             type: "GET",
             contentType: "application/json",
@@ -100,7 +100,7 @@ $("#addModules").click(function () {
     html += '<input type="text" name="ModuleDescription[]"  placeholder="Description" autocomplete="off"> &nbsp;';
     html += '<input type="date" name="ModuleStartDate[]"  placeholder="Start Date" autocomplete="off"> &nbsp;';
     html += '<input type="date" name="ModuleEnddate[]"  placeholder="End Date" autocomplete="off"> &nbsp;';
-   
+
     html += '  <button id="removeModules" type="button" class="btn btn-danger"> - </button> <br><br>';
     html += '</div> ';
 
@@ -132,17 +132,17 @@ $(document).on('click', '#BtnCreate', function (e) {
 
     $.ajax({
         type: 'POST',
-       // url: '@Url.Action("CreateCourse", "Courses")',
+        // url: '@Url.Action("CreateCourse", "Courses")',
         url: "https://localhost:44314/Courses/CreateCourse",
-       
-        data: { "coursevm": course, "modulesetsvm":moduleSets },
+
+        data: { "coursevm": course, "modulesetsvm": moduleSets },
         success: function (response) {
             window.location.href = response.redirectToUrl;
             alert('successfully course created');
         }
         ,
         error: function (err) {
-           alert('error');
+            alert('error');
         }
     });
 });
@@ -163,7 +163,7 @@ function getModulesets() {
     var ModuleStartDate = document.querySelectorAll('#ModuleStartDate');
     var ModuleEndDate = document.querySelectorAll('#ModuleEndDate');
     for (var i = 0; i < ModuleName.length; i++) {
-       /* if (!ModuleStartDate[i].value >= cou.StartDate)*/
+        /* if (!ModuleStartDate[i].value >= cou.StartDate)*/
         if (ModuleName[i].value != '') {
             moduleSets.push({
                 Name: ModuleName[i].value,
@@ -245,3 +245,70 @@ function getActivitysets() {
     return activitySets;
 }
 
+/*Filtering student assignments*/
+const allTab = document.querySelector('#assignments-all')
+const overdueTab = document.querySelector('#assignments-overdue')
+const submittedTab = document.querySelector('#assignments-submitted')
+const upcomingTab = document.querySelector('#assignments-upcoming')
+
+const allTabs = document.querySelectorAll('.assignment-tab')
+const tabsArray = Array.from(allTabs)
+
+const listItems = document.querySelectorAll('.assignment-list-item')
+const itemsArray = Array.from(listItems)
+
+function switchActiveTab() {
+    tabsArray.forEach(a => {
+        if (a.classList.contains('active')) {
+            a.classList.remove('active')
+        }
+    });
+}
+
+allTab.addEventListener('click', allAssignemnts)
+function allAssignemnts() {
+    switchActiveTab();
+    this.classList.add('active');
+    listItems.forEach(li => {
+        li.classList.remove('not-shown')
+    })
+}
+
+overdueTab.addEventListener('click', overdue)
+function overdue() {
+    switchActiveTab();
+    this.classList.add('active');
+    listItems.forEach(li => {
+        if (!li.classList.contains('overdue-assignment')) {
+            li.classList.add('not-shown')
+        }
+        else
+            li.classList.remove('not-shown')
+    })
+}
+
+submittedTab.addEventListener('click', submitted)
+function submitted() {
+    switchActiveTab();
+    this.classList.add('active');
+    listItems.forEach(li => {
+        if (!li.classList.contains('submitted-assignment')) {
+            li.classList.add('not-shown')
+        }
+        else
+            li.classList.remove('not-shown')
+    })
+}
+
+upcomingTab.addEventListener('click', upcoming)
+function upcoming() {
+    switchActiveTab();
+    this.classList.add('active');
+    listItems.forEach(li => {
+        if (!li.classList.contains('upcoming-assignment')) {
+            li.classList.add('not-shown')
+        }
+        else
+            li.classList.remove('not-shown')
+    })
+}

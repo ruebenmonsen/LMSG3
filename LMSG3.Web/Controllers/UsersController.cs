@@ -18,6 +18,8 @@ namespace LMSG3.Web.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> userManager;
+        private IOrderedQueryable<ApplicationUser> users;
+
         public UsersController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             db = context;
@@ -25,17 +27,29 @@ namespace LMSG3.Web.Controllers
         }
         [Authorize(Roles = "Teacher")]
         // GET: UsersController
-        public async Task<IActionResult> Index(string Name,string RoleList)
+        public async Task<IActionResult> Index(string Name, string RoleList, string CourseList)
         {
             var usersDto = new List<UserDto>();
-            var users = db.ApplicationUser.Where(u => (string.IsNullOrWhiteSpace(Name) || u.FName.ToUpper().StartsWith(Name.ToUpper())) ||
-                                                     (string.IsNullOrWhiteSpace(Name) || u.LName.ToUpper().StartsWith(Name.ToUpper())))
+           
+            if (string.IsNullOrWhiteSpace(CourseList))
+            {
+                 users = db.ApplicationUser.Where(u => (string.IsNullOrWhiteSpace(Name) || u.FName.ToUpper().StartsWith(Name.ToUpper())) ||
+                                                          (string.IsNullOrWhiteSpace(Name) || u.LName.ToUpper().StartsWith(Name.ToUpper())))
+                                                          .OrderBy(u => u.FName);
+            }
+            else
+            {
+                 users = db.Students.Where(u => ((string.IsNullOrWhiteSpace(Name) || u.FName.ToUpper().StartsWith(Name.ToUpper())) ||
+                                                    (string.IsNullOrWhiteSpace(Name) || u.LName.ToUpper().StartsWith(Name.ToUpper()))) &&
+                                                    (string.IsNullOrWhiteSpace(CourseList) || u.CourseId == int.Parse(CourseList)))
                                                      .OrderBy(u => u.FName);
-
+            }
+            if(users!=null)
+            { 
             foreach (var user in users)
             {
                 var role = await userManager.GetRolesAsync(user);
-               
+
                 var userDto = new UserDto()
                 {
                     Id = user.Id,
@@ -55,12 +69,15 @@ namespace LMSG3.Web.Controllers
 
                 }
             }
-            
+
             if (usersDto == null)
             {
                 return NotFound();
             }
             return View(usersDto);
+            }
+            else
+                 return NotFound();
         }
 
         // GET: UsersController/Details/5
@@ -106,7 +123,7 @@ namespace LMSG3.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FName,LName,Email,CourseId,Role")]  UserDto userDto)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FName,LName,Email,CourseId,Role")] UserDto userDto)
         {
             if (id != userDto.Id)
             {
@@ -119,7 +136,7 @@ namespace LMSG3.Web.Controllers
                 {
                     if (userDto.Role == "Student")
                     {
-                        var student =await userManager.FindByIdAsync(id) as Student;
+                        var student = await userManager.FindByIdAsync(id) as Student;
                         student.Id = userDto.Id;
                         student.FName = userDto.FName;
                         student.LName = userDto.LName;
@@ -138,7 +155,7 @@ namespace LMSG3.Web.Controllers
 
                         await userManager.UpdateAsync(user);
                     }
-                      
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -169,7 +186,7 @@ namespace LMSG3.Web.Controllers
                 return NotFound();
             }
 
-            var user =await GetUser(id);
+            var user = await GetUser(id);
 
             if (user == null)
             {
@@ -220,7 +237,7 @@ namespace LMSG3.Web.Controllers
                 userDto.CourseId = course.Id;
                 userDto.Course = course;
             }
-                return userDto;
+            return userDto;
         }
     }
 }
