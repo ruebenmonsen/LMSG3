@@ -10,11 +10,14 @@
         </div>
         <div  class="collapse" id="myDIV" >
             <div class="card-body">
+                <ol>
 
-                @foreach (var item in Model)
-                {
-                <p> @item.FName &nbsp; @item.LName </p>
-                }
+
+                    @foreach (var item in Model)
+                    {
+                        <li>&nbsp; @item.FName&nbsp;@item.LName</li>
+                    }
+                </ol>
             </div>
         </div>
 
