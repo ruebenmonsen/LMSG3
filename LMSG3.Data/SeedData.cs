@@ -67,7 +67,7 @@ namespace LMSG3.Data
                 // (all bogus) Uncomment to add more bogus seed data
                 // Modify amounts in sub method signatures
                 // Too much data will slow the program
-                await AddBogusMvcDataAsync(db);
+                //await AddBogusMvcDataAsync(db);
 
                 // Save to DB
                 await db.SaveChangesAsync();
@@ -202,10 +202,10 @@ namespace LMSG3.Data
             }
 
             // Default bogus documents
-            var teacherDocuments = GetDocuments(teachers, teacherRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 100);
+            var teacherDocuments = GetDocuments(teachers, teacherRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 25);
             await db.AddRangeAsync(teacherDocuments);
 
-            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 500);
+            var studentDocuments = GetDocuments(students, studentRole, documentTypes, new List<Course> { defaultCourse }, modules, activities, 100);
             await db.AddRangeAsync(studentDocuments);
 
         }

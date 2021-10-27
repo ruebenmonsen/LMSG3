@@ -12,10 +12,13 @@ namespace LMSG3.Core.Models.Entities
 
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
-
+        [Display(Name = "Start Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         [Required(ErrorMessage = "StartDate is required")]
         public DateTime StartDate { get; set; }
-
+       
+        [Display(Name = "End Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         [Required(ErrorMessage = "EndDate is required")]
         public DateTime EndDate { get; set; }
 
