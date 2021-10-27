@@ -77,8 +77,9 @@ namespace LMSG3.Data
         private static async Task AddDefaultMvcDataAsync(ApplicationDbContext db)
         {
             // Keep a day between the modules to reduce logic for activities.
+            const int startHour = 8;
             var date = DateTime.Now;
-            var trimmedDate = new DateTime(date.Year, date.Month, date.Day, 8, 0, 0);
+            var trimmedDate = new DateTime(date.Year, date.Month, date.Day, startHour, 0, 0);
             var currentModuleStart = trimmedDate.AddDays(-7);
             var currentModuleEnd = currentModuleStart.AddDays(14);
             var previousModuleStart = currentModuleStart.AddDays(-7);
