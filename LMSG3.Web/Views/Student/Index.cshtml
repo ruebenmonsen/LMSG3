@@ -10,17 +10,14 @@
 
 <!-- Page Content -->
 
-<main role="main" class="mt-1 mr-2 w-75" >
+<main role="main" class="mt-1 mr-2 w-75">
     <div class="jumbotron ">
 
         <div class="row">
 
             <div class="col-md-12">
-                <div class="border-bottom border-top bg-opacity-25">
-                    <h4 class="py-2">My Schedule</h4>
-                </div>
                 <div>
-                    this div is for schedule code
+                    <div class="bg-warning" id="pttContent" style="height: 50vh; min-height: 22em; box-shadow: 5px 5px 10px rgba(0,0,0, 0.5); "></div>
                 </div>
             </div>
             <br /><br />
@@ -39,55 +36,69 @@
                         @foreach (var a in Model.CurrentModule.Assignments)
                         {
 
-                            <li class="list-group-item justify-content-between assignment-list-item
+                        <li class="list-group-item justify-content-between assignment-list-item
 
                         @((a.IsSubmitted) ? "submitted-assignment" : "")
                         @((a.IsOverdue) ? "overdue-assignment" : "")
                         @((!a.IsOverdue && !a.IsSubmitted) ? "upcoming-assignment" :"")"
-                                id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
+                            id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
 
-                                @if (a.IsCurrent && !current) { current = true; }
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div>@Html.DisplayFor(modelA => a.Name)</div>
-                                        <div class="@(a.IsOverdue ? "text-danger" : (a.IsSubmitted ? "text-success" : "text-dark"))"><p class="small mb-0">Due @Html.DisplayFor(_ => a.EndDate)</p></div>
-                                    </div>
-                                    <div class="col-3">
-                                        @if (a.IsSubmitted)
-                                        {
-                                            <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
-                                        }
-                                    </div>
-                                    <div class="col-3">
-                                        @*<a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>*@
-                                    </div>
+                            @if (a.IsCurrent && !current) { current = true; }
+                            <div class="row">
+                                <div class="col-6">
+                                    <div>@Html.DisplayFor(modelA => a.Name)</div>
+                                    <div class="@(a.IsOverdue ? "text-danger" : (a.IsSubmitted ? "text-success" : "text-dark"))"><p class="small mb-0">Due @Html.DisplayFor(_ => a.EndDate)</p></div>
                                 </div>
-                            </li>
-                        }
+                                <div class="col-3">
+                                    @if (a.IsSubmitted)
+                                {
+                                    <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
+                                }
+                                    @if (a.IsOverdue && !a.IsSubmitted)
+                                {
+                                    <p class="text-danger"><i class="bi bi-exclamation"></i></p>
+                                }
+                                </div>
+                                <div class="col-3">
+                                    <a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                }
                     </ul>
                 </div>
+
+
             </div>
             <div class="col-md-6">
-                <partial name="ModulesList" model="@Model.Modules" />
-
+                <div>
+                    <partial name="ModulesList" model="@Model.Modules" />
+                </div>
             </div>
-        </div>
-        <br />
+            @*@Html.ActionLink("TimeTable", "TimeTable", "Student")*@
 
-        <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header" id='assignmentModalContent'>
+            <br />
+
+            <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" id='assignmentModalContent'>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
-       
-   
 
 
 
 
 
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_StudentIndexScriptsPartial");}
+}

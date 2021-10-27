@@ -1,0 +1,65 @@
+﻿@inject LMSG3.Web.Services.IActivityTypeSelectListService ActivityTypeListservice
+@model CreateActivityListViewModel
+
+<div id="ActivitySet" class="row">
+
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            Name :
+
+            <input asp-for="Name" class="form-control text-box single-line" data-val="true" id="ActivityName" type="text" autocomplete="off">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+    </div>
+    <div class="col-sm-2 target">
+        <div class="form-group ">
+
+            Description  :
+
+            <input asp-for="Description" class="form-control text-box single-line" data-val="true" id="ActivityDescription" type="text" autocomplete="off">
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            Start Date :
+
+            <input asp-for="StartDate" type="date" class="form-control single-line" data-val="true" id="ActivityStartDate" autocomplete="off">
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            End Date :
+
+            <input asp-for="EndDate" type="date" class="form-control single-line" data-val="true" id="ActivityEndDate" autocomplete="off">
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-2 target">
+        <div class="form-group">
+
+            Activity Type :
+
+            <select asp-for="ActivityTypeId" asp-items="@await ActivityTypeListservice.GetActivityTypeAsync()" class="form-control single-line" data-val="true" id="Activity_TypeId" autocomplete="off">
+                <option value=""> Please select</option>
+            </select>
+            <span asp-validation-for="ActivityTypeId" class="text-danger"></span>
+        </div>
+    </div>
+
+
+
+    <div class="col-sm-1 target">
+
+        <br />
+        <button id="Btn_DeleteActivityset" type="submit" class="btn btn-danger"> <b>-</b></button>
+
+    </div>
+</div>  

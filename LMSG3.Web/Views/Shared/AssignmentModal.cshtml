@@ -1,26 +1,27 @@
 ﻿@model LMSG3.Core.Models.ViewModels.AssignmentUploadViewModel
 
-@using (Html.BeginForm("Upload", "Student", FormMethod.Post))
-{
+<form method="post" asp-controller="Student" asp-action="Upload" enctype="multipart/form-data">
+
     @Html.AntiForgeryToken()
 
-    <input type="hidden" asp-for="@Model.ActivityId" />
-    <h5 class="modal-title" id="assignmentModalLabel">@Model.ActivityName</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    <div class="modal-body">
-        <p>Deadline: @Model.EndDate</p>
-        @Html.LabelFor(model => model.DocumentName, new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.DocumentName, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.DocumentName)
+    <div class="form-group">
+        <input type="hidden" asp-for="@Model.ActivityId" readonly />
+        <h5 class="modal-title" id="assignmentModalLabel">@Model.ActivityName</h5>
+        <div class="modal-body">
+            <p>Deadline: @Model.EndDate</p>
+        </div>
+    </div>
 
-        @Html.LabelFor(model => model.DocumentDescription, new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.DocumentDescription, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.DocumentDescription)
+    <div class="form-group">
+        <label asp-for="@Model.SubmittedFile" class="control-label"></label>
+        <input asp-for="@Model.SubmittedFile" type="file" class="form-control" />
     </div>
+
+
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <div class="form-group">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
     </div>
-}
+</form>

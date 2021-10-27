@@ -27,8 +27,10 @@ namespace LMSG3.Data
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<ActivityType> ActivityTypes {  get; set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentType> DocumentTypes { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMSG3.Core.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace LMSG3.Core.Models.ViewModels
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime StartDate { get; set; }
         public string Description { get; set; }
-
+        public int Participants { get; set; }
+        public ICollection<Student> Students { get; set; }
         public IEnumerable<ModuleListViewModel> Modelslist { get; set; }
 
     }

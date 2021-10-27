@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
-using LMSG3.Data;
-using LMSG3.Core.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using LMSG3.Core.Models.ViewModels;
+
 
 namespace LMSG3.Web.Controllers
 {
@@ -40,7 +44,9 @@ namespace LMSG3.Web.Controllers
             var currentModule = await _context.Students.Where(s => s.Id == userId).Select(s => s.Course.Modules
                 .Where(m => m.StartDate < currentDate && m.EndDate > currentDate).FirstOrDefault()).FirstOrDefaultAsync();
             // Include Activities for one single module.
+            // TODO: fix bug with there not being a current module. Use nullable vars?
             await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
+
             var documents = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
@@ -59,7 +65,7 @@ namespace LMSG3.Web.Controllers
                     IsCurrent = currentDate < a.EndDate && !isSubmitted
 
                 };
-             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
+            }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
             var moduleModel = new CurrentModuleViewModel
             {
@@ -114,28 +120,189 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityId = activity.Id,
                 ActivityName = activity.Name,
-                EndDate = activity.EndDate              
+                EndDate = activity.EndDate
             };
             return PartialView("AssignmentModal", model);
         }
 
         [HttpPost]
-        public ActionResult Upload(AssignmentUploadViewModel model)
+        public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
         {
-            var uploadedDocument = new Document
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
+            var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
             {
-                Name = model.DocumentName,
-                Description = model.DocumentDescription,
-                UploadDate = DateTime.Now,
-                ApplicationUserId = userManager.GetUserId(User),
-                ActivityId = model.ActivityId,
-                DocumentTypeId = _context.Documents.Where(d => d.DocumentType.Name.Equals("Assignment")).FirstOrDefault().DocumentTypeId
+                Activity = a.Id,
+                Module = a.Module.Id,
+                Course = a.Module.Course.Id,
+                Student = userManager.GetUserId(User)
+
+            }).FirstOrDefaultAsync();
+
+            long size = model.SubmittedFile.Length;
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments//{names.Student}";
+
+            if (!Directory.Exists(fileDirectory))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
+            }
+            var filePath = fileDirectory + model.SubmittedFile.FileName;
+            if (GetContentType(filePath) == "text/csv")
+                filePath = "";
+
+            if (filePath == "")
+            {
+                var document = new Document()
+                {
+                    UploadDate = DateTime.Now,
+                    DocumentTypeId = 2,
+                    ActivityId = model.ActivityId,
+                    ApplicationUserId = userManager.GetUserId(User),
+                    Path = filePath
+                };
+
+                if (size > 0)
+                {
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await model.SubmittedFile.CopyToAsync(stream);
+
+                    _context.Add(document);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> TimeTable(int year, int week, int step)
+        {
+            // Bugs: maybe logic between weeks.
+
+            // TODO: If we want to be able to select module, currentDate
+            // need to be adjusted to the selected startdate, but if
+            // the selected module is the current then the date should be Now.
+
+            // TODO: Set limits after Course
+            var currentDate = DateTime.Now;
+
+            // If year/week is not 
+            if (week < 1 || year < 1971 || year > 2100 || week > ISOWeek.GetWeeksInYear(year))
+            {
+                week = ISOWeek.GetWeekOfYear(currentDate);
+                year = currentDate.Year;
+            }
+
+            // TODO: write tests
+            // TODO: move to class or extension method
+
+            // Basically paging: step between weeks and logic while passing years.
+            if (step > 0)
+            {
+                week = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
+                year = week == 1 ? year + 1 : year;
+            }
+            else if (step < 0)
+            {
+                year = week == 1 ? year - 1 : year;
+                week = week == 1 ? ISOWeek.GetWeeksInYear(year) : week - 1;
+            }
+
+            var weekNext = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
+            var weekPrevious = week == 1 ? ISOWeek.GetWeeksInYear(year - 1) : week - 1;
+
+            var weekStart = ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
+            var weekEnd = ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday);
+
+            var userId = userManager.GetUserId(User);
+
+            // TODO: try for failure?
+            var assignmentTypeId = await _context.ActivityTypes.AsNoTracking()
+                .Where(a => a.Name == "Assignment")
+                .Select(a => a.Id)
+                .SingleOrDefaultAsync();
+
+            // TODO: What happens with Max() if there are no modules?
+            // Is this ternary needed?
+            var courseInfo = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .Select(s => s.Course)
+                .Select(c => new
+                {
+                    StartDate = c.StartDate,
+                    EndDate = c.Modules.Any() ? c.Modules.Max(m => m.EndDate) : c.StartDate
+                }).SingleOrDefaultAsync();
+
+            // Select all activities within selected week that ain't assignments
+            // Bug: Activities stretching over to next week will not be taken
+            // TODO: Add module name? Add acticity name?
+            // TODO: split into days? Just check if StartDate || EndDate within week.
+            var studentActivities = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .SelectMany(m => m.Activities)
+                .Where(a => a.StartDate >= weekStart &&
+                            a.EndDate <= weekEnd &&
+                            !a.ActivityTypeId.Equals(assignmentTypeId))
+                .Select(a => new StudentActivityViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    ActivityTypeId = a.ActivityTypeId,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate,
+                    HasDocument = a.Documents.Any(),
+                    IsCurrent = InDateSpan(currentDate, a.StartDate, a.EndDate),
+                    InCurrentModule = InDateSpan(currentDate, a.Module.StartDate, a.Module.EndDate)
+                })
+                .OrderBy(a => a.StartDate)
+                .ToListAsync();
+
+            // Failed to do GroupBy on the previous query, so I had to dived it into two.
+            // Dictionary of activities per day
+            var studentActivitiesDictionary = studentActivities
+                .GroupBy(sa => sa.StartDate.DayOfWeek)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var activityTypes = await _context.ActivityTypes.AsNoTracking()
+                .Where(at => at.Id != assignmentTypeId)
+                .ToDictionaryAsync(at => at.Id, at => at.Name);
+
+            var currentModuleName = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .Where(m => m.StartDate <= currentDate && currentDate <= m.EndDate)
+                .Select(m => m.Name).SingleOrDefaultAsync();           
+
+            // Last hour in a day, will be set if an activity is overlapping from day to day.
+            const int endHour = 24;
+            var timeTable = new StudentTimeTableViewModel
+            {
+                Year = year,
+                Week = week,
+                WeekPrevious = weekPrevious,
+                WeekNext = weekNext,
+                HasWeekPrevious = courseInfo.StartDate < ISOWeek.ToDateTime(year, week, DayOfWeek.Monday),
+                HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1), // Add 1 a day to not mess up year
+                WeekDate = ISOWeek.ToDateTime(year, week, DayOfWeek.Wednesday),
+                //CurrentModuleName = currentModuleInfo?.Name ?? "", 
+                CurrentModuleName = currentModuleName ?? "",
+                activityStartHourMin = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null,
+                activityEndHourMax = studentActivities.Any() ?
+                    (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
+                    endHour : studentActivities.Max(sa => sa.EndDate.Hour))
+                    : null,
+                ActivityTypes = activityTypes,
+                Activities = studentActivitiesDictionary
             };
 
-            _context.Add(uploadedDocument);
-            _context.SaveChanges();
+            return PartialView("_TimeTablePartial", timeTable);
+        }
 
-            return RedirectToAction("Index");
+        private static bool InDateSpan(DateTime date, DateTime start, DateTime end)
+        {
+            return start <= date && date <= end;
         }
 
      
@@ -149,6 +316,30 @@ namespace LMSG3.Web.Controllers
 
             return PartialView(model);
 
+        }
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"}
+            };
         }
     }
 }
