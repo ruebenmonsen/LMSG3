@@ -2,6 +2,7 @@
 using LMSG3.Api.ResourceParameters;
 using LMSG3.Core.Models.Dtos;
 using LMSG3.Core.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -21,6 +22,7 @@ using static LMSG3.Web.Services.LiteraturesController;
 
 namespace LMSG3.Web.Controllers
 {
+    [Authorize(Roles = "Student")]
     public partial class LiteraturesStudentController : Controller
     {
         private HttpClient httpClient;
