@@ -265,6 +265,7 @@ namespace LMSG3.Web.Controllers
                 WeekNext = weekNext,
                 HasWeekPrevious = courseInfo.StartDate < ISOWeek.ToDateTime(year, week, DayOfWeek.Monday),
                 HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1), // Add 1 a day to not mess up year
+                WeekDate = ISOWeek.ToDateTime(year, week, DayOfWeek.Wednesday),
                 //CurrentModuleName = currentModuleInfo?.Name ?? "", 
                 CurrentModuleName = currentModuleName ?? "",
                 activityStartHourMin = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null,

@@ -11,6 +11,7 @@ namespace LMSG3.Core.Models.ViewModels
         public int WeekNext { get; set; }
         public bool HasWeekPrevious { get; set; }
         public bool HasWeekNext { get; set; }
+        public DateTime WeekDate { get; set; }
         public string CurrentModuleName { get; set; }
         public int? activityStartHourMin { get; set; }
         public int? activityEndHourMax { get; set; }
