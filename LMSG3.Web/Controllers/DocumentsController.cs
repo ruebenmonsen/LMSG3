@@ -43,6 +43,7 @@ namespace LMSG3.Web.Controllers
         }
         // GET: Documents
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public async Task<PartialViewResult> GetAssignments(int? id)
         {
             var documents = db.Documents.Include(d => d.Activity).Include(d => d.DocumentType).Include(d => d.ApplicationUser)
