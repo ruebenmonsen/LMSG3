@@ -81,16 +81,13 @@
         overflow: hidden;
     }
     .tt-activity.now {
-        background: linear-gradient(0.46turn, rgb(12, 80, 160), rgb(24, 96, 180));
-        /*background-color: mediumspringgreen;*/
+        background: linear-gradient(0.46turn, rgb(20, 160, 80), rgb(24, 180, 96));
     }
     .tt-activity.active {
-        background: linear-gradient(0.46turn, rgb(12, 80, 160), rgb(24, 96, 180));
-        /*background-color: seagreen;*/
+        background: linear-gradient(0.46turn, rgb(20, 80, 160), rgb(24, 96, 180));
     }
     .tt-activity.inactive {
-        background: linear-gradient(0.46turn, rgb(96, 96, 96), rgb(128, 128, 128));
-        /*background-color: dimgrey;*/
+        background: linear-gradient(0.46turn, rgb(108, 108, 108), rgb(128, 128, 128));
     }
     .tmp {
         background: linear-gradient(to top left,transparent 50%, darkseagreen 0) top left/24px 24px no-repeat;
@@ -201,7 +198,12 @@
                     var activityBlockSize = (endBlock - startBlock) * 2.5;
                     <div class="d-flex flex-column badge tt-activity @(a.InCurrentModule ? (a.IsCurrent ? "now" : "active") : "inactive") lecture" style="height: @activityBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%" tooltip="English Literature">
                         <div class="h-100 w-100 d-block">
-                            <div class=""><i class="bi bi-circle-fill tt-activity-color-@a.ActivityTypeId"> </i> @Html.DisplayFor(modelA => a.ActivityTypeId) : @Html.DisplayFor(modelA => a.Name)</div>
+                            <div class=""><i class="bi bi-circle-fill tt-activity-color-@a.ActivityTypeId"> </i>
+                            @if(a.HasDocument)
+                            { 
+                                @:<i class='bi bi-cloud-download-fill text-warning'> </i> 
+                            } 
+                            <span data-toggle="tooltip" title="Some tooltip text!">@Html.DisplayFor(modelA => a.Name)</span></div>
                             <div class="align-self-bottom">@a.StartDate.ToString("t") - @a.EndDate.ToString("t")
                             </div>
                         </div>
