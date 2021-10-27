@@ -43,7 +43,7 @@ namespace LMSG3.Web.Controllers
             // Include Activities for one single module.
             // TODO: fix bug with there not being a current module. Use nullable vars?
             await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
-  
+
             var documents = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
@@ -62,7 +62,7 @@ namespace LMSG3.Web.Controllers
                     IsCurrent = currentDate < a.EndDate && !isSubmitted
 
                 };
-             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
+            }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
 
             var studentActivities = activities.Where(a => !a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
             {
@@ -117,7 +117,7 @@ namespace LMSG3.Web.Controllers
             {
                 ActivityId = activity.Id,
                 ActivityName = activity.Name,
-                EndDate = activity.EndDate              
+                EndDate = activity.EndDate
             };
             return PartialView("AssignmentModal", model);
         }
@@ -152,7 +152,9 @@ namespace LMSG3.Web.Controllers
 
             // TODO: Set limits after Course
             var currentDate = DateTime.Now;
-            if (week < 1 || year < 1971 || year > 2100|| week > ISOWeek.GetWeeksInYear(year))
+
+            // If year/week is not 
+            if (week < 1 || year < 1971 || year > 2100 || week > ISOWeek.GetWeeksInYear(year))
             {
                 week = ISOWeek.GetWeekOfYear(currentDate);
                 year = currentDate.Year;
@@ -160,6 +162,8 @@ namespace LMSG3.Web.Controllers
 
             // TODO: write tests
             // TODO: move to class or extension method
+
+            // Basically paging: step between weeks and logic while passing years.
             if (step > 0)
             {
                 week = week == ISOWeek.GetWeeksInYear(year) ? 1 : week + 1;
@@ -179,43 +183,45 @@ namespace LMSG3.Web.Controllers
 
             var userId = userManager.GetUserId(User);
 
+            // TODO: try for failure?
             var assignmentTypeId = await _context.ActivityTypes.AsNoTracking()
                 .Where(a => a.Name == "Assignment")
                 .Select(a => a.Id)
                 .SingleOrDefaultAsync();
 
-
+            // TODO: What happens with Max() if there are no modules?
+            // Is this ternary needed?
             var courseInfo = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .Select(s => s.Course)
                 .Select(c => new
                 {
-                    //Name = c.Name,
                     StartDate = c.StartDate,
-                    EndDate = c.Modules.Max(m => m.EndDate)
+                    EndDate = c.Modules.Any() ? c.Modules.Max(m => m.EndDate) : c.StartDate
                 }).SingleOrDefaultAsync();
 
-            var currentModuleInfo = await _context.Students.AsNoTracking()
-                .Where(s => s.Id == userId)
-                .SelectMany(s => s.Course.Modules)
-                .Where(m => m.StartDate < currentDate && m.EndDate > currentDate)
-                .Select(m => new
-                {
-                    Name = m.Name,
-                    StartDate = m.StartDate,
-                    EndDate = m.EndDate
-                }).SingleOrDefaultAsync();
+            //var currentModuleInfo = await _context.Students.AsNoTracking()
+            //    .Where(s => s.Id == userId)
+            //    .SelectMany(s => s.Course.Modules)
+            //    .Where(m => m.StartDate < currentDate && m.EndDate > currentDate)
+            //    .Select(m => new
+            //    {
+            //        //Id = m.Id,
+            //        Name = m.Name,
+            //        //StartDate = m.StartDate,
+            //        //EndDate = m.EndDate
+            //    }).SingleOrDefaultAsync();
 
             // Select all activities within selected week that ain't assignments
             // Bug: Activities stretching over to next week will not be taken
-            // TODO: Add module name?
-            // TODO: split into days?
+            // TODO: Add module name? Add acticity name?
+            // TODO: split into days? Just check if StartDate || EndDate within week.
             var studentActivities = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
                 .SelectMany(m => m.Activities)
-                .Where(a => a.StartDate > weekStart &&
-                            a.EndDate < weekEnd &&
+                .Where(a => a.StartDate >= weekStart &&
+                            a.EndDate <= weekEnd &&
                             !a.ActivityTypeId.Equals(assignmentTypeId))
                 .Select(a => new StudentActivityViewModel
                 {
@@ -226,23 +232,31 @@ namespace LMSG3.Web.Controllers
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
                     HasDocument = a.Documents.Any(),
-                    IsCurrent = a.StartDate > currentDate
-                                && a.EndDate < currentDate,
-                    InCurrentModule = a.StartDate > currentModuleInfo.StartDate 
-                                    && a.EndDate < currentModuleInfo.EndDate
+                    IsCurrent = InDateSpan(currentDate, a.StartDate, a.EndDate),
+                    InCurrentModule = InDateSpan(currentDate, a.Module.StartDate, a.Module.EndDate)
+                    //InCurrentModule = currentModuleInfo == default ? false :
+                    //                 a.ModuleId == currentModuleInfo.Id
+                    //InCurrentModule = currentModuleInfo == default ? false :
+                    //                a.StartDate >= currentModuleInfo.StartDate
+                    //                && a.EndDate <= currentModuleInfo.EndDate
                 })
                 .OrderBy(a => a.StartDate)
                 .ToListAsync();
 
+            // Failed to do GroupBy on the previous query, so I had to dived it into two.
+            // Dictionary of activities per day
             var studentActivitiesDictionary = studentActivities
                 .GroupBy(sa => sa.StartDate.DayOfWeek)
                 .ToDictionary(g => g.Key, g => g.ToList());
-            int? activityStartHourMin2 = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null;
 
-            int? activityEndHourMax2 = studentActivities.Any() ?
-                    (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
-                    24 : studentActivities.Max(sa => sa.EndDate.Hour))
-                    : null;
+            var currentModuleName = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .SelectMany(s => s.Course.Modules)
+                .Where(m => m.StartDate <= currentDate && currentDate <= m.EndDate)
+                .Select(m => m.Name).SingleOrDefaultAsync();           
+
+            // Last hour in a day, will be set if an activity is overlapping from day to day.
+            const int endHour = 24;
             var timeTable = new StudentTimeTableViewModel
             {
                 Year = year,
@@ -250,18 +264,23 @@ namespace LMSG3.Web.Controllers
                 WeekPrevious = weekPrevious,
                 WeekNext = weekNext,
                 HasWeekPrevious = courseInfo.StartDate < ISOWeek.ToDateTime(year, week, DayOfWeek.Monday),
-                HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1),
-                CurrentModuleName = currentModuleInfo.Name,
+                HasWeekNext = courseInfo.EndDate > ISOWeek.ToDateTime(year, week, DayOfWeek.Sunday).AddDays(1), // Add 1 a day to not mess up year
+                //CurrentModuleName = currentModuleInfo?.Name ?? "", 
+                CurrentModuleName = currentModuleName ?? "",
                 activityStartHourMin = studentActivities.Any() ? studentActivities.Min(sa => sa.StartDate.Hour) : null,
                 activityEndHourMax = studentActivities.Any() ?
                     (studentActivities.Any(sa => (sa.EndDate - sa.StartDate) > TimeSpan.FromDays(1)) ?
-                    24 : studentActivities.Max(sa => sa.EndDate.Hour))
+                    endHour : studentActivities.Max(sa => sa.EndDate.Hour))
                     : null,
                 Activities = studentActivitiesDictionary
             };
 
-
             return PartialView("_TimeTablePartial", timeTable);
+        }
+
+        private static bool InDateSpan(DateTime date, DateTime start, DateTime end)
+        {
+            return start <= date && date <= end;
         }
 
         public async Task<ActionResult> ModulesList()
