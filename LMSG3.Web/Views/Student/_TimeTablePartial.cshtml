@@ -1,0 +1,233 @@
+﻿@model LMSG3.Core.Models.ViewModels.StudentTimeTableViewModel
+<style>
+    .tt-box-nav {
+        height: 8%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background-color: slategrey;
+        font-weight: 500;
+    }
+    .tt-box-title {
+        height: 6%;
+        display: flex;
+        justify-content: space-around;
+        overflow: hidden;
+        background-color: lightgrey;
+    }
+    .tt-box-content {
+        height: 80%;
+        display: flex;
+        justify-content: space-around;
+        overflow: auto;
+        background-color: slategrey;
+        background-image: linear-gradient(rgba(0,0,0,.08) 50%, transparent 50%);
+        background-size: 1px 20%;
+/*        background-attachment: local;
+        will-change: transform;*/
+    }
+    .tt-box-info {
+        height: 6%;
+        display: flex;
+        justify-content: end;
+        overflow: hidden;
+        background-color: lightgrey;
+    }
+
+    .tt-title {
+        height: 100%;
+        font-weight: 500;
+    }
+    .tt-title.time {
+        width: 14%;
+    }
+    .tt-title.day {
+        width: 16%;
+    }
+
+    .tt-times {
+        width: 14%;
+        height: 100%;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+    }
+    .tt-activities {
+        width: 16%;
+        height: 100%;
+    }
+    .tt-activities.none {
+        /*background: repeating-linear-gradient( 45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 5px, rgba(0, 0, 0, 0.3) 5px, rgba(0, 0, 0, 0.3) 10px );*/
+        background: repeating-linear-gradient( 45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 5px, rgba(0, 0, 0, 0.1) 5px, rgba(0, 0, 0, 0.1) 10px );
+        background-attachment: local;
+    }
+
+    .tt-time {
+        width: 100%;
+        height: 10%;
+        display: block;
+        overflow: hidden;
+        justify-content: center;
+        text-align: center;
+        background-color: rgb(64, 64, 64, 0.25);
+        /*background-color: dimgrey;*/
+    }
+
+    .tt-activity {
+        width: 100%;
+        display: block;
+        overflow: hidden;
+    }
+    .tt-activity.now {
+        background: linear-gradient(0.46turn, rgb(20, 160, 80), rgb(24, 180, 96));
+    }
+    .tt-activity.active {
+        background: linear-gradient(0.46turn, rgb(20, 80, 160), rgb(24, 96, 180));
+    }
+    .tt-activity.inactive {
+        background: linear-gradient(0.46turn, rgb(108, 108, 108), rgb(128, 128, 128));
+    }
+    .tmp {
+        background: linear-gradient(to top left,transparent 50%, darkseagreen 0) top left/24px 24px no-repeat;
+    }
+    .lecture {
+        background-image: radial-gradient(#212121 37%, transparent 37%);
+        background-position: 0 0, 0px 0px;
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
+        background-color: red;
+    }
+
+    .tt-info {
+        height: 100%;
+        font-weight: 500;
+    }
+
+    .tt-activity-color-1 {
+        color: orange;
+    }
+    .tt-activity-color-2 {
+        color: violet;
+    }
+    .tt-activity-color-3 {
+        color: seagreen;
+    }
+    .tt-activity-color-4 {
+        color: seagreen;
+    }
+
+</style>
+
+@*Pagination menu*@
+<div class="tt-box-nav">
+    <div>
+        <span>Current Module: @Model.CurrentModuleName</span>
+    </div>
+    <div>
+        <button type="button" class="btn-sm" @(Model.HasWeekPrevious ? "" : "disabled") onclick="@(Model.HasWeekPrevious ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", - 1)" : "")"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <div class="badge-pill bg-danger align-items-center">
+        <span>Week @Model.Week</span>
+    </div>
+    <div>
+        <button type="button" class="btn-sm" @(Model.HasWeekNext ? "" : "disabled") onclick="@(Model.HasWeekNext ? "loadPTT(" + @Model.Year + ", " + @Model.Week + ", + 1)" : "")"><i class="bi bi-chevron-right"></i></button>
+    </div>
+</div>
+
+@*Days to show in time table*@
+@{var days = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };}
+@*Flex for day titles*@
+<div class="tt-box-title">
+    <div class="tt-title time">
+        <span>@Model.WeekDate.ToString("MMMM")</span>
+    </div>
+    @foreach (var day in days)
+    {
+        // width auto?
+        <div class="tt-title day">
+                <span>@day.ToString()</span>
+        </div>
+    }
+</div>
+
+@*flex for time table*@
+<div class="tt-box-content">
+    @{
+        const int blockSize = 15; //In minutes and divisible by 60
+        var startHour = 8;
+        var endHour = 18;
+        startHour = Math.Min(startHour, Model.activityStartHourMin ?? startHour);
+        endHour = Math.Max(endHour, Model.activityEndHourMax ?? endHour);
+    }
+    <div class="tt-times">
+        @for (int h = startHour; h < endHour; h++)
+        {
+            var blockTimeSpan = h.ToString("D2") + ":00 - " + (h + 1).ToString("D2") + ":00";
+            <div class="badge tt-time" tooltip="@blockTimeSpan">
+                @blockTimeSpan
+            </div>}
+    </div>
+    @foreach (var day in days)
+    {
+        @if (Model.Activities.ContainsKey(day))
+        {
+            <div class="tt-activities">
+                @{int prevBlock = startHour * 60 / blockSize;}
+                @foreach (var a in Model.Activities[day])
+                {
+                    int startBlock = a.StartDate.Hour * 60 / blockSize + a.StartDate.Minute / blockSize; // Gives floor
+                    int endBlock;
+                    if (a.StartDate.Day == a.EndDate.Day)
+                    {
+                        endBlock = a.EndDate.Hour * 60 / blockSize + a.EndDate.Minute / blockSize;
+                    }
+                    else
+                    {
+                        endBlock = 24 * 4;
+                    }
+
+                    var breakBlockSize = (startBlock - prevBlock) * 2.5;
+                    prevBlock = endBlock;
+                    @if (breakBlockSize != 0)
+                    {
+                        <div class="tt-activity" style="height: @breakBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%">
+                        </div>
+                    }
+                    var activityBlockSize = (endBlock - startBlock) * 2.5;
+                    <div class="d-flex flex-column badge tt-activity @(a.InCurrentModule ? (a.IsCurrent ? "now" : "active") : "inactive") lecture" style="height: @activityBlockSize.ToString(System.Globalization.CultureInfo.InvariantCulture)%" tooltip="English Literature">
+                        <div class="h-100 w-100 d-block">
+                            <div class=""><i class="bi bi-circle-fill tt-activity-color-@a.ActivityTypeId"> </i>
+                            @if(a.HasDocument)
+                            { 
+                                @:<i class='bi bi-cloud-download-fill text-warning'> </i> 
+                            } 
+                            <span data-toggle="tooltip" title="Some tooltip text!">@Html.DisplayFor(modelA => a.Name)</span></div>
+                            <div class="align-self-bottom">@a.StartDate.ToString("t") - @a.EndDate.ToString("t")
+                            </div>
+                        </div>
+                        
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="tt-activities none">
+                <div class="tt-activity">
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="tt-box-info">
+    <div class="tt-info">
+        @{
+            foreach (var a in Model.ActivityTypes)
+            {
+                <span><i class="bi bi-circle-fill tt-activity-color-@a.Key"></i> @a.Value </span> 
+            }
+        }
+    </div>
+</div>

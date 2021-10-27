@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using LMSG3.Core.Models.Entities;
-
-using LMSG3.Data;
+﻿using AutoMapper;
 using LMSG3.Core.Configuration;
+using LMSG3.Core.Models.Entities;
+using LMSG3.Core.Models.ViewModels;
+using LMSG3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using LMSG3.Core.Models.ViewModels;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LMSG3.Web.Controllers
 {
@@ -43,8 +42,6 @@ namespace LMSG3.Web.Controllers
 
         }
 
-
-
         // GET: Courses/Details/5
         [HttpGet]
         public async Task<IActionResult> Details(int? id)
@@ -60,8 +57,17 @@ namespace LMSG3.Web.Controllers
             {
                 return NotFound();
             }
+            var documents = _context.Documents.Include(d => d.DocumentType).Include(d => d.ApplicationUser).Where(d=>d.CourseId==id).OrderByDescending(d => d.UploadDate);
+            List<Document> Docs = new List<Document>();
+            foreach (var document in documents)
+            {
+                var role = await userManager.GetRolesAsync(document.ApplicationUser);
+                if (role[0].ToString() == "Teacher")
+                    Docs.Add(document);
+            }
+            course.Documents = Docs;
 
-            return PartialView("Details",course);
+                return View(course);
         }
 
         // GET: Courses/Create
@@ -70,29 +76,7 @@ namespace LMSG3.Web.Controllers
             return View();
         }
 
-        // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(CreateCourseViewModel vm)
-        //{
 
-        //    var course = mapper.Map<Course>(vm);
-        //    var modules = mapper.Map<List<Module>>(vm.Modelslist);
-        //    uow.CourseRepository.Add(course);
-        //    await uow.CompleteAsync();
-        //    foreach (var item in modules)
-        //    {
-        //        uow.ModuleRepository.Add(item);
-        //        await uow.CompleteAsync();
-        //    }
-           
-
-        //    return RedirectToAction(nameof(Index));
-
-
-        //}
         //[HttpPost]
         public async Task<ActionResult> CreateCourse(CreateCourseViewModel coursevm, List<CreateModelListViewModel> modulesetsvm)
         {
@@ -110,8 +94,11 @@ namespace LMSG3.Web.Controllers
                 EndDate=modulevm.EndDate,
                 CourseId=course.Id
                 };
+                if(CheckDate(modules,course.StartDate))
+                { 
                 uow.ModuleRepository.Add(modules);
                 await uow.CompleteAsync();
+                }
             }
             
             //return RedirectToAction(nameof(Index));
@@ -119,12 +106,11 @@ namespace LMSG3.Web.Controllers
 
         }
 
-
-
         public ActionResult DisplayNewModuleSet()
         {
             return PartialView("CreateModulePartial");
         }
+
 
         public async Task<IActionResult> Edit(int? id)
         {
@@ -202,6 +188,85 @@ namespace LMSG3.Web.Controllers
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
+        }
+
+        private bool CheckDate(Module module ,DateTime Course_StartDate)
+        {
+            var LastModuleEndDate = _context.Modules.Select(m => m.EndDate).Max();
+
+                if (module.StartDate < Course_StartDate)
+                {
+                    //ModelState.AddModelError("StartDate",
+                    //                         "Module  StartDate must be less than Course StartDate");
+                    return false;
+                }
+                if (module.EndDate < Course_StartDate)
+                {
+                    // ModelState.AddModelError("EndDate",
+                    //                          "Module  EndDate must be less than Course StartDate");
+                    return false;
+                }
+                if (module.StartDate < LastModuleEndDate)
+                {
+                    return false;
+                }
+                return true;
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> Upload(int? id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+
+            var model = new DocumentUploadViewModel
+            {
+                Id = course.Id,
+                Name = course.Name
+            };
+            return PartialView("AssignmentModal", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Upload(AssignmentUploadViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Index));
+
+            var names = await _context.Activities.Where(a => a.Id == model.ActivityId).Select(a => new
+            {
+                Activity = a.Name,
+                Module = a.Module.Name,
+                Course = a.Module.Course.Name
+
+            }).FirstOrDefaultAsync();
+
+            long size = model.SubmittedFile.Length;
+            string fileDirectory = $"wwwroot/Courses/{names.Course}/{names.Module}/{names.Activity}/Assignments/";
+
+            if (!Directory.Exists(fileDirectory))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(fileDirectory);
+            }
+            var filePath = fileDirectory + model.SubmittedFile.FileName;
+
+            var document = new Document()
+            {
+                UploadDate = DateTime.Now,
+                DocumentTypeId = 2,
+                ActivityId = model.ActivityId,
+                ApplicationUserId = userManager.GetUserId(User),
+                Path = filePath
+            };
+
+            if (size > 0)
+            {
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await model.SubmittedFile.CopyToAsync(stream);
+
+                _context.Add(document);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,35 +1,37 @@
 ﻿@model IEnumerable<ModelListViewModel>
+<thead>
+    <tr>
+        <th class="col-1"></th>
 
+        <th class="col-3">
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
 
-@*<table class="table">*@
-    <thead>
-        <tr>
-            <th class="col-1"></th>
-           
-            <th class="col-2">
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th class="col-3">
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-           
-            <th class="col-2">
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th class="col-2">
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-           
-            <th class="col-2"></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
+        <th class="col-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th class="col-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+
+        <th class="col-4"></th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 <img src="~/img/down.jpg" width="20" height="20" />
                 <div style="display:none">
-                    <table >
+                    <table data-toggle="table"
+       data-classes="table table-hover table-condensed"
+       data-striped="true"
+       data-sort-order="desc"
+       data-sort-name="Name"
+       data-pagination="true"
+       data-page-list="[5,10,20,ALL]"
+       data-page-size="20">
 
                         <partial name="CourseActivitiesPartial" model="@item.ActivitiesList" />
 
@@ -38,8 +40,9 @@
                 </div>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
@@ -48,11 +51,11 @@
             </td>
 
             <td>
-               
-                <a class="btn btn-primary" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Edit </a>
-                <a class="btn btn-primary" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Delete </a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Activities" asp-action="Create" asp-route-ModuleId="@item.Id">Add Activity</a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                <a class="btn-sm btn-outline-primary" asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+                <button class="btn btn-sm btn-outline-primary border border-0" onclick="OpenDocumentModal(@item.Id,'Modules')"><i class="bi bi-upload"></i></button>
             </td>
         </tr>
-}
-    </tbody>
-@*</table>*@
+    }
+</tbody>

@@ -33,7 +33,7 @@
             <partial name="_StudentAssignmentTabsPartial" />
             
             <ul class="list-group overflow-auto assignment-list">
-                @{ bool current = false;}
+                @{bool current = false;}
                 @foreach (var a in Model.CurrentModule.Assignments)
                 {
                     <li class="list-group-item justify-content-between assignment-list-item
@@ -54,9 +54,13 @@
                                 {
                                     <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
                                 }
+                                @if (a.IsOverdue && !a.IsSubmitted)
+                                {
+                                    <p class="text-danger"><i class="bi bi-exclamation"></i></p>
+                                }
                             </div>
                             <div class="col-3">
-                                @*<a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>*@
+                                <a class="btn btn-outline-primary btn-sm" onclick="OpenAssignmentModal(@a.Id)"><i class="bi bi-upload"></i></a>
                             </div>
                         </div>
                     </li>
@@ -64,7 +68,8 @@
             </ul>
         </div>
     </div>
-
+    @*@Html.ActionLink("TimeTable", "TimeTable", "Student")*@
+    <div class="bg-warning" id="pttContent" style="height: 50vh; min-height: 22em; box-shadow: 5px 5px 10px rgba(0,0,0, 0.5); "></div>
     <br />
 
     <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -77,3 +82,7 @@
     </div>
 
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_StudentIndexScriptsPartial");}
+}

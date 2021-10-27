@@ -17,33 +17,33 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label asp-for="Description" class="control-label text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
+                <input asp-for="StartDate" class="form-control text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
+                <input asp-for="EndDate" class="form-control text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Module" class="control-label"></label>
-                <select asp-for="ModuleId" asp-items="@await ModuleListservice.GetModuleAsync()" class="form-control">
+                <select asp-for="ModuleId" asp-items="@await ModuleListservice.GetModuleAsync()" class="form-control text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%">
                     <option value=""> Please select</option>
                 </select>
                 <span asp-validation-for="ModuleId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActivityType" class="control-label"></label>
+                <label asp-for="ActivityType" class="control-label text-box single-line" data-val="true" id="ModuleName" autocomplete="off" style="width:70%"></label>
                 <select asp-for="ActivityTypeId" asp-items="@await ActivityTypeListservice.GetActivityTypeAsync()" class="form-control">
                     <option value=""> Please select</option>
                 </select>
@@ -57,7 +57,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-controller="Courses">Back to List</a>
 </div>
 
 @section Scripts {
