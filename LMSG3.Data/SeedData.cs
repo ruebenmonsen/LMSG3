@@ -371,13 +371,13 @@ namespace LMSG3.Data
             DateTime startDate;
             DateTime endDate;
             int startHour = 0; // TODO: maybe some logic here
-            int days = (int) (module.EndDate - module.StartDate).TotalDays; // could fail
+            int days = (int)(module.EndDate - module.StartDate).TotalDays; // could fail
 
             for (int day = 0; day < days; day++)
             {
                 startDate = startDay.AddDays(day).AddHours(startHour);
 
-                for (int i= 0; i < amountPerDay; i++)
+                for (int i = 0; i < amountPerDay; i++)
                 {
                     endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: fix bug
                     var e = new Activity
@@ -387,7 +387,7 @@ namespace LMSG3.Data
                         StartDate = startDate,
                         EndDate = endDate,
                         Module = module,
-                        ActivityType = fake.PickRandom(types)                  
+                        ActivityType = fake.PickRandom(types)
                     };
                     activities.Add(e);
                     startDate = endDate;
@@ -431,7 +431,7 @@ namespace LMSG3.Data
         }
 
         private static IEnumerable<Document> GetDocuments(IEnumerable<ApplicationUser> users, string role,
-            IEnumerable<DocumentType> documentTypes, IEnumerable<Course> courses, 
+            IEnumerable<DocumentType> documentTypes, IEnumerable<Course> courses,
             IEnumerable<Module> modules, IEnumerable<Activity> activities, int amount)
         {
             var documents = new List<Document>();
@@ -444,9 +444,9 @@ namespace LMSG3.Data
                     Description = fake.Lorem.Sentence(),
                     UploadDate = DateTime.Now.AddDays(fake.Random.Int(-14, 1)), // TODO: logic
                     DocumentType = fake.PickRandom(documentTypes),
-                    ApplicationUser = fake.PickRandom(users)             
+                    ApplicationUser = fake.PickRandom(users)
                 };
-                switch (fake.PickRandom( new string[] {"Course", "Module", "Activity", "Personal"}))
+                switch (fake.PickRandom(new string[] { "Course", "Module", "Activity", "Personal" }))
                 {
                     case "Course":
                         document.Course = fake.PickRandom(courses);
