@@ -15,7 +15,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-
 namespace LMSG3.Web.Controllers
 {
     [Authorize(Roles = "Student")]

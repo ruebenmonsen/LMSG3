@@ -77,12 +77,15 @@ namespace LMSG3.Data
         private static async Task AddDefaultMvcDataAsync(ApplicationDbContext db)
         {
             // Keep a day between the modules to reduce logic for activities.
-            var currentModuleStart = DateTime.Now.AddDays(-7);
-            var currentModuleEnd = currentModuleStart.AddDays(21);
+            const int startHour = 8;
+            var date = DateTime.Now;
+            var trimmedDate = new DateTime(date.Year, date.Month, date.Day, startHour, 0, 0);
+            var currentModuleStart = trimmedDate.AddDays(-7);
+            var currentModuleEnd = currentModuleStart.AddDays(14);
             var previousModuleStart = currentModuleStart.AddDays(-7);
             var previousModuleEnd = currentModuleStart.AddDays(-1);
             var nextModuleStart = currentModuleEnd.AddDays(1);
-            var nextModuleEnd = currentModuleEnd.AddDays(7);
+            var nextModuleEnd = currentModuleEnd.AddDays(14);
 
 
             // Default course
@@ -132,7 +135,7 @@ namespace LMSG3.Data
             var activities = new List<Activity>();
             foreach (var module in modules)
             {
-                activities.AddRange(GetActivities(module, activityTypes, 3));
+                activities.AddRange(GetActivitiesSane(module, activityTypes, 4));
             }
             await db.AddRangeAsync(activities);
 
@@ -369,13 +372,13 @@ namespace LMSG3.Data
             DateTime startDate;
             DateTime endDate;
             int startHour = 0; // TODO: maybe some logic here
-            int days = (int) (module.EndDate - module.StartDate).TotalDays; // could fail
+            int days = (int)(module.EndDate - module.StartDate).TotalDays; // could fail
 
             for (int day = 0; day < days; day++)
             {
                 startDate = startDay.AddDays(day).AddHours(startHour);
 
-                for (int i= 0; i < amountPerDay; i++)
+                for (int i = 0; i < amountPerDay; i++)
                 {
                     endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: fix bug
                     var e = new Activity
@@ -385,7 +388,41 @@ namespace LMSG3.Data
                         StartDate = startDate,
                         EndDate = endDate,
                         Module = module,
-                        ActivityType = fake.PickRandom(types)                  
+                        ActivityType = fake.PickRandom(types)
+                    };
+                    activities.Add(e);
+                    startDate = endDate;
+                }
+            }
+            return activities;
+        }
+
+        private static IEnumerable<Activity> GetActivitiesSane(Module module, IEnumerable<ActivityType> types, int amountPerDay)
+        {
+            var activities = new List<Activity>();
+            DateTime startDay = module.StartDate;
+            DateTime startDate;
+            DateTime endDate;
+            int startHour = 0; // TODO: maybe some logic here
+            int days = (int)(module.EndDate - module.StartDate).TotalDays; // could fail
+
+            for (int day = 0; day < days; day++)
+            {
+                startDate = startDay.AddDays(day).AddHours(startHour);
+                for (int i = 0; i < fake.Random.Int(amountPerDay - 1, amountPerDay + 1); i++)
+                {
+                    startDate = startDate.AddMinutes(fake.PickRandom(new List<int> { 0, 0, 0, 0, 0, 0, 15, 30 }));
+                    endDate = startDate.AddHours(fake.Random.Int(1, 2)); // TODO: logic
+                    // Comment out to remove minutes
+                    endDate = endDate.AddMinutes(fake.PickRandom(new List<int> { 0, 0, 0, 0, 15, 30 }));
+                    var e = new Activity
+                    {
+                        Name = ti.ToTitleCase(fake.Hacker.Noun() + " " + fake.Hacker.IngVerb()),
+                        Description = fake.Lorem.Sentence(),
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        Module = module,
+                        ActivityType = fake.PickRandom(types)
                     };
                     activities.Add(e);
                     startDate = endDate;
@@ -395,7 +432,7 @@ namespace LMSG3.Data
         }
 
         private static IEnumerable<Document> GetDocuments(IEnumerable<ApplicationUser> users, string role,
-            IEnumerable<DocumentType> documentTypes, IEnumerable<Course> courses, 
+            IEnumerable<DocumentType> documentTypes, IEnumerable<Course> courses,
             IEnumerable<Module> modules, IEnumerable<Activity> activities, int amount)
         {
             var documents = new List<Document>();
@@ -408,9 +445,9 @@ namespace LMSG3.Data
                     Description = fake.Lorem.Sentence(),
                     UploadDate = DateTime.Now.AddDays(fake.Random.Int(-14, 1)), // TODO: logic
                     DocumentType = fake.PickRandom(documentTypes),
-                    ApplicationUser = fake.PickRandom(users)             
+                    ApplicationUser = fake.PickRandom(users)
                 };
-                switch (fake.PickRandom( new string[] {"Course", "Module", "Activity", "Personal"}))
+                switch (fake.PickRandom(new string[] { "Course", "Module", "Activity", "Personal" }))
                 {
                     case "Course":
                         document.Course = fake.PickRandom(courses);
