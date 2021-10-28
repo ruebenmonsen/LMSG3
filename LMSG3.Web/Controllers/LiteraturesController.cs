@@ -164,23 +164,39 @@ namespace LMSG3.Web.Controllers
             var authorBirthDay1 = new DateTime();
             var authorBirthDay2 = new DateTime();
             var authorBirthDay3 = new DateTime();
-            for (int d = 0; d < AuthorBirthDay.Count; d++)
+            for (int d = 0; d < AuthorFirstName.Count; d++)
             {
-                
                 if (d == 0)
                 {
-                    var dateArray = AuthorBirthDay[d].Split("-");
-                    authorBirthDay1 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+                    var dateArray1 = AuthorBirthDay[d].Split("-");
+                    var year = int.Parse(dateArray1[0]);
+                    var month = int.Parse(dateArray1[1]);
+                    string dayStr = dateArray1[2];
+                    var dayStrArr = dayStr.Split("T");
+                    var day = int.Parse(dayStrArr[0]);
+                    authorBirthDay1 = new DateTime(year, month, day);
                 }
-                if (d == 1 && AuthorFirstName[1] == null)
+                if (d == 1 && AuthorFirstName[1] != "")
                 {
-                    var dateArray = AuthorBirthDay[d].Split("-");
-                    authorBirthDay2 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+                    var dateArray2 = AuthorBirthDay[d].Split("-");
+                    var year = int.Parse(dateArray2[0]);
+                    var month = int.Parse(dateArray2[1]);
+                    string dayStr = dateArray2[2];
+                    var dayStrArr = dayStr.Split("T");
+                    var day = int.Parse(dayStrArr[0]);
+                    authorBirthDay2 = new DateTime(year, month, day);
+                    //authorBirthDay2 = new DateTime(int.Parse(dateArray2[0]), int.Parse(dateArray2[1]), int.Parse(dateArray2[2]));
                 }
-                if (d == 2 && AuthorFirstName[2] == null)
+                if (d == 2 && AuthorFirstName[2] != "")
                 {
-                    var dateArray = AuthorBirthDay[d].Split("-");
-                    authorBirthDay3 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+                    var dateArray3 = AuthorBirthDay[d].Split("-");
+                    var year = int.Parse(dateArray3[0]);
+                    var month = int.Parse(dateArray3[1]);
+                    string dayStr = dateArray3[2];
+                    var dayStrArr = dayStr.Split("T");
+                    var day = int.Parse(dayStrArr[0]);
+                    authorBirthDay3 = new DateTime(year, month, day);
+                    //authorBirthDay3 = new DateTime(int.Parse(dateArray3[0]), int.Parse(dateArray3[1]), int.Parse(dateArray3[2]));
                 }
               
             }
@@ -195,20 +211,23 @@ namespace LMSG3.Web.Controllers
                 //author.Id = int.Parse(AuthorIds[i]);
                 author.FirstName = AuthorFirstName[i];
                 author.LastName = AuthorLastName[i];
-                if (i == 0)
+                if (i == 0 && author.FirstName != "" && author.LastName != "")
                 {
                     author.DateOfBirth = authorBirthDay1;
+                    authorsList.Add(author);
                 }
-                if (i == 1)
+                if (i == 1 && author.FirstName != "" && author.LastName != "")
                 {
                     author.DateOfBirth = authorBirthDay2;
+                    authorsList.Add(author);
                 }
-                if (i == 2)
+                if (i == 2 && author.FirstName != "" && author.LastName != "")
                 {
                     author.DateOfBirth = authorBirthDay3;
+                    authorsList.Add(author);
                 }
 
-                authorsList.Add(author);
+               
                 //literatureDto.Authors.Add(author);
 
             }

@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label asp-for="ReleaseDate" class="control-label">Release date</label>
-                <input asp-for="ReleaseDate" id="datepicker4" class="form-control" placeholder="YYYY-MM-DD" required="required" data-error="Please enter a valid date." />
+                <input asp-for="ReleaseDate" id="ReleaseDate"  class="form-control" placeholder="YYYY-MM-DD" required="required" data-error="Please enter a valid date." />
                 <div class="help-block with-errors"></div>
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
@@ -83,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Date of birth</label>
-                <input name="DateOfBirth" id="datepicker1" class="form-control" placeholder="YYYY-MM-DD" required="required" data-error="Please enter a valid date." />
+                <input name="DateOfBirth" type="datetime-local" data-date-format="yyyy-mm-dd" class="form-control" placeholder="YYYY-MM-DD" required="required" data-error="Please enter a valid date." />
                 <div class="help-block with-errors"></div>
                 <span class="text-danger"></span>
             </div>
@@ -105,7 +105,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label">Date of birth</label>
-                    <input name="DateOfBirth" id="datepicker2" class="form-control" placeholder="YYYY-MM-DD" />
+                    <input name="DateOfBirth" id="dateOfBirth2" type="datetime-local" data-date-format="yyyy-mm-dd" class="form-control" placeholder="YYYY-MM-DD" />
                     <div class="help-block with-errors"></div>
                     <span class="text-danger"></span>
 
@@ -129,7 +129,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label">Date of birth</label>
-                    <input name="DateOfBirth" id="datepicker3" class="form-control" placeholder="YYYY-MM-DD" />
+                    <input name="DateOfBirth" id="dateOfBirth3" type="datetime-local" data-date-format="yyyy-mm-dd" class="form-control" placeholder="YYYY-MM-DD" />
                     <div class="help-block with-errors"></div>
                     <span class="text-danger"></span>
                 </div>
@@ -143,25 +143,43 @@
 <link href="~/css/literature.css" rel="stylesheet" />
 
 <script>
-    $('#datepicker1').datepicker({
-        uiLibrary: 'bootstrap',
+    //$('#datepicker1').datepicker({
+    //    uiLibrary: 'bootstrap',
+    //    format: 'yyyy-mm-dd',
+    //    startDate: new Date('1991-01-01')
+    //});
+    //$('#datepicker2').datepicker({
+    //    uiLibrary: 'bootstrap',
+    //    format: 'yyyy-mm-dd',
+    //    startDate: new Date('1991-01-01')
+    //});
+    //$('#datepicker3').datepicker({
+    //    uiLibrary: 'bootstrap',
+    //    format: 'yyyy-mm-dd',
+    //    startDate: new Date('1991-01-01')
+    //});
+    //$('#datepicker4').datepicker({
+    //    uiLibrary: 'bootstrap',
+    //    format: 'yyyy-mm-dd'
+    //});
+
+    $('#ReleaseDate').datetimepicker({
         format: 'yyyy-mm-dd',
-        startDate: new Date('1991-01-01')
+        format: 'LT'
     });
-    $('#datepicker2').datepicker({
-        uiLibrary: 'bootstrap',
+    $('#dateOfBirth1').datetimepicker({
         format: 'yyyy-mm-dd',
-        startDate: new Date('1991-01-01')
+        format: 'LT'
     });
-    $('#datepicker3').datepicker({
-        uiLibrary: 'bootstrap',
+    $('#dateOfBirth2').datetimepicker({
         format: 'yyyy-mm-dd',
-        startDate: new Date('1991-01-01')
+        format: 'LT'
     });
-    $('#datepicker4').datepicker({
-        uiLibrary: 'bootstrap',
-        format: 'yyyy-mm-dd'
+    $('#dateOfBirth3').datetimepicker({
+        format: 'yyyy-mm-dd',
+        format: 'LT'
     });
+    
     function showHideAuthors(x) {
 
         if (x == 1) {
