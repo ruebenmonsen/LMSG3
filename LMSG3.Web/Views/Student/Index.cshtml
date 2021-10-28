@@ -11,7 +11,7 @@
 <!-- Page Content -->
 
 <main role="main" class="mt-1 mr-2 w-75">
-    <div class="jumbotron ">
+    <div class="jumbotron pt-0 mt-0">
 
         <div class="row">
 
@@ -75,29 +75,18 @@
                     <partial name="ModulesList" model="@Model.Modules" />
                 </div>
             </div>
-            @*@Html.ActionLink("TimeTable", "TimeTable", "Student")*@
-
             <br />
-
-            <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header" id='assignmentModalContent'>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </main>
-
-
-
-
-
-
-
-
+<div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id='assignmentModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_StudentIndexScriptsPartial");}

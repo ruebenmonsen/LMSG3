@@ -150,7 +150,7 @@ namespace LMSG3.Web.Controllers
             if (GetContentType(filePath) == "text/csv")
                 filePath = "";
 
-            if (filePath == "")
+            if (filePath != "")
             {
                 var document = new Document()
                 {
