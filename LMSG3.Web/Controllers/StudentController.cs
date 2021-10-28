@@ -171,6 +171,7 @@ namespace LMSG3.Web.Controllers
             {
                 var document = new Document()
                 {
+                    Name = model.SubmittedFile.FileName,
                     UploadDate = DateTime.Now,
                     DocumentTypeId = 2,
                     ActivityId = model.ActivityId,
