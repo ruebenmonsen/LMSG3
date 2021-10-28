@@ -1,0 +1,35 @@
+/students/id			[S] 		Student's My Space
+/students/id/course		[S]		Student's Course info
+/students/id/assignments	[S]		Student's Assignments (The activities with activityType == assignment)
+
+/courses			[T]		All courses
+/courses/id			[T,S(own)] 	Course info
+/courses/id/modules		[T,S(own)] 	A course's modules
+/courses/id/documents		[T,S(own...) 	A course's documents
+/courses/create			[T]
+/courses/edit			[T]
+/courses/delete			[T]
+
+/modules/			[T]		All modules
+/modules/id			[T,S(own)] 	Module info	
+/modules/id/activities 		[T,S(own)] 	Module's activities
+/modules/id/documents		[T,S(own...)]	A modules's documents
+/modules/create			[T]
+/modules/edit			[T]
+/modules/delete			[T]
+
+/activities 			[T] 		All activities
+/activities/id			[T,S(own)] 	Acitity info
+/activities/id/documents 	[T,S(own...)] 	An acitivity's documents
+/activities/create		[T]
+/activities/edit		[T]
+/activities/delete		[T]
+
+/documents/			[T] 		All documents
+/documents/id 			[T,S(own)]	A document
+/documents/create		[T,S]
+/documents/edit			[T,S(own...)]
+/documents/delete		[T,S(own...)]
+
+
+/activties/actionsname?moduleId=5
