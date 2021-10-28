@@ -193,7 +193,9 @@ namespace LMSG3.Web.Controllers
         private bool CheckDate(Module module)
         {
             var course = db.Courses.Find(module.CourseId);
-            var LastModuleEndDate = db.Modules.Select(m => m.EndDate).Max();
+            var LastModuleEndDate = db.Modules
+                .Where(m => m.CourseId == course.Id)
+                .Select(m => m.EndDate).Max();
             if (course != null)
             {
                 if (module.StartDate < course.StartDate)
@@ -219,13 +221,13 @@ namespace LMSG3.Web.Controllers
         }
         private bool CheckDate(Activity activity, DateTime Module_StartDate, DateTime Module_EndDate)
         {
-            if (Module_StartDate > activity.StartDate || Module_StartDate < activity.StartDate)
+            if (Module_StartDate > activity.StartDate || Module_EndDate < activity.StartDate)
             {
                 //ModelState.AddModelError("StartDate",
                 //                         "Activity  StartDate must be within  Module Interval");
                 return false;
             }
-            if (Module_EndDate > activity.EndDate || Module_EndDate < activity.EndDate)
+            if (Module_StartDate > activity.EndDate || Module_EndDate < activity.EndDate)
             {
                 //ModelState.AddModelError("EndDate",
                 //                         "Activity  EndDate must be within  Module Interval");

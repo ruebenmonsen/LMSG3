@@ -13,12 +13,12 @@ namespace LMSG3.Core.Models.ViewModels
         [DataType(DataType.DateTime)]
         [Required]
         [Display(Name = "Start Date")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime StartDate { get; set; }
         [DataType(DataType.DateTime)]
         [Required]
         [Display(Name = "End Date")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime EndDate { get; set; }
         public string Description { get; set; }
 

@@ -17,7 +17,7 @@ namespace LMSG3.Core.Models.ViewModels
         [DataType(DataType.DateTime)]
         [Required]
         [Display(Name = "Start Date")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime StartDate { get; set; }
         public string Description { get; set; }
         public ICollection<CreateModelListViewModel> ModulesList { get; set; }
