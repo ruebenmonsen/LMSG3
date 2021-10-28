@@ -28,7 +28,7 @@ namespace LMSG3.Web.Services
             this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetLevelAsync()
+        public async Task<IEnumerable<SelectListItem>> GetLiteratureLeves()
         {
 
             var response = await httpClient.GetAsync("api/LiteratureLevels");
@@ -51,14 +51,46 @@ namespace LMSG3.Web.Services
                       
         }
         
-        //public async Task<IEnumerable<SelectListItem>> GetLteraturesTypeAsync()
-        //{
-        //    return await context.literatureTypes.OrderBy(t => t.Name)
-        //            .Select(r => new SelectListItem
-        //            {
-        //                Text = r.Name.ToString(),
-        //                Value = r.Id.ToString()
-        //            }).ToListAsync();
-        //}
+        public async Task<IEnumerable<SelectListItem>> GetLiteraturesTypes()
+        {
+
+            var response = await httpClient.GetAsync("api/LiteratureTypes");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var levels = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<LiteratureLevelDto>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+            return levels.Select(g => new SelectListItem
+            {
+                Text = g.Name.ToString(),
+                Value = g.Id.ToString()
+            });
+        }
+
+        public async Task<IEnumerable<SelectListItem>> GetLiteraturesSubjects() 
+        {
+
+            var response = await httpClient.GetAsync("api/LiteratureSubjects");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var levels = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<LiteratureLevelDto>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+            return levels.Select(g => new SelectListItem
+            {
+                Text = g.Name.ToString(),
+                Value = g.Id.ToString()
+            });
+        }
+
+        
     }
 }

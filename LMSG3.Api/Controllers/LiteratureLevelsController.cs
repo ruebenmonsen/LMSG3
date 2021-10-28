@@ -25,9 +25,8 @@ namespace LMSG3.Api.Controllers
         }
 
         [HttpGet]
-        
-        public async Task<ActionResult<IEnumerable<LiteratureLevel>>> GetLiteratureAuthors()
-            {
+        public async Task<ActionResult<IEnumerable<LiteratureLevel>>> GetLiteratureLevels()
+        {
             var levels = await context.literatureLevels.ToListAsync();
            
             return Ok(levels);

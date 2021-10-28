@@ -1,0 +1,44 @@
+﻿@model CourseInfoViewModel
+    <div>
+      
+        <nav id="sidebar" class="m-1">
+
+            <div class="card">
+                <div class="card-header">
+                    <p>Course Info</p>
+                    <h5 class="mb-0">
+                        @Model.Name
+                    </h5>
+
+                    <br />
+                    <div class="float-right ">
+                        <a data-toggle="collapse" data-target="#course-info" aria-expanded="false" aria-controls="course-info">
+                            <small>More info..</small>
+                        </a>
+                    </div>
+                </div>
+
+
+
+                <div class="collapse" id="course-info">
+                    <div class="card card-body">
+                        <p class="small">@Model.Description</p>
+                        <p class="small">Start date: @Model.StartDate</p>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div>
+
+                <partial name="ShowParticipants" model="@Model.Participants" />
+
+
+            </div>
+
+            
+
+
+        </nav>
+    </div>

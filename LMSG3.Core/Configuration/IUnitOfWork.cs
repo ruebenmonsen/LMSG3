@@ -12,6 +12,8 @@ namespace LMSG3.Core.Configuration
         ICourseRepository CourseRepository { get; }
         IRepository<Module> ModuleRepository { get; }
         IRepository<Activity> ActivityRepository { get; }
+        
+        IStudentRepository StudentRepository { get; }
 
         Task CompleteAsync();
         void Dispose();

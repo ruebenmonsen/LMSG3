@@ -6,20 +6,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LMSG3.Api.Services.Repositories;
 using LMSG3.Api.ResourceParameters;
+using LMSG3.Core.Models.Dtos;
+using AutoMapper;
+using LMSG3.Api.Services;
 
-namespace LMSG3.Api.Repositories
+namespace LMSG3.Api.Service.Repositories
 {
     public class LiteratureAuthorRepository : ILiteratureAuthorRepository
     {
         private readonly ApiDbContext _context;
         private readonly ILogger logger;
+        private readonly IMapper mapper;
 
-        public LiteratureAuthorRepository(ApiDbContext context, ILogger logger)
+        public LiteratureAuthorRepository(ApiDbContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             this.logger = logger;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<LiteratureAuthor>> GetAsync(bool includeAllInfo)
@@ -46,33 +50,73 @@ namespace LMSG3.Api.Repositories
         }
 
 
-        public async Task<IEnumerable<LiteratureAuthor>> FindAsync(ResourceParameters.AuthorResourceParameters authorResourceParameters)
+        public async Task<IEnumerable<LiteratureAuthorDto>> FindAsync(AuthorResourcesParameters authorResourceParameters)
         {
+            var sortOrder = authorResourceParameters.sortOrder;
+
             var author = _context.LiteratureAuthors.AsQueryable();
-
-
-
-            if (authorResourceParameters == null)
-            {
-                return await author.ToListAsync();
-            }
-
-            if (!string.IsNullOrWhiteSpace(authorResourceParameters.nameStr))
-            {
-                var searchParam = authorResourceParameters.nameStr.ToLower();
-                //return author.Where(a => a.FullName.ToLower().Contains(authorResourceParameters.nameStr.ToLower()));  // Todo: Trim()
-
-                
-                return await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync(); ;
-
-            }
             if (authorResourceParameters.includeAllInfo)
             {
                 //await author.Where(a => a.FirstName.Contains(searchParam) || a.LastName.Contains(searchParam)).ToListAsync();
                 author = author.Include(a => a.Literatures);
             }
+            var authorDto = mapper.Map<IEnumerable<LiteratureAuthorDto>>(author);
+            foreach (var item in authorDto)
+            {
+               
+                item.Age = ModelsJoinHelper.GetAythorAge(item.DateOfBirth);
+                item.AmoutWorks = item.Literatures.Count;
+                item.LatestWork = item.Literatures.OrderBy(a => a.ReleaseDate).ElementAt(0).Title.ToString();
 
-            return await author.ToListAsync();
+            }
+            if (authorResourceParameters == null)
+            {
+                return authorDto;
+            }
+
+            if (!String.IsNullOrEmpty(authorResourceParameters.searchString))
+            {
+                var searchParam = authorResourceParameters.searchString.ToLower(); 
+                authorDto = authorDto.Where(s => s.FirstName.ToLower().Contains(searchParam.ToLower().Trim())
+                                                    || s.LastName.ToLower().Contains(searchParam.ToLower().Trim())
+                                                    || s.Age.Equals(searchParam.Trim())
+                                                    || s.DateOfBirth.ToString().Contains(searchParam.ToLower().Trim()));
+
+
+                //Todo Add countfor each creteria result
+            }
+
+            
+            switch (sortOrder)
+            {
+                case "fullName_desc":
+                    authorDto = authorDto.OrderByDescending(s => s.FullName);
+                    break;
+                case "Age":
+                    authorDto = authorDto.OrderBy(s => s.Age);
+                    break;
+                case "age_desc":
+                    authorDto = authorDto.OrderByDescending(s => s.Age);
+                    break;
+                case "LatestWork":
+                    authorDto = authorDto.OrderBy(s => s.LatestWork);
+                    break;
+                case "latestWork_desc":
+                    authorDto = authorDto.OrderByDescending(s => s.LatestWork);
+                    break;
+                case "CountLiteraturesSortParm":
+                    authorDto = authorDto.OrderBy(s => s.AmoutWorks);
+                    break;
+                case "countLiteraturesSortParm_desc":
+                    authorDto = authorDto.OrderByDescending(s => s.AmoutWorks);
+                    break;
+                default:
+                    authorDto = authorDto.OrderBy(s => s.FullName);
+                    break;
+
+            }
+
+            return authorDto;
 
         }
         public void Add(LiteratureAuthor literatureAuthor)
@@ -99,6 +143,5 @@ namespace LMSG3.Api.Repositories
             throw new NotImplementedException();
         }
 
-       
     }
 }

@@ -12,6 +12,7 @@ using AutoMapper;
 using LMSG3.Api.ResourceParameters;
 using LMSG3.Api.Configuration;
 using LMSG3.Api.Services;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace LMSG3.Api.Controllers
 {
@@ -26,9 +27,9 @@ namespace LMSG3.Api.Controllers
 
         public LiteraturesController(ApiDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
-            uow = unitOfWork;
-            this.mapper = mapper;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
 
@@ -42,6 +43,7 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
+            
             //var somId = literature.LiteraLevelId;
             var literaDto = mapper.Map<LiteratureDto>(literature);
             
@@ -57,22 +59,13 @@ namespace LMSG3.Api.Controllers
         [HttpHead]    //authorsResourceParameters.
         public async Task<ActionResult<IEnumerable<Literature>>> GetLiteratures([FromQuery] LiteraturesResourceParameters literatureResourceParameters)
         {
-            var literature = await uow.LiteratureRepository.FindAsync(literatureResourceParameters);
+            var literaDto = await uow.LiteratureRepository.FindAsync(literatureResourceParameters);
 
-            if (literature == null)
+            if (literaDto == null)
             {
                 return NotFound();
             }
-            var literaDto = mapper.Map<IEnumerable<LiteratureDto>>(literature);
-
-            // literaDto.LevelName = GetLevelName(literature.LiteraLevelId)
-            foreach (var item in literaDto)
-            {
-               item.LevelName = ModelsJoinHelper.GetLevelName(item.LiteraLevelId, _context);
-               item.LiteraTypeName = ModelsJoinHelper.GetTypeName(item.LiteraTypeId, _context);
-               item.SubjectName = ModelsJoinHelper.GetSubjectName(item.SubId, _context);
-            }
-
+           
             return Ok(literaDto);
         }
 
@@ -81,47 +74,79 @@ namespace LMSG3.Api.Controllers
         // PUT: api/Literatures/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{Id}")]
-        public async Task<IActionResult> PutLiterature(int id, Literature literature)
+        public async Task<IActionResult> PutLiterature(int id, LiteratureDto literatureDto)
         {
-            if (id != literature.Id)
+           
+            var literature = await uow.LiteratureRepository.GetAsync(id, true);
+            if (literature is null) return StatusCode(StatusCodes.Status404NotFound);
+
+            mapper.Map(literatureDto, literature);
+
+            // _context.Entry(literatureDto).State = EntityState.Modified;
+
+            if (uow.LiteratureRepository.CompleteAsync())
             {
-                return BadRequest();
+                return Ok(mapper.Map<LiteratureDto>(literature));
+            }
+            else
+            {
+                return StatusCode(500);
             }
 
-            _context.Entry(literature).State = EntityState.Modified;
+            
+        }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LiteratureExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        [HttpPatch("{Id}")]
+        public async Task<ActionResult<LiteratureDto>> PatchEvent(int id, JsonPatchDocument<LiteratureDto> patchDocument)
+        {
+            
+            var codeEvent = await uow.LiteratureRepository.GetAsync(id, true);
 
-            return NoContent();
+            if (codeEvent is null) return NotFound();
+
+            var dto = mapper.Map<LiteratureDto>(codeEvent);
+
+          // patchDocument.ApplyTo(dto, ModelState);
+
+            if (!TryValidateModel(dto)) return BadRequest(ModelState);
+
+            mapper.Map(dto, codeEvent);
+
+            if (uow.LiteratureRepository.CompleteAsync())
+                return Ok(mapper.Map<LiteratureDto>(codeEvent));
+            else
+                return StatusCode(500);
         }
 
         // POST: api/Literatures
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Literature> CreateLiterature(Literature literature)
+        public ActionResult<Literature> CreateLiterature2(Literature literature)
         {
+            LiteraturesResourceParameters literatureResourceParameters = new LiteraturesResourceParameters();
+            literatureResourceParameters.searchString = literature.Title;
+
+
+            if (uow.LiteratureRepository.LiteratureExist(literatureResourceParameters) == true)
+            {
+                ModelState.AddModelError("Title", "Title is in use");
+                return BadRequest(ModelState);
+            }
             var authorEntity = mapper.Map<Literature>(literature);
             uow.LiteratureRepository.AddLiterature(literature);
-            uow.LiteratureRepository.Save();
-
-            return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
+           
+            if (uow.LiteratureRepository.CompleteAsync())
+            {
+                return CreatedAtAction("GetLiterature", new { id = literature.Id }, literature);
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            
         }
 
-
+        
 
         // DELETE: api/Literatures/5
         [HttpDelete("{id}")]
@@ -136,7 +161,7 @@ namespace LMSG3.Api.Controllers
 
             uow.LiteratureRepository.DeliteLiterature(literature);
             //await _context.SaveChangesAsync();
-            uow.LiteratureRepository.Save();
+            uow.LiteratureRepository.CompleteAsync();
             return NoContent();
         }
 

@@ -1,0 +1,35 @@
+﻿@model LMSG3.Core.Models.Dtos.LiteratureDto
+
+@*<div class="card-deck" style="width: 18rem; height: 27rem; padding: 0.1rem">
+
+    <div class="card bg-outline-secondary">
+        <div class="card-body text-center">
+            <img src="@Model.CoverMImg" alt="">
+            <p class="card-title">@Model.Title</p>
+            <p class="card-text">@Model.ReleaseDate.Year</p>
+            <div class="text-center" style="padding-bottom:2px">
+                <a asp-action="Details" type="button" class="btn btn-outline-secondary" asp-route-id="@Model.Id">Details</a>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+
+<div class="card-deck" style="width: 18rem; height: 27rem; padding: 0.1rem">
+
+    <div class="card bg-outline-secondary">
+        <div class="card-body text-center">
+            <img src="@Model.CoverMImg" alt="">
+            <p class="card-title">@Model.Title</p>
+            <p class="card-text">@Model.ReleaseDate.Year</p>
+
+        </div>
+        <div class="text-center" style="padding-bottom:5px">
+            <a asp-action="Details" type="button" class="btn btn-outline-secondary" asp-route-id="@Model.Id">Details</a>
+        </div>
+    </div>
+</div>
+
+
+
+

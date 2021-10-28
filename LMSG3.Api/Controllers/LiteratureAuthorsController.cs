@@ -11,6 +11,7 @@ using AutoMapper;
 using LMSG3.Core.Models.Dtos;
 using LMSG3.Api.Configuration;
 using LMSG3.Api.ResourceParameters;
+using LMSG3.Api.Services;
 
 namespace LMSG3.Api.Controllers
 {
@@ -40,13 +41,15 @@ namespace LMSG3.Api.Controllers
             {
                 return NotFound();
             }
+            var literatureAuthorDto = mapper.Map<LiteratureAuthorDto>(literatureAuthor);
+            literatureAuthorDto.Age = ModelsJoinHelper.GetAythorAge(literatureAuthorDto.DateOfBirth);
 
-            return Ok(mapper.Map<LiteratureAuthorDto>(literatureAuthor));
+            return Ok(literatureAuthorDto);
         }
 
         [HttpGet()]
         [HttpHead]   
-        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthors([FromQuery] AuthorResourceParameters authorResourceParameters)
+        public async Task<ActionResult<IEnumerable<LiteratureAuthor>>> GetLiteratureAuthors([FromQuery] AuthorResourcesParameters authorResourceParameters)
         {
             var author = await uow.LiteratureAuthorRepository.FindAsync(authorResourceParameters);
 

@@ -1,45 +1,35 @@
-﻿@model LMSG3.Core.Models.Dtos.LiteratureDto
+﻿
+@model LMSG3.Core.Models.Dtos.LiteratureDto
 
-@{
-    ViewData["Title"] = "Details";
-}
+<h2>@Model.Title</h2>
 
-<h1> @Model.Title</h1>
-
-<div>
-    <h4>Literature</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ReleaseDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ReleaseDate)
-        </dd>
-        <dt class="col-sm-2">Author</dt>
-        <dd class="col-sm-10">
-        <ul>
-            @foreach (var item in Model.Authors)
-            {
-                <li>@item.FullName </li>
-            }
-        </ul>
-          </dd>
-
-    </dl>
+<div class="card mb-3" style="max-width: 100%;">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img alt="@Model.Title" src="@Model.CoverLImg">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h3>Title</h3>
+                <p>
+                    @Model.Title
+                </p>
+                <h3>Subject</h3>
+                <p>@Model.SubjectName</p>
+                <h3>Description</h3>
+                <p>@Model.Description</p>
+                <h4>Authors</h4>
+                <ul>
+                    @foreach (var item in Model.Authors)
+                    {
+                        <li>@item.FullName </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" title="Back to List"> <i class="bi bi-arrow-return-left col-xl" style="font-size:36px;"></i></a>
 </div>
+    

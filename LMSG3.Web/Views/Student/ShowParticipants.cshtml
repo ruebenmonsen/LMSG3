@@ -1,0 +1,26 @@
+﻿@model IEnumerable<StudentsViewModel>
+   
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <a data-toggle="collapse" data-target="#myDIV" aria-expanded="false" aria-controls="myDIV">
+                    Show participants
+                </a>
+            </h5>
+        </div>
+        <div  class="collapse" id="myDIV" >
+            <div class="card-body">
+                <ol>
+
+
+                    @foreach (var item in Model)
+                    {
+                        <li>&nbsp; @item.FName&nbsp;@item.LName</li>
+                    }
+                </ol>
+            </div>
+        </div>
+
+    </div>
+   
+

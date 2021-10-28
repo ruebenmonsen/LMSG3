@@ -14,6 +14,8 @@ namespace LMSG3.Core.Models.Dtos
         public string Description { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime ReleaseDate { get; set; }
+        public string CoverLImg { get; set; }
+        public string CoverMImg { get; set; }
 
         public int SubId { get; set; }
 

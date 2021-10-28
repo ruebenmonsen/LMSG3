@@ -1,47 +1,47 @@
-﻿@model LMSG3.Core.Models.ViewModels.StudentIndexViewModel
+﻿
+@model LMSG3.Core.Models.ViewModels.StudentIndexViewModel
+
+@{
+    Layout = "_LayoutStudent";
+}
 
 
-<div class="jumbotron">
-    <h4>Course Info</h4>
-    <hr />
+<partial name="_StudentSidebarPartial" , for="CourseInfo" />
 
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseInfo.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Model.CourseInfo.Name
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseInfo.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Model.CourseInfo.Description
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseInfo.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Model.CourseInfo.StartDate
-        </dd>
-    </dl>
-    <hr />
-    <div class="row">
-        <div class="col-6">
-            <h4>Assignments</h4>
+<!-- Page Content -->
 
-            <partial name="_StudentAssignmentTabsPartial" />
+<main role="main" class="mt-1 mr-2 w-75">
+    <div class="jumbotron pt-0 mt-0">
 
-            <ul class="list-group overflow-auto assignment-list">
-                @{bool current = false;}
-                @foreach (var a in Model.CurrentModule.Assignments)
-                {
-                    <li class="list-group-item justify-content-between assignment-list-item
+        <div class="row">
+
+            <div class="col-md-12">
+                <div>
+                    <div class="" id="pttContent" style="height: 50vh; min-height: 22em; box-shadow: 5px 5px 10px rgba(0,0,0, 0.5); "></div>
+                </div>
+            </div>
+            <br /><br />
+
+
+
+            <div class="col-md-6">
+                <div class="border-bottom border-top bg-opacity-25">
+                    <h4 class="py-2">Assignments</h4>
+                </div>
+
+                <div class="col-md-12 mt-2">
+                    <partial name="_StudentAssignmentTabsPartial" />
+                    <ul class="list-group overflow-auto assignment-list">
+                        @{ bool current = false;}
+                        @foreach (var a in Model.CurrentModule.Assignments)
+                        {
+
+                        <li class="list-group-item justify-content-between assignment-list-item
 
                         @((a.IsSubmitted) ? "submitted-assignment" : "")
                         @((a.IsOverdue) ? "overdue-assignment" : "")
                         @((!a.IsOverdue && !a.IsSubmitted) ? "upcoming-assignment" :"")"
-                        id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
+                            id="@(a.IsCurrent && !current ? "scrollFirst" : "")">
 
                         @if (a.IsCurrent && !current) { current = true; }
                         <div class="row">
@@ -54,7 +54,7 @@
                                 {
                                     <p class="@(a.IsOverdue ? "text-danger" : "text-success")"><i class="bi bi-check2"></i></p>
                                 }
-                                @if (a.IsOverdue && !a.IsSubmitted)
+                                    @if (a.IsOverdue && !a.IsSubmitted)
                                 {
                                     <p class="text-danger"><i class="bi bi-exclamation"></i></p>
                                 }
@@ -71,30 +71,35 @@
                         </div>
                     </li>
                 }
-            </ul>
+                    </ul>
+                </div>
+
+
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <partial name="ModulesList" model="@Model.Modules" />
+                </div>
+            </div>
+            <br />
         </div>
     </div>
-    <div class="bg-warning" id="pttContent" style="height: 50vh; min-height: 22em; box-shadow: 5px 5px 10px rgba(0,0,0, 0.5); "></div>
-    <br />
-
-    <div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header" id='assignmentModalContent'>
-                </div>
+</main>
+<div class="modal fade" id="assignmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id='assignmentModalContent'>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="studentDownloadModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header" id='studentDownloadModalContent'>
-                </div>
+</div>
+<div class="modal fade" id="studentDownloadModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id='studentDownloadModalContent'>
             </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {

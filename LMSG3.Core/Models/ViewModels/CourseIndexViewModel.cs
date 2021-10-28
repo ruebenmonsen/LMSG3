@@ -20,7 +20,7 @@ namespace LMSG3.Core.Models.ViewModels
         public string Description { get; set; }
         public int Participants { get; set; }
         public ICollection<Student> Students { get; set; }
-        public IEnumerable<ModelListViewModel> Modelslist { get; set; }
+        public IEnumerable<ModuleListViewModel> Modelslist { get; set; }
 
     }
 }

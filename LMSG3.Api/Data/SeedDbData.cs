@@ -31,10 +31,6 @@ namespace LMSG3.Api
                 // API
 
 
-
-
-
-
                 var leteratureLevels = CreateLevels();
                 await _context.AddRangeAsync(leteratureLevels);
                 await _context.SaveChangesAsync();
@@ -98,7 +94,7 @@ namespace LMSG3.Api
             {
                 var subjectObj = new Subject 
                 {
-                    Name = fake.Lorem.Sentence()
+                    Name = fake.Lorem.Sentence(5)
                 };
                 subjectsList.Add(subjectObj);
             }
@@ -118,19 +114,19 @@ namespace LMSG3.Api
                
                 var leterature = new Literature
                 {
-                    Title = fake.Lorem.Sentence(),
+                    Title = fake.Lorem.Sentence(3),
                     Description = fake.Lorem.Paragraph(),
                     ReleaseDate = fake.Date.Between(dt2, DateTime.Now).Date,
                     LiteraLevelId = fake.Random.Number(1, 3),
                     LiteraTypeId = fake.Random.Number(1, 7),
                     SubId = fake.Random.Number(1, 6),
                      Authors = new LiteratureAuthor[]
-                    {
+                      {
                         new LiteratureAuthor
                         {
                             FirstName = fake.Name.FirstName(),
                             LastName = fake.Name.LastName(),
-                            DateOfBirth = fake.Date.Between(new DateTime(1940, 12, 31), new DateTime(1995, 12, 31)).Date
+                            DateOfBirth = fake.Date.Between(new DateTime(1940, 12, 31), new DateTime(1995, 12, 31)).Date,
                         },
                         new LiteratureAuthor
                         {

@@ -8,7 +8,8 @@ namespace LMSG3.Web.Services
 {
     public interface ILiteratureSelectService
     {
-        Task<IEnumerable<SelectListItem>> GetLevelAsync();
-       // Task<IEnumerable<SelectListItem>> GetLteraturesTypeAsync();
+        Task<IEnumerable<SelectListItem>> GetLiteratureLeves();
+       Task<IEnumerable<SelectListItem>> GetLiteraturesTypes();
+        Task<IEnumerable<SelectListItem>> GetLiteraturesSubjects();
     }
 }

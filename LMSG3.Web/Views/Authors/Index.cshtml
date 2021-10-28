@@ -1,21 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Authors";
 }
 
-<h1>Literatures</h1>
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="~/js/literature.js"></script>
-<link href="~/css/literature.css" rel="stylesheet" />
-@*<p>
-        <a asp-action="Create">Create New</a>
-    </p>*@
-<form asp-action="Index">
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" name="searchString" placeholder="Search literature..." />
-        <span class="form-clear d-none"><i class="material-icons">clear</i></span>
-        <div class="input-group-append">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-search">Search</i></button>
+<h1><i class="bi bi-person-lines-fill"></i> Authors</h1>
+
+<form asp-action="Index" method="Get">
+    <div class="form-row align-items-center">
+        <div class="col-md-6">
+            <input type="text" name="searchString" class="form-control" placeholder="Search literature..." aria-describedby="button-addon2">
+        </div>
+        <div class="col-md-4">
+            <input type="submit" value="Search" id="button-addon2" class="btn btn-secondary mb-auto" />
         </div>
     </div>
 </form>
-<partial name="AuthorPartial" />
+<div class="form-row align-items-center col-md-8" style="margin-left: -17px; padding-top: 26px; height: auto;">
+    <partial name="AuthorPartial" />
+</div>

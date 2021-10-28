@@ -1,5 +1,5 @@
-﻿using LMSG3.Api.Repositories;
-using LMSG3.Api.Services;
+﻿using AutoMapper;
+using LMSG3.Api.Service.Repositories;
 using LMSG3.Api.Services.Repositories;
 using LMSG3.Data;
 using Microsoft.Extensions.Logging;
@@ -14,6 +14,7 @@ namespace LMSG3.Api.Configuration
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly ApiDbContext _context;
+        private readonly IMapper mapper;
         private readonly ILogger _logger;
 
         
@@ -24,13 +25,14 @@ namespace LMSG3.Api.Configuration
 
         
 
-        public UnitOfWork(ApiDbContext context, ILoggerFactory loggerFactory)
+        public UnitOfWork(ApiDbContext context, ILoggerFactory loggerFactory, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
             _logger = loggerFactory.CreateLogger("logs");
 
-            LiteratureRepository = new LitertureRepository(context, _logger);
-            LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger);
+            LiteratureRepository = new LitertureRepository(context, _logger, mapper);
+            LiteratureAuthorRepository = new LiteratureAuthorRepository(context, _logger, mapper);
         }
 
         public async Task CompleteAsync()

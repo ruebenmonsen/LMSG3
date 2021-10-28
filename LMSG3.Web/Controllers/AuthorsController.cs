@@ -1,21 +1,21 @@
-﻿using LMSG3.Core.Models.Dtos;
+﻿using LMSG3.Api.ResourceParameters;
+using LMSG3.Core.Models.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using static LMSG3.Web.Controllers.LiteraturesController;
+using static LMSG3.Web.Services.LiteraturesController;
 
 namespace LMSG3.Web.Controllers
 {
-   
+
     public class AuthorsController : Controller
     {
         private HttpClient httpClient;
@@ -25,85 +25,55 @@ namespace LMSG3.Web.Controllers
         {
 
             httpClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = System.Net.DecompressionMethods.GZip });
-
-            httpClient.BaseAddress = new Uri("https://localhost:44301");
+            var ApiUrl = ConfigurationHelper.GetByName("ApiUrl");
+            httpClient.BaseAddress = new Uri(ApiUrl);
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(json));
             this.httpClientFactory = httpClientFactory;
         }
 
         // GET: AuthorsController
-        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
+        public async Task<ActionResult> Index(string sortOrder, string searchString, string currentFilter)
         {
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
+            
 
             ViewData["FullNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "fullName_desc" : "";
             ViewData["AgeSortParm"] = sortOrder == "Age" ? "age_desc" : "Age";
-            ViewData["DateOfBirthSortParm"] = sortOrder == "DateOfBirth" ? "DateOfBirth_desc" : "DateOfBirth";
-            ViewData["CountLiteraturesSortParm"] = sortOrder == "CountLiteratures" ? "CountLiteraturesSortParm_desc" : "DateOfBirth";
-
+           // ViewData["DateOfBirthSortParm"] = sortOrder == "DateOfBirth" ? "DateOfBirth_desc" : "DateOfBirth";
+            ViewData["CountLiteraturesSortParm"] = sortOrder == "CountLiteratures" ? "CountLiteraturesSortParm_desc" : "CountLiteratures";
+            ViewData["LatestWorkSortParm"] = sortOrder == "LatestWork" ? "latestWork_desc" : "LatestWork";
             
+            AuthorResourcesParameters authorResourceParameters = new AuthorResourcesParameters();
+            authorResourceParameters.sortOrder = sortOrder;
+            authorResourceParameters.searchString = searchString;
+            authorResourceParameters.includeAllInfo = true;
+            //if (currentFilter == null)
+            //{
+            //    authorResourceParameters.levelFilter = 0;
+
+            //}
+            //else
+            //{
+            //    authorResourceParameters.levelFilter = int.Parse(currentFilter);
+            //}
             var cancellation = new CancellationTokenSource();
-            var authorModel = await SimpleGet();
+            var authorModel = await SimpleGet(authorResourceParameters);
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                authorModel = authorModel.Where(s => s.FullName.ToLower().Contains(searchString.ToLower().Trim())
-                                                    || s.Age.Equals(searchString.ToLower().Trim())
-                                                    || s.DateOfBirth.ToString().Contains(searchString.ToLower().Trim()));
-
-
-                //Todo Add countfor each creteria result
-            }
            
 
-            switch (sortOrder)
-            {
-                case "fullName_desc":
-                    authorModel = authorModel.OrderByDescending(s => s.FullName).ToList();
-                    break;
-                case "Age":
-                    authorModel = authorModel.OrderBy(s => s.Age).ToList();
-                    break;
-                case "age_desc":
-                    authorModel = authorModel.OrderByDescending(s => s.Age).ToList();
-                    break;
-                case "DateOfBirth":
-                    authorModel = authorModel.OrderBy(s => s.DateOfBirth).ToList();
-                    break;
-                case "dateOfBirth_desc":
-                    authorModel = authorModel.OrderByDescending(s => s.DateOfBirth).ToList();
-                    break;
-                case "CountLiteraturesSortParm":
-                    authorModel = authorModel.OrderBy(s => s.DateOfBirth).ToList();
-                    break;
-                case "countLiteraturesSortParm_desc":
-                    authorModel = authorModel.OrderByDescending(s => s.DateOfBirth).ToList();
-                    break;
-                default:
-                    authorModel = authorModel.OrderBy(s => s.FullName).ToList();
-                    break;
-
-            }
-            // IEnumerable<SelectListItem> lieratureLevelSlectItems = await GetVehicleLevelSelectListItems();
-
-            // return View(viewModels, IEnumerable<SelectListItem>>(viewModels, lieratureLevelSlectItems SelectItems));
-
-            //return View(authorModel);
-
-            // int pageSize = 10;
-            //return View(await PaginatedList<LiteratureDto>.CreateAsync(authorModel.AsNoTracking(), pageNumber ?? 1, pageSize));
 
             return View(authorModel);
         }
 
-        private async Task<IEnumerable<LiteratureAuthorDto>> SimpleGet()
+        private async Task<IEnumerable<LiteratureAuthorDto>> SimpleGet(AuthorResourcesParameters authorResourceParameters)
         {
 
-            var response = await httpClient.GetAsync("api/LiteratureAuthors?includeAllInfo=true");
+            var queryString = $"includeAllInfo={authorResourceParameters.includeAllInfo}";
+            queryString += $"&searchString={authorResourceParameters.searchString}";
+            queryString += $"&sortOrder={authorResourceParameters.sortOrder}";
+            var apiUrl = $"api/LiteratureAuthors?{queryString}";
+
+            var response = await httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -118,9 +88,20 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: AuthorsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var response = await httpClient.GetAsync($"api/literatureAuthors/{id}?includeAllInfo=true");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var author = System.Text.Json.JsonSerializer.Deserialize<LiteratureAuthorDto>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            //Newtonsoft json
+            // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
+
+
+            return View(author);
         }
 
         // GET: AuthorsController/Create

@@ -40,5 +40,22 @@ namespace LMSG3.Api.Services
             return subjectName;
         }
 
+        public static int GetAythorAge(DateTime dateTime)
+        {
+
+            // Save today's date.
+            var today = DateTime.Today;
+
+            // Calculate the age.
+            var age = today.Year - dateTime.Year;
+            
+            // Go back to the year in which the person was born in case of a leap year
+            if (dateTime.Date > today.AddYears(-age)) age--;
+                        age = DateTime.Now.Year - dateTime.Year;
+            return age;
+        }
+
+
+
     }
 }

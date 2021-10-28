@@ -13,7 +13,10 @@ namespace LMSG3.Core.Models.Dtos
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime DateOfBirth { get; set; }
 
-        public int Age => DateTime.Now.Year - DateOfBirth.Year;
+        //public int Age => DateTime.Now.Year - DateOfBirth.Year;
+        public int Age { get; set; }
+        public string LatestWork { get; set; }
+        public int AmoutWorks { get; set; }
 
         // NAV
         public ICollection<LiteratureDto> Literatures { get; set; }
