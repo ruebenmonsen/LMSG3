@@ -1,0 +1,29 @@
+﻿@model IEnumerable<LMSG3.Core.Models.ViewModels.StudentDocmentsViewModel>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col font-weight-bold">
+            @Html.DisplayNameFor(model => model.Name)
+        </div>
+        <div class="col font-weight-bold">
+            @Html.DisplayNameFor(model => model.UploadDate)
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+    @foreach (var item in Model)
+    {
+        <div class="row">
+            <div class="col">
+                @Html.DisplayFor(modelItem => item.Name)
+            </div>
+            <div class="col">
+                @Html.DisplayFor(modelItem => item.UploadDate)
+            </div>
+            <div class="col-1">
+                <a class="btn-sm btn-outline-primary" asp-controller="Student" asp-action="Download" asp-route-path="@item.Path"><i class="bi bi-download"></i></a>
+            </div>
+        </div>
+    }   
+</div>

@@ -201,7 +201,7 @@
                             <div class=""><i class="bi bi-circle-fill tt-activity-color-@a.ActivityTypeId"> </i>
                             @if(a.HasDocument)
                             { 
-                                @:<i class='bi bi-cloud-download-fill text-warning'> </i> 
+                                @:<a class="" onclick="OpenStudentDownloadModal(@a.Id)"><i class='bi bi-files text-warning'> </i></a>
                             } 
                             <span data-toggle="tooltip" title="Some tooltip text!">@Html.DisplayFor(modelA => a.Name)</span></div>
                             <div class="align-self-bottom">@a.StartDate.ToString("t") - @a.EndDate.ToString("t")

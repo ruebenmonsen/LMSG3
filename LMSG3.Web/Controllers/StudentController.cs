@@ -45,11 +45,23 @@ namespace LMSG3.Web.Controllers
             // TODO: fix bug with there not being a current module. Use nullable vars?
             await _context.Entry(currentModule).Collection(m => m.Activities).LoadAsync();
 
-            var documents = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            var activitiesWithDocuments = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .Select(s => s.Course)
+                .SelectMany(c => c.Modules)
+                .Where(m => m == currentModule)
+                .SelectMany(m => m.Activities)
+                .SelectMany(a => a.Documents)
+                .Where(d => d.ApplicationUserId == userId || teachers.Contains(d.ApplicationUser))
+                .Select(d => d.ActivityId)
+                .ToListAsync();
+
+            var myDocuments = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Select(s => s.Documents).FirstOrDefaultAsync();
             var activities = currentModule.Activities;
             var assignmnets = activities.Where(a => a.ActivityTypeId.Equals(assignmentTypeId)).Select(a =>
             {
-                var document = documents.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).FirstOrDefault();
+                var document = myDocuments.Where(d => d?.ActivityId != null && d.ActivityId == a.Id).FirstOrDefault();
                 var isSubmitted = document != default;
                 return new AssignmentViewModel
                 {
@@ -60,7 +72,8 @@ namespace LMSG3.Web.Controllers
                     // Document.submitted > EndDate || DateNow > EndDate
                     IsOverdue = isSubmitted ? document.UploadDate > a.EndDate : currentDate > a.EndDate,
                     IsSubmitted = isSubmitted,
-                    IsCurrent = currentDate < a.EndDate && !isSubmitted
+                    IsCurrent = currentDate < a.EndDate && !isSubmitted,
+                    HasDocument = activitiesWithDocuments.Contains(a.Id)
 
                 };
             }).OrderBy(a => a.EndDate).OrderByDescending(a => a.IsSubmitted).ToList();
@@ -78,7 +91,11 @@ namespace LMSG3.Web.Controllers
 
             }).FirstOrDefaultAsync();
 
-            var studentModel = await _context.Students.AsNoTracking().Where(s => s.Id == userId).Include(s => s.Documents).Include(s => s.Course)
+
+            var studentModel = await _context.Students.AsNoTracking()
+                .Where(s => s.Id == userId)
+                .Include(s => s.Documents)
+                .Include(s => s.Course)
                 .ThenInclude(c => c.Modules).ThenInclude(m => m.Activities).Select(s => new StudentIndexViewModel
                 {
                     Id = s.Id,
@@ -159,6 +176,58 @@ namespace LMSG3.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<PartialViewResult> DownloadModal(int? id)
+        {
+            // TODO: check if id is OK
+            // TODO: Only get teachers and THE students documents
+            var user = await userManager.GetUserAsync(User);
+            var users = await userManager.GetUsersInRoleAsync("Teacher");
+            users.Add(user);
+            //var userrIds = teachers.Select(t => t.Id);
+            //userrIds.Append(userManager.GetUserId(User));
+
+            var documents = await _context.Activities.AsNoTracking()
+                .Where(a => a.Id == id)
+                .SelectMany(a => a.Documents)
+                //.Where(a => users.Contains(a.ApplicationUser))
+                .Select(d => new StudentDocmentsViewModel
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    Description = d.Description,
+                    UploadDate = d.UploadDate,
+                    UserFullName = d.ApplicationUser.FName + " " + d.ApplicationUser.LName,
+                    Own = d.ApplicationUser == user,
+                    Path = d.Path
+                }).ToListAsync();
+
+            return PartialView("StudentDownloadModal", documents);
+        }
+
+        // TODO: Rewrite and move backto Documents controller
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> DownloadAsync(string path)
+        {
+
+            if (path == null)
+            {
+                return RedirectToAction("Index", "Student");
+            }
+
+            var newpath = Path.Combine(
+                           Directory.GetCurrentDirectory(), path);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(newpath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(newpath), Path.GetFileName(newpath));
+
+        }
+
+        [HttpGet]
         public async Task<PartialViewResult> TimeTable(int year, int week, int step)
         {
             // Bugs: maybe logic between weeks.
@@ -221,6 +290,7 @@ namespace LMSG3.Web.Controllers
             // Bug: Activities stretching over to next week will not be taken
             // TODO: Add module name? Add acticity name?
             // TODO: split into days? Just check if StartDate || EndDate within week.
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
             var studentActivities = await _context.Students.AsNoTracking()
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
@@ -236,7 +306,8 @@ namespace LMSG3.Web.Controllers
                     ActivityTypeId = a.ActivityTypeId,
                     StartDate = a.StartDate,
                     EndDate = a.EndDate,
-                    HasDocument = a.Documents.Any(),
+                    HasDocument = a.Documents.Any(d => d.ApplicationUserId == userId 
+                                || teachers.Contains(d.ApplicationUser)),
                     IsCurrent = InDateSpan(currentDate, a.StartDate, a.EndDate),
                     InCurrentModule = InDateSpan(currentDate, a.Module.StartDate, a.Module.EndDate)
                 })
@@ -257,7 +328,7 @@ namespace LMSG3.Web.Controllers
                 .Where(s => s.Id == userId)
                 .SelectMany(s => s.Course.Modules)
                 .Where(m => m.StartDate <= currentDate && currentDate <= m.EndDate)
-                .Select(m => m.Name).SingleOrDefaultAsync();           
+                .Select(m => m.Name).SingleOrDefaultAsync();
 
             // Last hour in a day, will be set if an activity is overlapping from day to day.
             const int endHour = 24;
