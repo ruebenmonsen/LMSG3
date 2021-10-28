@@ -76,7 +76,8 @@ namespace LMSG3.Api.Controllers
         [HttpPut("{Id}")]
         public async Task<IActionResult> PutLiterature(int id, LiteratureDto literatureDto)
         {
-           
+            if(literatureDto.Authors.Count == 0) return BadRequest(ModelState);
+            if (!TryValidateModel(literatureDto)) return BadRequest(ModelState);
             var literature = await uow.LiteratureRepository.GetAsync(id, true);
             if (literature is null) return StatusCode(StatusCodes.Status404NotFound);
 

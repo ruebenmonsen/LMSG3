@@ -90,8 +90,7 @@ namespace LMSG3.Web.Controllers
             var content = await response.Content.ReadAsStringAsync();
 
             var literatures = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<LiteratureDto>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            int Min = 0;
-            int Max = 5;
+           
 
             // this declares an integer array with 5 elements
             // and initializes all of them to their default value
@@ -105,7 +104,8 @@ namespace LMSG3.Web.Controllers
             {
                 int index = randNum.Next(0, imgArray.Length);
                 item.CoverMImg = $"/img/Thumbnails/Medium/{imgArray[index]}-M.jpg";
-                
+                item.CoverLImg = $"/img/Thumbnails/Large/{imgArray[index]}-L.jpg";
+
             }
             
             
@@ -123,7 +123,7 @@ namespace LMSG3.Web.Controllers
 
 
         // GET: LiteraturesController1/Details/5
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult> Details(int id, string coverLImg)
         {
             int imageNumber = 100;
             var response = await httpClient.GetAsync($"api/literatures/{id}?includeAllInfo=true");
@@ -136,6 +136,8 @@ namespace LMSG3.Web.Controllers
             //Newtonsoft json
             // var literatures = JsonConvert.DeserializeObject<IEnumerable<LiteratureDto>>(content);
             literature.CoverLImg = $"/img/Thumbnails/Large/{imageNumber}-L.jpg";
+            //literature.CoverLImg = $"/img/Thumbnails/Large/{coverLImg}";
+            
             //literature.CoverLImg = "https://covers.openlibrary.org/b/id/5546156-L.jpg";
 
             return View(literature);

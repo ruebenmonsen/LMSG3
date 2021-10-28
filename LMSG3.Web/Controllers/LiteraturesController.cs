@@ -123,15 +123,21 @@ namespace LMSG3.Web.Controllers
         }
 
         // GET: LiteraturesController1/Create
-        public ActionResult Create()
+        public ActionResult Create(LiteratureDto literatureDto)
         {
+            if (literatureDto.Title != null)
+            {
+                ViewBag.ErrorMessage = "Title already exist";
+                return View(literatureDto);
+            }
+            ViewBag.ErrorMessage = "";
             return View();
         }
 
         // POST: LiteraturesController1/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create2(IFormCollection collection)
         {
             try
             {
@@ -142,7 +148,8 @@ namespace LMSG3.Web.Controllers
                 return View();
             }
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateLiterature(IFormCollection form, LiteratureDto literatureDto)
         {
             
@@ -165,12 +172,12 @@ namespace LMSG3.Web.Controllers
                     var dateArray = AuthorBirthDay[d].Split("-");
                     authorBirthDay1 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
                 }
-                if (d == 1)
+                if (d == 1 && AuthorFirstName[1] == null)
                 {
                     var dateArray = AuthorBirthDay[d].Split("-");
                     authorBirthDay2 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
                 }
-                if (d == 2)
+                if (d == 2 && AuthorFirstName[2] == null)
                 {
                     var dateArray = AuthorBirthDay[d].Split("-");
                     authorBirthDay3 = new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
@@ -207,8 +214,19 @@ namespace LMSG3.Web.Controllers
             }
             literatureDto.Authors = authorsList;
             request.Content = JsonContent.Create(literatureDto, typeof(LiteratureDto), new MediaTypeHeaderValue(json));
-
             var response = await httpClient.SendAsync(request);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                
+                //return RedirectToAction(nameof(Create, new { literatureDto });
+                return RedirectToAction(nameof(Create), literatureDto);
+            }
+           
+           
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

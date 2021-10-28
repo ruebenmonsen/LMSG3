@@ -87,8 +87,8 @@ namespace LMSG3.Api.Services.Repositories
                                  .Contains(literaturesResourceParameters.searchString.ToLower())
                                   || l.SubjectName.ToLower().Contains(literaturesResourceParameters.searchString.ToLower())
                                   || l.Description.ToLower().Contains(literaturesResourceParameters.searchString.ToLower())
-                                  || l.Authors.Any(a => a.FirstName.Contains(literaturesResourceParameters.searchString))
-                                  || l.Authors.Any(a => a.LastName.Contains(literaturesResourceParameters.searchString)));
+                                  || l.Authors.Any(a => a.FirstName.ToLower().Contains(literaturesResourceParameters.searchString.ToLower()))
+                                  || l.Authors.Any(a => a.LastName.ToLower().Contains(literaturesResourceParameters.searchString.ToLower())));
 
             }
 
